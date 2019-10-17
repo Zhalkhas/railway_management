@@ -1,4 +1,4 @@
-package org.yoptascript.inc;
+package org.yoptascript.inc.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

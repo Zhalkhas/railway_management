@@ -1,4 +1,4 @@
-package org.yoptascript.inc;
+package org.yoptascript.inc.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
