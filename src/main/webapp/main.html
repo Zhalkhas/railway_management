@@ -62,7 +62,7 @@
 			var numberTickets = $('#numberTickets').val();
 
 			$.post("/search", { 
-				data: 'from='+from+'&to='+to+'&departureDate='+departureDate+'&returnDate='+returnDate+'&numberTickets'+numberTickets}, 
+				data: 'from='+from+'&to='+to+'&departureDate='+departureDate+'&returnDate='+returnDate},
 				function() {
 					var url = "google.com";
     					window.location(url);
