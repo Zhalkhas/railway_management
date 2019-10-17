@@ -7,10 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="railway.css">
 	<title>Railway Station</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script type="text/javascript">
-
-
-	</script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
 </head>
 
 <body>
@@ -20,21 +17,21 @@
 		</h3>
 
 		<form>
-			<input type="text" name="route_from" placeholder="From">
-			<input type="text" name="route_to" placeholder="To">
-			<input type="date" data-date-inline-picker="true" name="departure_date" placeholder="Departure date">
-			<input type="date" data-date-inline-picker="true" name="return_date" placeholder="Return date">
-			<input type="number" name="tickets_number" placeholder="Number of tickets" value="0" min="0">
+			<input type="text" id= "from" name="route_from" placeholder="From">
+			<input type="text" id = "to" name="route_to" placeholder="To">
+			<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date" placeholder="Departure date">
+			<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">
+			<input type="number" id="numberTickets" name="tickets_number" placeholder="Number of tickets" value="0" min="0">
 			
 
 		</form>
 		<button type="button" id="main_button" onclick="findFunction()">Find</button><br>
 	</div>
-
-	<div class="profile">
 		<h3>
-			Sign in
+				<button type="button" id="signin" onclick="openBox()">Sign In</button><br>
 		</h3>
+	<div class="profile">
+		
 		<form class = "bevertical">
 			<input type="text" name="e-mail" placeholder="e-mail"><br>
 			<input type="text" name="password" placeholder="password"><br>
@@ -42,6 +39,38 @@
 			<button type="button" id="second_button" onclick="signInFunction()">Sign In</button>
 		</form>
 	</div>
+	<script>
+
+
+
+		$('div.profile').hide();
+		function openBox(){
+			$('div.profile').toggle();
+			
+		}
+		function signInFunction(){
+
+		}
+		function signUpFunction(){
+
+		}
+		function findFunction(e){
+			var from = $('#from').val();
+			var to = $('#to').val();
+			var departureDate = $('#departureDate').val();
+			var returnDate = $('#returnDate').val();
+			var numberTickets = $('#numberTickets').val();
+
+			$.post("/search", { 
+				data: 'from='+from+'&to='+to+'&departureDate='+departureDate+'&returnDate='+returnDate+'&numberTickets'+numberTickets}, 
+				function() {
+					var url = "google.com";
+    					window.location(url);
+    });
+
+		}
+
+	</script>
 </body>
 
 </html>
