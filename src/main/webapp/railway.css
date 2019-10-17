@@ -194,4 +194,8 @@ flex-direction: column;
 	margin: 5px;
 	
   }
-  
+  a { color: inherit; }
+   
+  :focus {
+    outline-width: 0;
+}

@@ -21,7 +21,7 @@
 			<input type="text" id = "to" name="route_to" placeholder="To">
 			<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date" placeholder="Departure date">
 			<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">
-			<input type="number" id="numberTickets" name="tickets_number" placeholder="Number of tickets" value="0" min="0">
+
 			
 
 		</form>
@@ -34,11 +34,23 @@
 		
 		<form class = "bevertical">
 			<input type="text" name="e-mail" placeholder="e-mail"><br>
-			<input type="text" name="password" placeholder="password"><br>
-			<button type="button"  id="second_button" onclick="signUpFunction()">Sign Up</button> 
-			<button type="button" id="second_button" onclick="signInFunction()">Sign In</button>
+			<input type="password" name="password" placeholder="password"><br>
+			<button type="button"  id="second_button" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</button> 
+			
+			<button type="button" id="second_button" onclick="signInFunction()"><a> Sign In</button>
 		</form>
 	</div>
+	
+	<div class="schedule">
+		<div class="route_list">
+			<ul id="#list_of_routes">
+
+			</ul>
+
+		</div>
+	</div>
+
+
 	<script>
 
 
@@ -59,16 +71,29 @@
 			var to = $('#to').val();
 			var departureDate = $('#departureDate').val();
 			var returnDate = $('#returnDate').val();
-			var numberTickets = $('#numberTickets').val();
+
 
 			$.post("/search", { 
 				data: 'from='+from+'&to='+to+'&departureDate='+departureDate+'&returnDate='+returnDate},
 				function() {
-					var url = "google.com";
-    					window.location(url);
-    });
+					location.replace("/schedule")
+    			});
 
 		}
+
+		function updateList(items) {
+    		$("#list_of_routes").html("");
+    
+			var from ;
+			var to ;
+			var depTime;
+			var return_date;
+
+
+			items.forEach(function (e, index) {
+				$("#list_of_routes").append("<li>" + from + "</li><br>" + "<li>" + to + "</li> <br>" dateTime + "<button onclick='deleteTodo("+index+")'> BOOK </button>");
+			});
+}
 
 	</script>
 </body>
