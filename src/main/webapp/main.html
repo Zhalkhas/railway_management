@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="railway.css">
+	<title>Railway Station</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript">
+
+
+	</script>
+</head>
+
+<body>
+	<div class="search">
+		<h3>
+		FIND TICKETS
+		</h3>
+
+		<form>
+			<input type="text" name="route_from" placeholder="From">
+			<input type="text" name="route_to" placeholder="To">
+			<input type="date" data-date-inline-picker="true" name="departure_date" placeholder="Departure date">
+			<input type="date" data-date-inline-picker="true" name="return_date" placeholder="Return date">
+			<input type="number" name="tickets_number" placeholder="Number of tickets" value="0" min="0">
+			
+
+		</form>
+		<button type="button" id="main_button" onclick="findFunction()">Find</button><br>
+	</div>
+
+	<div class="profile">
+		<h3>
+			Sign in
+		</h3>
+		<form class = "bevertical">
+			<input type="text" name="e-mail" placeholder="e-mail"><br>
+			<input type="text" name="password" placeholder="password"><br>
+			<button type="button"  id="second_button" onclick="signUpFunction()">Sign Up</button> 
+			<button type="button" id="second_button" onclick="signInFunction()">Sign In</button>
+		</form>
+	</div>
+</body>
+
+</html>
