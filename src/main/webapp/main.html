@@ -76,25 +76,36 @@
 			$.post("/search", { 
 				data: 'from='+from+'&to='+to+'&departureDate='+departureDate+'&returnDate='+returnDate},
 				function() {
+					getListItems();
 					location.replace("/schedule")
     			});
 
 		}
+		function getListItems() {
+    			$.ajax({
+        		url : '/getRoutes',
+        		dataType : 'json',
+        		success : function(r) {
+            	updateList(r);
+        }
+				}
+				)}
 
-		function getSearch(items) {
-    		$("#list_of_routes").html("");
-    
-			var from ;
-			var to ;
-			var depTime;
-			var return_date;
+			function updateList(items){
+				$("#table_of_routes").html("");
+				var from = items.name ;
+				var to = items.arrival  ;
+				var depTime = items.departureTime;
+				var arrTime = items.arrivalTime;
+				var trianID = items.trainID;
+				
+				items.forEach(function (from, to, depTime, arrTime, trainID )
 
-
-			items.forEach(function (e, index) {
-				$("#list_of_routes").append("<li>" + from + "</li><br>" + "<li>" + to + "</li> <br>" dateTime + "<button onclick='deleteTodo("+index+")'> BOOK </button>");
-			});
-}
-
+					{
+				$("#my-list").append("<tr><th>Departure</th><th>Destination</th><th>Time</th></tr><tr>" + from + "</tr><tr>" + to + "</tr><tr>"
+				+ time + "</tr>");
+					});
+			}
 	</script>
 </body>
 
