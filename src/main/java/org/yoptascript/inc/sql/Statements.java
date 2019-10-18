@@ -82,11 +82,11 @@ public class Statements {
         if (dept == null || dest == null || date == null) {
             throw new SQLException("not enough info");
         }
-        PreparedStatement statement = conn.prepareStatement("select Sch.stationId, S3.name\n"
+        PreparedStatement statement = conn.prepareStatement("select Sch.stationId, S3.name, Sch.arrivalTime\n"
             + "from railway65.SCHEDULE Sch, railway65.STATION S1, railway65.STATION S2, railway65.STATION S3,\n"
             + "(select Sch.trainId from railway65.SCHEDULE Sch where date(Sch.departureTime)=?) as b\n"
             + "where Sch.trainid=b.trainId and date(Sch.departureTime)=? and S1.name=? and S2.name=? and S3.stationId = Sch.stationId\n"
-            + "group by Sch.stationId order by Sch.stationId asc;");
+            + "group by Sch.stationId order by Sch.arrivalTime asc;");
         statement.setString(1, date);
         statement.setString(2, date);
         statement.setString(3, dept);
@@ -98,6 +98,7 @@ public class Statements {
             JsonObject jsob = new JsonObject();
             jsob.addProperty(rsmd.getColumnName(1), rs.getInt(1));
             jsob.addProperty(rsmd.getColumnName(2), rs.getString(2));
+            jsob.addProperty(rsmd.getColumnName(3), rs.getString(3));
             json.add(jsob);
         }
         return json;

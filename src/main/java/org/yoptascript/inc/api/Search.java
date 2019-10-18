@@ -15,6 +15,9 @@ import javax.ws.rs.core.Response;
 @Path("/search")
 public class Search {
 
+    public Search() {
+    }
+
     Statements statements;
 
     @Path("/searchCity")
@@ -29,10 +32,10 @@ public class Search {
             e.printStackTrace();
         }
         statements.disconnect();
-        return Response.ok(new Gson().toJson(cities)).build();
+        return Response.ok((new Gson()).toJson(cities)).build();
     }
 
-    @Path("/")
+    @Path("/search")
     @GET
     public Response getRouteStations(@QueryParam("dept") String dept, @QueryParam("dest") String dest, @QueryParam("date") String date){
         statements = new Statements();
