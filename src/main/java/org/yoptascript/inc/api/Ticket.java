@@ -20,13 +20,12 @@ public class Ticket {
     public Response insertTicket(@FormParam("ticketId") int ticketId, @FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
                                  @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("routeId") int routeId,
-                                 @FormParam("date") String date, @FormParam("dateSched") String dateSched) {
+                                 @FormParam("agentId") int agentId, @FormParam("schedId") int schedId) {
         statements = new Statements();
         statements.connect();
         try {
             statements.insertTicket(ticketId, ownerN, ownerS, price, docId,
-                    usrId, agentId, routeId, date, dateSched);
+                    usrId, agentId, schedId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -37,10 +36,15 @@ public class Ticket {
     @Path("/checkTicket")
     @GET()
     public Response checkTicketAvailability(@QueryParam("dept") String dept, @QueryParam("dest") String dest,
-                                            @QueryParam("t") int train) {
+                                            @QueryParam("t") int train, @QueryParam("date") String date) {
         statements = new Statements();
         statements.connect();
-        boolean check = statements.checkTicket(dept, dest, train);
+        boolean check = false;
+        try {
+            check = statements.checkTicket(dept, dest, train, date);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         statements.disconnect();
         JsonObject json = new JsonObject();
         json.addProperty("available", check);

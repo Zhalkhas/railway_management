@@ -32,6 +32,20 @@ public class Search {
         return Response.ok(new Gson().toJson(cities)).build();
     }
 
+    @Path("/")
+    @GET
+    public Response getRouteStations(@QueryParam("dept") String dept, @QueryParam("dest") String dest, @QueryParam("date") String date){
+        statements = new Statements();
+        statements.connect();
+        JsonArray routes = null;
+        try {
+            routes = statements.getRouteStations(dept, dest, date);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Response.ok(routes.toString()).build();
+    }
+
     @Path("/getRoutes")
     @GET
     public Response getRoutes(@QueryParam("dept") String dept,

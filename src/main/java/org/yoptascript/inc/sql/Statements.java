@@ -33,26 +33,28 @@ public class Statements {
         }
     }
 
-    public void insertUser(int trainId, int capacity, String mainten, boolean av) throws SQLException {
-        if (trainId == 0 || capacity == 0 || mainten == null || !av) {
-            throw new SQLException("not enough info");
-        }
-
-        PreparedStatement statement = conn.prepareStatement("insert into TRAIN (trainId,capacity,availability,maintenanceT) values (?,?,?,?);");
-        statement.setInt(2, capacity);
-        statement.setString(4, mainten);
-        statement.setInt(1, trainId);
-        statement.setBoolean(3, av);
-        statement.executeUpdate();
-    }
+//    public void insertUser(int trainId, int capacity, String mainten, boolean av) throws SQLException {
+//        if (trainId == 0 || capacity == 0 || mainten == null || !av) {
+//            throw new SQLException("not enough info");
+//        }
+//
+//        PreparedStatement statement = conn.prepareStatement("insert into TRAIN (trainId,capacity,availability,maintenanceT) values (?,?,?,?);");
+//        statement.setInt(2, capacity);
+//        statement.setString(4, mainten);
+//        statement.setInt(1, trainId);
+//        statement.setBoolean(3, av);
+//        statement.executeUpdate();
+//    }
 
     public JsonArray getRoutes(String dept, String dest, String date) throws SQLException {
-        //TODO: show destination, price, train id
+        //TODO: show price
         if (dept == null || dest == null || date == null) {
             throw new SQLException("not enough info");
         }
         JsonArray json = new JsonArray();
-        PreparedStatement statement = conn.prepareStatement("select DEP.departure, DEP.dateTimeDep, DES.detetimeDest from DEPARTURE DEP, DEPARTURE DEP2, DESTINATION DES where DEP.departure = ? and DEP2.departure = ? and DEP2.STATION_stationIdDep = DES.STATION_stationIdDest and date(DEP.datetimeDep) = ?;");
+        PreparedStatement statement = conn.prepareStatement("select ST.name, ST2.name as arrival, SCH.departureTime, SCH2.arrivalTime, SCH.trainId \n"
+            + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
+            + "where ST.name = ? and ST2.name = ? and date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime;");
         statement.setString(1, dept);
         statement.setString(2, dest);
         statement.setString(3, date);
@@ -63,8 +65,39 @@ public class Statements {
             JsonObject jsob = new JsonObject();
             for (int i = 1; i <= columns; i++) {
                 String colName = rsmd.getColumnName(i);
-                jsob.addProperty(colName, rs.getObject(colName).toString());
+                String name = "";
+                if(colName.equals("name")) {
+                     name = "name" + i;
+                } else {
+                    name = colName;
+                }
+                jsob.addProperty(name, rs.getObject(i).toString());
             }
+            json.add(jsob);
+        }
+        return json;
+    }
+
+    public JsonArray getRouteStations(String dept, String dest, String date) throws SQLException {
+        if (dept == null || dest == null || date == null) {
+            throw new SQLException("not enough info");
+        }
+        PreparedStatement statement = conn.prepareStatement("select Sch.stationId, S3.name\n"
+            + "from railway65.SCHEDULE Sch, railway65.STATION S1, railway65.STATION S2, railway65.STATION S3,\n"
+            + "(select Sch.trainId from railway65.SCHEDULE Sch where date(Sch.departureTime)=?) as b\n"
+            + "where Sch.trainid=b.trainId and date(Sch.departureTime)=? and S1.name=? and S2.name=? and S3.stationId = Sch.stationId\n"
+            + "group by Sch.stationId order by Sch.stationId asc;");
+        statement.setString(1, date);
+        statement.setString(2, date);
+        statement.setString(3, dept);
+        statement.setString(4, dest);
+        JsonArray json = new JsonArray();
+        ResultSet rs = statement.executeQuery();
+        ResultSetMetaData rsmd = rs.getMetaData();
+        while(rs.next()) {
+            JsonObject jsob = new JsonObject();
+            jsob.addProperty(rsmd.getColumnName(1), rs.getInt(1));
+            jsob.addProperty(rsmd.getColumnName(2), rs.getString(2));
             json.add(jsob);
         }
         return json;
@@ -84,18 +117,28 @@ public class Statements {
         return res;
     }
 
-    public boolean checkTicket(String dept, String dest, int train) {
-        //TODO:implement function checkTicket()
-        return false;
+    public boolean checkTicket(String dept, String dest, int train, String date) throws SQLException{
+        if (dept == null || dest == null || train == -1) {
+            throw new SQLException("not enough info");
+        }
+        PreparedStatement statement = conn.prepareStatement("select SCH.availability from Schedule SCH, Schedule SCH2, STATION ST, STATION ST2\n"
+            + "where SCH.stationId = ST.stationId and SCH2.stationId = ST2.stationID and ST.name = ? and ST2.name = ? and SCH.trainId = SCH2.trainId and SCH.trainId = ? and date(SCH.departureTime) like ?;");
+        statement.setString(1, dept);
+        statement.setString(2, dest);
+        statement.setInt(3, train);
+        statement.setString(4, date + "%");
+        ResultSet rs = statement.executeQuery();
+        rs.next();
+        return rs.getInt(1) > 0;
     }
 
     public void insertTicket(int ticketId, String ownerN, String ownerS, double price, int docId,
-                             int usrId, int agentId, int routeId, String date, String dateSched) throws SQLException {
+                             int usrId, int agentId, int schedId) throws SQLException {
         if (ticketId == -1 || ownerN == null || ownerS == null || price == -1.0 || docId == -1 || usrId == -1 ||
-            agentId == -1 || routeId == -1 || date == null || dateSched == null) {
+            agentId == -1 || schedId == -1) {
             throw new SQLException("not enough info");
         }
-        PreparedStatement statement = conn.prepareStatement("insert into TICKET (ticketId, TicketOwnerName, TicketOwnerSurname, price, documentID, PASSENGER_USER_userId, AGENT_EMPLOYEE_employeeId, SCHEDULE_ROUTE_routeId, date, SCHEDULE_datetimeSchedule) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+        PreparedStatement statement = conn.prepareStatement("insert into TICKET (ticketId, TicketOwnerName, TicketOwnerSurname, price, documentID, passsengerID, AGENT_EMPLOYEE_employeeId, ScheduleID) values (?, ?, ?, ?, ?, ?, ?, ?);");
         statement.setInt(1, ticketId);
         statement.setString(2, ownerN);
         statement.setString(3, ownerS);
@@ -103,9 +146,7 @@ public class Statements {
         statement.setInt(5, docId);
         statement.setInt(6, usrId);
         statement.setInt(7, agentId);
-        statement.setInt(8, routeId);
-        statement.setString(9, date);
-        statement.setString(10, dateSched);
+        statement.setInt(8, schedId);
         statement.executeQuery();
     }
 }
