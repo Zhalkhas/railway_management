@@ -3,6 +3,7 @@ package org.yoptascript.inc.api;
 import com.google.gson.JsonObject;
 import org.yoptascript.inc.sql.Statements;
 
+import java.sql.SQLException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -23,8 +24,12 @@ public class Ticket {
                                  @FormParam("date") String date, @FormParam("dateSched") String dateSched) {
         statements = new Statements();
         statements.connect();
-        statements.insertTicket(ticketId, ownerN, ownerS, price, docId,
-                usrId, agentId, routeId, date, dateSched);
+        try {
+            statements.insertTicket(ticketId, ownerN, ownerS, price, docId,
+                    usrId, agentId, routeId, date, dateSched);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         statements.disconnect();
         return Response.ok().build();
     }
