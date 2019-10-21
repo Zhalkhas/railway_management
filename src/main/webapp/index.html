@@ -33,9 +33,9 @@
 	<form class = "bevertical">
 		<input type="text" name="e-mail" placeholder="e-mail"><br>
 		<input type="password" name="password" placeholder="password"><br>
-		<button type="button"  id="second_button" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</button>
+		<button type="button"  id="signUpButton" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</a></button>
 
-		<button type="button" id="second_button" onclick="signInFunction()"><a> Sign In</button>
+		<button type="button" id="signInButton" onclick="signInFunction()"><a> Sign In</a></button>
 	</form>
 </div>
 
@@ -46,7 +46,7 @@
 				<th>Departure</th>
 				<th>Destination</th>
 				<th>Time</th>
-<!--				<th>Arrival Time</th>-->
+				<th>Arrival Time</th>
 				<th>Train id</th>
 			</tr>
 		</table>
@@ -97,12 +97,13 @@
 			var depTime = index.departureTime;
 			var arrivalTime = index.arrivalTime;
 			var trainID = index.trainId;
+			console.log(from, to, depTime, arrivalTime, trainID);
 
-			$("#table").append("<td><td>" + from + "</td><td>"
+			$("#table").append("<tr><td>" + from + "</td><td>"
 					+ to + "</td><td>"
-					+ depTime + "</td></td>"
-					+ arrivalTime + "</td></td>"
-					+ trainID + "</td></tr>");
+					+ depTime + "</td><td>"
+					+ arrivalTime + "</td><td>"
+					+ trainID + "</td></tr><br>");
 		});
 	}
 </script>
