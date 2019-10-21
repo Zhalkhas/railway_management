@@ -17,8 +17,8 @@
 	</h3>
 
 	<form>
-		<input type="text" id= "from" name="route_from" placeholder="From">
-		<input type="text" id = "to" name="route_to" placeholder="To">
+		<input type="text" id="from" name="route_from" placeholder="From">
+		<input type="text" id="to" name="route_to" placeholder="To">
 		<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date" placeholder="Departure date">
 <!--		<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
 
@@ -46,7 +46,8 @@
 				<th>Departure</th>
 				<th>Destination</th>
 				<th>Time</th>
-<!--				<th>Train id</th>-->
+<!--				<th>Arrival Time</th>-->
+				<th>Train id</th>
 			</tr>
 		</table>
 
@@ -59,7 +60,6 @@
 	$('div.profile').hide();
 	function openBox(){
 		$('div.profile').toggle();
-
 	}
 
 	function signInFunction(){
@@ -74,46 +74,35 @@
 		var from = $('#from').val();
 		var to = $('#to').val();
 		var departureDate = $('#departureDate').val();
-
+		// var returnDate = $('#returnDate').val();
 
 		$.get("api/search/getRoutes", {
-				   dept: from,
-						 dest:to,
-					date: departureDate},
-			   function(r) {
-				   updateList(r);
-				   //location.replace("/schedule")
-			   });
+			dept: from,
+			dest: to,
+			date: departureDate},
 
+
+			function(r) {
+				updateList(r);
+			//location.replace("/schedule")
+			});
 	}
-
-	// function getListItems() {
-	//         $.ajax({
-	//         type : "GET"
-	//           url : 'api/search/getRoutes',
-	//           dataType : 'json',
-	//           success : function(r) {
-	//                 updateList(r);
-	//               }
-	//     })
-	//     }
 
 	function updateList(items){
 		$("#table_of_routes").html("");
-		// var arrTime = items.arrivalTime;
-		// var traiID = items.trainID;
-
-		console.log(typeof (items));
 		items = JSON.parse(items);
-		console.log(items.name1)
-		console.log(items)
 		items.forEach(function (index){
 			var from = index.name1;
 			var to = index.name2;
 			var depTime = index.departureTime;
+			var arrivalTime = index.arrivalTime;
+			var trainID = index.trainId;
 
-			// var destTime = items.arrivalTime;
-			$("#table").append("<tr><td>" + from + "</td><td>" + to + "</td><td>" + depTime + "</td></tr>");
+			$("#table").append("<td><td>" + from + "</td><td>"
+					+ to + "</td><td>"
+					+ depTime + "</td></td>"
+					+ arrivalTime + "</td></td>"
+					+ trainID + "</td></tr>");
 		});
 	}
 </script>
