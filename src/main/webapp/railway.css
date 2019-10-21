@@ -6,6 +6,20 @@ body
 	background-color: #83bdff;
 }
 
+.schedule
+{
+	font-family: 'Open Sans', sans-serif;
+	position: center;
+	down: 25%;
+	/*display: table;*/
+}
+
+#table
+{
+	position: relative;
+	down: 5%;
+}
+
 .search
 {
 	position: absolute;

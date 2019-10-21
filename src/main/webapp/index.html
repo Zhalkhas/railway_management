@@ -89,6 +89,7 @@
 	}
 
 	function updateList(items){
+        $("#table_of_routes tbody tr").remove();
 		$("#table_of_routes").html("");
 		items = JSON.parse(items);
 		items.forEach(function (index){
