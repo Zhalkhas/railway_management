@@ -150,4 +150,37 @@ public class Statements {
         statement.setInt(8, schedId);
         statement.executeQuery();
     }
+
+    public void createUser(String email, String pass, String fname, String lname) throws SQLException {
+        if (email == null || pass == null || fname == null || lname == null) {
+            throw new SQLException();
+        }
+        PreparedStatement statement = conn.prepareStatement("insert into USER (userId, FName, LName, email, password) values (?, ?, ?, ?, ?);");
+        statement.setInt(1, 999);
+        statement.setString(2, fname);
+        statement.setString(3, lname);
+        statement.setString(4, email);
+        statement.setString(5, pass);
+        statement.executeQuery();
+    }
+
+    public JsonObject login(String email, String pass) throws SQLException {
+        if (email == null || pass == null) {
+            throw new SQLException();
+        }
+        PreparedStatement statement = conn.prepareStatement("select userId ,FName, LName, email from user\n"
+            + "where email = ? and password = ?;");
+        statement.setString(1, email);
+        statement.setString(2, pass);
+        ResultSet rs = statement.executeQuery();
+        JsonObject json = new JsonObject();
+        //TODO: profile page should also show all tickets of passenger
+        while(rs.next()) {
+            json.addProperty("userId", rs.getString(1));
+            json.addProperty("FName", rs.getString(2));
+            json.addProperty("LName", rs.getString(3));
+            json.addProperty("email", rs.getString(4));
+        }
+        return json;
+    }
 }
