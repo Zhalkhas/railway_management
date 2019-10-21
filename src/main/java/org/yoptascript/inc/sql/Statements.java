@@ -151,6 +151,76 @@ public class Statements {
         statement.executeQuery();
     }
 
+    public void changeTicket(int ticketId, String ownerN, String ownerS, double price, int docId,
+                             int usrId, int agentId, int schedId) throws SQLException {
+        if (ticketId == -1 || ownerN == null || ownerS == null || price == -1.0 || docId == -1 || usrId == -1 ||
+            agentId == -1 || schedId == -1) {
+            throw new SQLException("not enough info");
+        }
+        PreparedStatement statement = conn.prepareStatement("update TICKET set TicketOwnerName = ?, TicketOwnerSurname = ?, price = ?, documentID = ?, passsengerID = ?, AGENT_EMPLOYEE_employeeId = ?, ScheduleID = ? where ticketId = ?;");
+        statement.setString(1, ownerN);
+        statement.setString(2, ownerS);
+        statement.setDouble(3, price);
+        statement.setInt(4, docId);
+        statement.setInt(5, usrId);
+        statement.setInt(6, agentId);
+        statement.setInt(7, schedId);
+        statement.setInt(8, ticketId);
+        statement.executeQuery();
+    }
+
+    public JsonObject getTicket(int ticketId) throws SQLException{
+        if (ticketId < 0) {
+            throw new SQLException("not enough info");
+        }
+        PreparedStatement statement = conn.prepareStatement("select * from TICKET where ticketId = ?");
+        statement.setInt(1, ticketId);
+        ResultSet rs = statement.executeQuery();
+        JsonObject json = new JsonObject();
+        while (rs.next()) {
+            json.addProperty("ticketId", rs.getInt(1));
+            json.addProperty("ownerN", rs.getString(2));
+            json.addProperty("ownerS", rs.getString(3));
+            json.addProperty("price", rs.getString(4));
+            json.addProperty("docId", rs.getString(5));
+            json.addProperty("userId", rs.getString(6));
+            json.addProperty("agentId", rs.getString(7));
+            json.addProperty("schedId", rs.getString(8));
+        }
+        return json;
+    }
+
+    public JsonArray getAllTickets(int userId) throws SQLException {
+        if (userId < 0) {
+            throw new SQLException("no info");
+        }
+        PreparedStatement statement = conn.prepareStatement("select * from TICKET where passengerID = ?");
+        statement.setInt(1, userId);
+        ResultSet rs = statement.executeQuery();
+        JsonArray json = new JsonArray();
+        while(rs.next()){
+            JsonObject jsob = new JsonObject();
+            jsob.addProperty("ticketId", rs.getInt(1));
+            jsob.addProperty("ownerN", rs.getString(2));
+            jsob.addProperty("ownerS", rs.getString(3));
+            jsob.addProperty("price", rs.getString(4));
+            jsob.addProperty("docId", rs.getString(5));
+            jsob.addProperty("userId", rs.getString(6));
+            jsob.addProperty("agentId", rs.getString(7));
+            jsob.addProperty("schedId", rs.getString(8));
+            json.add(jsob);
+        }
+        return json;
+    }
+
+    public void deleteTicket(int ticketId) throws SQLException {
+        if (ticketId < 0) {
+            throw new SQLException("no info");
+        }
+        PreparedStatement statement = conn.prepareStatement("");
+        //TODO: finish
+    }
+
     public void createUser(String email, String pass, String fname, String lname) throws SQLException {
         if (email == null || pass == null || fname == null || lname == null) {
             throw new SQLException();
@@ -166,7 +236,7 @@ public class Statements {
 
     public JsonObject login(String email, String pass) throws SQLException {
         if (email == null || pass == null) {
-            throw new SQLException();
+            throw new SQLException("not enough info");
         }
         PreparedStatement statement = conn.prepareStatement("select userId ,FName, LName, email from user\n"
             + "where email = ? and password = ?;");
