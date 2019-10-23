@@ -8,10 +8,21 @@
 	<title>Railway Station</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
-	<script src="https://smtpjs.com/v3/smtp.js"></script>
 </head>
 
 <body>
+
+<div class="profile">
+
+	<form class = "bevertical">
+		<input type="text" name="e-mail" placeholder="e-mail"><br>
+		<input type="password" name="password" placeholder="password"><br>
+		<button type="button" class="signButtons" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</a></button>
+
+		<button type="button" class="signButtons" onclick="signInFunction()"><a> Sign In</a></button>
+	</form>
+</div>
+
 <div class="search">
 	<h3>
 		FIND TICKETS
@@ -29,37 +40,44 @@
 <h3>
 	<button type="button" id="signin" onclick="openBox()">Sign In</button><br>
 </h3>
-<div class="profile">
 
-	<form class = "bevertical">
-		<input type="text" name="e-mail" placeholder="e-mail"><br>
-		<input type="password" name="password" placeholder="password"><br>
-		<button type="button" class="second_button" id="signUpButton" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</a></button>
+<!--<div class="schedule">-->
+<!--&lt;!&ndash;	<div class="route_table">&ndash;&gt;-->
+<!--		<table id="table">-->
+<!--			<tr>-->
+<!--				<th width="20%">Departure</th>-->
+<!--				<th width="20%">Destination</th>-->
+<!--				<th width="20%">Time</th>-->
+<!--				<th width="20%">Arrival Time</th>-->
+<!--				<th width="20%">Train id</th>-->
+<!--			</tr>-->
+<!--		</table>-->
 
-		<button type="button" class="second_button" id="signInButton" onclick="signInFunction()"><a href="passenger_profile.html"> Sign In</a></button>
-	</form>
-</div>
+<!--&lt;!&ndash;	</div>&ndash;&gt;-->
+<!--</div>-->
 
-<div class="schedule">
-	<div class="route_table">
-		<table id="table">
-			<thead>
-			<tr>
-				<th>Departure</th>
-				<th>Destination</th>
-				<th>Time</th>
-				<th>Arrival Time</th>
-				<th>Train id</th>
-			</tr>
-			</thead>
-			<tbody id="table_body">
+<div class="limiter">
+	<div class="container-table100">
+		<div class="wrap-table100">
+			<div class="table100">
+				<table>
+					<thead>
+					<tr class="table-head">
+						<th class="column1">Departure</th>
+						<th class="column2">Destination</th>
+						<th class="column3">Time</th>
+						<th class="column4">Arrival Time</th>
+						<th class="column5">Train id</th>
+					</tr>
+					</thead>
+					<tbody id="table">
 
-			</tbody>
-		</table>
-
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
-
 
 <script>
 
@@ -76,6 +94,10 @@
 
 	}
 
+	function bookFunction(){
+
+	}
+
 	function findFunction(e){
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -87,7 +109,6 @@
 			dest: to,
 			date: departureDate},
 
-
 			function(r) {
 				updateList(r);
 			//location.replace("/schedule")
@@ -95,8 +116,8 @@
 	}
 
 	function updateList(items){
-        $("#table_body").remove();
-		$("#table_body").html("");
+        $("#table_of_routes tbody tr").remove();
+		$("#table_of_routes").html("");
 		items = JSON.parse(items);
 		items.forEach(function (index){
 			var from = index.name1;
@@ -107,11 +128,11 @@
 			console.log(from, to, depTime, arrivalTime, trainID);
 
 			$("#table").append("<tr><td class=\"column1\">"
-							   + from + "</td><td class=\"column2\">"
-							   + to + "</td><td class=\"column3\">"
-							   + depTime + "</td><td class=\"column4\">"
-							   + arrivalTime + "</td><td class=\"column5\">"
-							   + trainID + "</td><button type='button' onclick='bookFunction()'>book</button></tr><br>");
+					+ from + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
+					+ to + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
+					+ depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
+					+ arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
+					+ trainID + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
 		});
 	}
 </script>
