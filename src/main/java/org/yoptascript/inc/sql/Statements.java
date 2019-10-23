@@ -239,7 +239,7 @@ public class Statements {
       if (email == null || pass == null) {
           throw new SQLException("not enough info");
       }
-      PreparedStatement statement = conn.prepareStatement("select userId ,FName, LName, email from user\n"
+      PreparedStatement statement = conn.prepareStatement("select userId ,FName, LName, email from USER\n"
           + "where email = ? and password = ?;");
       statement.setString(1, email);
       statement.setString(2, pass);

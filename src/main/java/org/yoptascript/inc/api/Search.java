@@ -18,7 +18,7 @@ public class Search {
     public Search() {
     }
 
-    Statements statements;
+    private Statements statements;
 
     @Path("/searchCity")
     @GET
