@@ -8,6 +8,7 @@
 	<title>Railway Station</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+	<script src="https://smtpjs.com/v3/smtp.js"></script>
 </head>
 
 <body>
@@ -33,15 +34,16 @@
 	<form class = "bevertical">
 		<input type="text" name="e-mail" placeholder="e-mail"><br>
 		<input type="password" name="password" placeholder="password"><br>
-		<button type="button"  id="signUpButton" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</a></button>
+		<button type="button" class="second_button" id="signUpButton" onclick="signUpFunction()"><a style="text-decoration:none" href="regsitration.html">Sign Up</a></button>
 
-		<button type="button" id="signInButton" onclick="signInFunction()"><a> Sign In</a></button>
+		<button type="button" class="second_button" id="signInButton" onclick="signInFunction()"><a href="passenger_profile.html"> Sign In</a></button>
 	</form>
 </div>
 
 <div class="schedule">
 	<div class="route_table">
 		<table id="table">
+			<thead>
 			<tr>
 				<th>Departure</th>
 				<th>Destination</th>
@@ -49,6 +51,10 @@
 				<th>Arrival Time</th>
 				<th>Train id</th>
 			</tr>
+			</thead>
+			<tbody id="table_body">
+
+			</tbody>
 		</table>
 
 	</div>
@@ -89,8 +95,8 @@
 	}
 
 	function updateList(items){
-        $("#table_of_routes tbody tr").remove();
-		$("#table_of_routes").html("");
+        $("#table_body").remove();
+		$("#table_body").html("");
 		items = JSON.parse(items);
 		items.forEach(function (index){
 			var from = index.name1;
@@ -100,11 +106,12 @@
 			var trainID = index.trainId;
 			console.log(from, to, depTime, arrivalTime, trainID);
 
-			$("#table").append("<tr><td>" + from + "</td><td>"
-					+ to + "</td><td>"
-					+ depTime + "</td><td>"
-					+ arrivalTime + "</td><td>"
-					+ trainID + "</td></tr><br>");
+			$("#table").append("<tr><td class=\"column1\">"
+							   + from + "</td><td class=\"column2\">"
+							   + to + "</td><td class=\"column3\">"
+							   + depTime + "</td><td class=\"column4\">"
+							   + arrivalTime + "</td><td class=\"column5\">"
+							   + trainID + "</td><button type='button' onclick='bookFunction()'>book</button></tr><br>");
 		});
 	}
 </script>

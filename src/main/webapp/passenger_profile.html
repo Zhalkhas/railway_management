@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Profile Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+</head>
+<body>
+<h1>Past Trips</h1>
+<ol type="1">
+    <li></li>
+</ol>
+
+<h1>Future Trips</h1>
+<ol type="1">
+    <li></li>
+</ol>
+
+<a href="index.html"><button>Go To Search</button></a>
+
+<div class="profile">
+    <div class="profile-pastTrips">
+        <ul id="pastTrips"></ul>
+
+    </div>
+</div>
+
+<div class="profile">
+    <div class="profile-futureTrips">
+        <ul id="futureTrips"></ul>
+    </div>
+</div>
+
+<script>
+
+    function updateListOfPastTrips(items){
+        $("#pastTrips").html("");
+        items = JSON.parse(items);
+
+        items.forEach(function (index){
+
+            var ticketId = index.ticketId;
+            var depTime = index.TicketOwnerName;
+            var arrivalTime = index.TicketOwnerSurname;
+            var depStationName = index.price;
+            var arrivalStationName = index.documentID;
+            var trainId = index.ScheduleID;
+
+            $("#pastTrips").append("<li>" +ticketId+ "</li>"
+                                   +depTime+ "</li>"
+                                   +arrivalTime+ "</li>"
+                                   +depStationName+ "</li>"
+                                   +arrivalStationName+ "</li>"
+                                   +trainId+ "</li>");
+
+            // console.log(ticketId, depTime, arrivalTime, depStationName, arrivalStationName, trainId);
+
+
+        });
+    }
+
+    function updateListOfPastTrips2(items){
+        $("#futureTrips").html("");
+        items = JSON.parse(items);
+
+        items.forEach(function (index){
+
+            var ticketId = index.ticketId;
+            var depTime = index.departureTime;
+            var arrivalTime = index.arrivalTime;
+            var depStationName = index.name1;
+            var arrivalStationName = index.name2;
+            var trainId = index.trainId;
+
+            $("#futureTrips").append("<li>" +ticketId+ "</li>"
+                                     +depTime+ "</li>"
+                                     +arrivalTime+ "</li>"
+                                     +depStationName+ "</li>"
+                                     +arrivalStationName+ "</li>"
+                                     +trainId+ "</li>");
+
+            // console.log(ticketId, depTime, arrivalTime, depStationName, arrivalStationName, trainId);
+
+
+        });
+    }
+
+    function getPassenger(){
+        $.get("api/ticket/allTickets", {
+                  userId: 5},
+
+              function(r) {
+                  updateListOfPastTrips(r);
+              });
+    }
+
+    $(document).ready(function (){
+        getPassenger();
+    });
+</script>
+</body>
+</html>

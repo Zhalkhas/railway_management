@@ -53,7 +53,7 @@ public class Ticket {
     }
 
     @GET
-    @Path({"ticketId: [0-9]+"})
+    @Path("{ticketId: [0-9]+}")
     public Response getTicket(@PathParam("ticketId") int ticketId) {
         statements = new Statements();
         statements.connect();
@@ -69,12 +69,12 @@ public class Ticket {
 
     @Path("/allTickets")
     @GET
-    public Response getAllTickets(@QueryParam("userId") int userId) {
+    public Response getAllTicketsOfUser(@QueryParam("userId") int userId) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllTickets(userId);
+            json = statements.getAllTicketsOfUser(userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,9 +83,17 @@ public class Ticket {
     }
 
     @DELETE
-    @Path({"userId: [0-9]+"})
-    public Response deleteTicket(@PathParam("userId") String userId) {
-
+    @Path("{ticketId: [0-9]+}")
+    public Response deleteTicket(@PathParam("ticketId") int ticketId) {
+        statements = new Statements();
+        statements.connect();
+        try {
+            statements.deleteTicket(ticketId); // can return boolean if deleted
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        statements.disconnect();
+        return Response.ok().build();
     }
 
     @Path("/checkTicket")
