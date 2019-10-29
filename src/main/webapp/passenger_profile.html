@@ -9,64 +9,93 @@
 </head>
 <body>
 <h1>Past Trips</h1>
-<ol type="1">
-    <li></li>
-</ol>
+<div class="pastTrips">
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <div class="table100">
+                <table>
+                    <thead>
+                    <tr class="table-head">
+                        <th class="column1">Ticket ID</th>
+                        <th class="column2">Departure Time</th>
+                        <th class="column3">Arrival Time</th>
+                        <th class="column4">Departure Station Name</th>
+                        <th class="column5">Arrival Station Name</th>
+                        <th class="column6">Train id</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablePast">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h1>Future Trips</h1>
-<ol type="1">
-    <li></li>
-</ol>
+
+<div class="futureTrips">
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <div class="table100">
+                <table>
+                    <thead>
+                    <tr class="table-head">
+                        <th class="column1">Ticket ID</th>
+                        <th class="column2">Departure Time</th>
+                        <th class="column3">Arrival Time</th>
+                        <th class="column4">Departure Station Name</th>
+                        <th class="column5">Arrival Station Name</th>
+                        <th class="column6">Train id</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableFuture">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <a href="index.html"><button>Go To Search</button></a>
 
-<div class="profile">
-    <div class="profile-pastTrips">
-        <ul id="pastTrips"></ul>
-
-    </div>
-</div>
-
-<div class="profile">
-    <div class="profile-futureTrips">
-        <ul id="futureTrips"></ul>
-    </div>
-</div>
-
 <script>
 
-    function updateListOfPastTrips(items){
-        $("#pastTrips").html("");
+
+
+    function updateListOfPastTrips(items) {
+        $("#table_of_trips tbody tr").remove();
+        $("#table_of_trips").html("");
         items = JSON.parse(items);
 
-        items.forEach(function (index){
-
+        items.forEach(function (index) {
             var ticketId = index.ticketId;
-            var depTime = index.TicketOwnerName;
-            var arrivalTime = index.TicketOwnerSurname;
-            var depStationName = index.price;
-            var arrivalStationName = index.documentID;
-            var trainId = index.ScheduleID;
-
-            $("#pastTrips").append("<li>" +ticketId+ "</li>"
-                                   +depTime+ "</li>"
-                                   +arrivalTime+ "</li>"
-                                   +depStationName+ "</li>"
-                                   +arrivalStationName+ "</li>"
-                                   +trainId+ "</li>");
-
-            // console.log(ticketId, depTime, arrivalTime, depStationName, arrivalStationName, trainId);
+            var depTime = index.depTime;
+            var arrivalTime = index.arrivalTime;
+            var depStationName = index.depName;
+            var arrivalStationName = index.arrivalName;
+            var trainId = index.trainId;
 
 
+            $("#tablePast").append("<tr><td class=\"column1\">"
+                                   + ticketId + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
+                                   + depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
+                                   + arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
+                                   + depStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
+                                   + arrivalStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
+                                   + trainId + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
         });
     }
 
-    function updateListOfPastTrips2(items){
-        $("#futureTrips").html("");
+    function updateListofFutureTrips(items) {
+        $("#table_of_trips tbody tr").remove();
+        $("#table_of_trips").html("");
         items = JSON.parse(items);
 
-        items.forEach(function (index){
-
+        items.forEach(function (index) {
             var ticketId = index.ticketId;
             var depTime = index.departureTime;
             var arrivalTime = index.arrivalTime;
@@ -74,22 +103,23 @@
             var arrivalStationName = index.name2;
             var trainId = index.trainId;
 
-            $("#futureTrips").append("<li>" +ticketId+ "</li>"
-                                     +depTime+ "</li>"
-                                     +arrivalTime+ "</li>"
-                                     +depStationName+ "</li>"
-                                     +arrivalStationName+ "</li>"
-                                     +trainId+ "</li>");
 
-            // console.log(ticketId, depTime, arrivalTime, depStationName, arrivalStationName, trainId);
-
-
+            $("#tableFuture").append("<tr><td class=\"column1\">"
+                                     + ticketId + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
+                                     + depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
+                                     + arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
+                                     + depStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
+                                     + arrivalStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
+                                     + trainId + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
         });
     }
 
+
+
+
     function getPassenger(){
         $.get("api/ticket/allTickets", {
-                  userId: 5},
+                  userId: 1},
 
               function(r) {
                   updateListOfPastTrips(r);
