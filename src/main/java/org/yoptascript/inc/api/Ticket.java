@@ -18,15 +18,15 @@ public class Ticket {
 
     @Path("/insertTicket")
     @POST
-    public Response insertTicket(@FormParam("ticketId") int ticketId, @FormParam("ownerN") String ownerN,
+    public Response insertTicket(@FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
                                  @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("schedId") int schedId) {
+                                 @FormParam("agentId") int agentId, @FormParam("depId") int deptId, @FormParam("destId") int destId) {
         statements = new Statements();
         statements.connect();
         try {
-            statements.insertTicket(ticketId, ownerN, ownerS, price, docId,
-                    usrId, agentId, schedId);
+            statements.insertTicket(ownerN, ownerS, price, docId,
+                    usrId, agentId, deptId, destId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,17 +34,19 @@ public class Ticket {
         return Response.ok().build();
     }
 
+    //TODO: past tickets and future tickets
+
     @Path("/changeTicket")
     @PUT
     public Response changeTicket(@FormParam("ticketId") int ticketId, @FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
                                  @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("schedId") int schedId) {
+                                 @FormParam("agentId") int agentId, @FormParam("deptId") int deptId, @FormParam("destId") int destId) {
         statements = new Statements();
         statements.connect();
         try {
             statements.changeTicket(ticketId, ownerN, ownerS, price, docId,
-                usrId, agentId, schedId);
+                usrId, agentId, deptId, destId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,7 +55,7 @@ public class Ticket {
     }
 
     @GET
-    @Path({"ticketId: [0-9]+"})
+    @Path("{ticketId: [0-9]+}")
     public Response getTicket(@PathParam("ticketId") int ticketId) {
         statements = new Statements();
         statements.connect();
@@ -69,12 +71,12 @@ public class Ticket {
 
     @Path("/allTickets")
     @GET
-    public Response getAllTickets(@QueryParam("userId") int userId) {
+    public Response getAllTicketsOfUser(@QueryParam("userId") int userId) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllTickets(userId);
+            json = statements.getAllTicketsOfUser(userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,9 +85,17 @@ public class Ticket {
     }
 
     @DELETE
-    @Path({"userId: [0-9]+"})
-    public Response deleteTicket(@PathParam("userId") String userId) {
-
+    @Path("{ticketId: [0-9]+}")
+    public Response deleteTicket(@PathParam("ticketId") int ticketId) {
+        statements = new Statements();
+        statements.connect();
+        try {
+            statements.deleteTicket(ticketId); // can return boolean if deleted
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        statements.disconnect();
+        return Response.ok().build();
     }
 
     @Path("/checkTicket")
