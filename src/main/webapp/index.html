@@ -5,19 +5,21 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="railway.css">
-    <!--	&lt;!&ndash; Required meta tags &ndash;&gt;-->
-    <!--	<meta charset="utf-8">-->
-    <!--	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
-    <!--	&lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
-    <!--	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
     <title>Railway Station</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    
 </head>
 
 <body>
+<div class = "container-fluid">
+    <div class ="row">
+        <h3>
+            <button type="button" id="signin" onclick="openBox()">Sign In</button>
+            <br>
+        </h3>
+    </div>
 
-<div class="profile">
+    <div class="profile">
 
     <form class="bevertical">
         <input type="text" name="e-mail" placeholder="e-mail"><br>
@@ -28,7 +30,14 @@
 
         <button type="button" class="signButtons" onclick="signInFunction()"><a> Sign In</a></button>
     </form>
-</div>
+    </div>
+
+
+    <div class = "row">
+
+    </div>
+
+<div class ="row" >
 
 <div class="search">
     <h3>
@@ -46,10 +55,7 @@
     <button type="button" id="main_button" onclick="findFunction()">Find</button>
     <br>
 </div>
-<h3>
-    <button type="button" id="signin" onclick="openBox()">Sign In</button>
-    <br>
-</h3>
+</div>
 
 <!--<div class="schedule">-->
 <!--&lt;!&ndash;	<div class="route_table">&ndash;&gt;-->
@@ -65,31 +71,47 @@
 
 <!--&lt;!&ndash;	</div>&ndash;&gt;-->
 <!--</div>-->
+<!--    -->
+<!--        -->
 
-<div class="limiter">
-    <div class="container-table100">
-        <div class="wrap-table100">
-            <div class="table100">
-                <table>
-                    <thead>
-                    <tr class="table-head">
-                        <th class="column1">Departure</th>
-                        <th class="column2">Destination</th>
-                        <th class="column3">Time</th>
-                        <th class="column4">Arrival Time</th>
-                        <th class="column5">Train id</th>
-                    </tr>
-                    </thead>
-                    <tbody id="table">
 
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<!--<div class="limiter">-->
+<!--    <div class="container-table100">-->
+<!--        <div class="wrap-table100">-->
+<!--            <div class="table100">-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr class="table-head">-->
+<!--                        <th class="column1">Departure</th>-->
+<!--                        <th class="column2">Destination</th>-->
+<!--                        <th class="column3">Time</th>-->
+<!--                        <th class="column4">Arrival Time</th>-->
+<!--                        <th class="column5">Train id</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody id="table">-->
+
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class ="row" id = "results">
+
+        <section id="appWrapper">
+                <ul class = "itemList" id ="listContent">
+
+                </ul>
+            </section>
 </div>
-
+</div>
 <script>
+
+    let argDepTime;
+    let argTrainID;
+    let argFrom;
+    let argTo;
 
     $('div.profile').hide();
 
@@ -98,17 +120,17 @@
     }
 
     function signInFunction() {
-    	console.log($('#email').val());
-		console.log($('#password').val());
-        $.ajax({
-            url: 'api/auth/login',
-            data: {u: $('#email').val(), p: $('#password').val()},
-        	contentType:'application/x-www-form-urlencoded',
-			method:'POST'
-		}).done(function (r) {
-			console.log(r);
-			return r;
-		});
+    	// console.log($('#email').val());
+		// console.log($('#password').val());
+        // $.ajax({
+        //     url: 'api/auth/login',
+        //     data: {u: $('#email').val(), p: $('#password').val()},
+        // 	contentType:'application/x-www-form-urlencoded',
+		// 	method:'POST'
+		// }).done(function (r) {
+		// 	console.log(r);
+		// 	return r;
+		// });
     }
 
     function signUpFunction() {
@@ -119,7 +141,7 @@
 
     }
 
-    function findFunction(e) {
+    function findFunction() {
         var from = $('#from').val();
         var to = $('#to').val();
         var departureDate = $('#departureDate').val();
@@ -133,14 +155,18 @@
 
             function (r) {
                 updateList(r);
-                //location.replace("/schedule")
+
             });
     }
 
     function updateList(items) {
+        document.getElementById("listContent").innerHTML = "";
         $("#table_of_routes tbody tr").remove();
         $("#table_of_routes").html("");
         items = JSON.parse(items);
+        let listItems = document.querySelector('.item');
+        let lst = document.querySelector('.itemList');
+
         items.forEach(function (index) {
             var from = index.name1;
             var to = index.name2;
@@ -149,18 +175,33 @@
             var trainID = index.trainId;
             console.log(from, to, depTime, arrivalTime, trainID);
 
-            $("#table").append("<tr><td class=\"column1\">"
-                + from + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
-                + to + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
-                + depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
-                + arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
-                + trainID + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
+            argTrainID = trainID;
+            argDepTime = depTime;
+            argFrom = from;
+            argTo = to;
+
+            lst.appendChild(document.createElement('li'));
+            let lstChild = lst.lastChild;
+            let args = depTime+","+trainID+","+from+","+to;
+
+            lstChild.innerHTML = "<p class='content'> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
+
+            lstChild.className = 'item';
+
         });
     }
+
+    function book(){
+
+
+        var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo;
+        window.location.href='ticketinfo.html' + queryString;
+
+    }
 </script>
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>-->
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 
 </html>

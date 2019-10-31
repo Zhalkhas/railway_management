@@ -4,6 +4,9 @@
 /*	src: url('../fonts/OpenSans/OpenSans-Regular.ttf');*/
 /*}*/
 
+.row{
+	height: 200px;
+}
 body
 {
 	margin: 0px;
@@ -439,3 +442,47 @@ flex-direction: column;
   :focus {
     outline-width: 0;
 }
+#book{
+	font-family: 'Open Sans', sans-serif;
+	background: linear-gradient(135deg, #6e8efb, #a777e3);
+	padding: 2px 40px;
+	border-radius: 10px; 
+	text-transform: uppercase;
+	color: white;
+	position: relative;
+	align-self: center;
+	height: 50px;
+	
+}
+.lists{
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+.itemList{
+	font-family: sans-serif;
+	font-weight: 300;
+	min-width: 300px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	counter-reset: list;
+	z-index: 1;
+}
+.item{
+	list-style: none;
+	margin: .4rem 0;
+	color: #555;
+	background: #fff;
+	border-radius: 3px;
+	overflow: hidden;
+	position: relative;
+	-webkit-user-select: none;
+	display: flex;
+	box-shadow: 1px 2px 4px rgba(0,0,0,.3);
+	cursor: pointer;
+}
+	.content {
+		padding: 1rem 2rem 1rem 1rem;
+		color: black;
+	}

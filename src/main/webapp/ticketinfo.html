@@ -9,7 +9,7 @@
 </head>
 <body> 
         <section class="wrapper">
-                <div class="main-content">
+                <div class="main-content" id ="maincontent">
                   <h3>Ticket Information </h3>
                   <form action="", class= "bevertical">
                     <div class="input-group">
@@ -28,22 +28,40 @@
                       <label for="idnumber"> ID number </label>
                       <input type="text" placeholder="National ID number" id="idnumber">
                     </div>
-                    <div class="path-info"> 
-                         Ticket Date 
-                        </div>
-                        <div class="path-info"> 
-                                Price
-                               </div>
-                    <div class="input-group">
-                      <button id = "main_button"> Confirm </button> <br>
-                    </div>
+
                   </form>
+
+
+
+<!--                    <div class="input-group">-->
+<!--                        <label for="name"> Departure City </label>-->
+<!--                        <input type="text" placeholder="DepartureCity" id="from" autocomplete="off">-->
+<!--                    </div>-->
+
+<!--                    <div class="input-group">-->
+<!--                        <label for="name"> Arrival City </label>-->
+<!--                        <input type="text" placeholder="Arrival City " id="to" autocomplete="off">-->
+<!--                    </div>-->
                  
                 </div>
+            <div class="input-group">
+                <button id = "main_button"> Confirm </button> <br>
+            </div>
               </section>
-              
-                
-            
-    
+
+        <script>
+
+            var queryString = decodeURIComponent(window.location.search);
+            queryString = queryString.substring(1);
+            var queries = queryString.split("&");
+            for (var i = 0; i < queries.length; i++)
+            {
+console.log(queries[i]);
+            }
+
+
+        </script>
+
+
 </body>
 </html>
