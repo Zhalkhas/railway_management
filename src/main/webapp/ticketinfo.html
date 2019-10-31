@@ -4,7 +4,7 @@
         <link rel="stylesheet" type="text/css" href="railway.css">      
       <title>
             Ticket Information
-          
+
       </title>
 </head>
 <body> 
@@ -12,21 +12,25 @@
                 <div class="main-content" id ="maincontent">
                   <h3>Ticket Information </h3>
                   <form action="", class= "bevertical">
+
                     <div class="input-group">
                       <label for="name">First name</label>
                       <input type="text" placeholder="First name" id="name" autocomplete="off">
                     </div>
+
                     <div class="input-group">
                             <label for="lastname">Last Name</label>
                             <input type="text" placeholder="Last name" id="lastname" autocomplete="off">
                           </div>
+
                     <div class="input-group">
                       <label for="email">Email</label>
                       <input type="email" placeholder="Email" id="email" autocomplete="off">
                     </div>
+
                     <div class="input-group">
                       <label for="idnumber"> ID number </label>
-                      <input type="text" placeholder="National ID number" id="idnumber">
+                        <input type="text" placeholder="National ID number" id="idnumber">
                     </div>
 
                   </form>
@@ -45,7 +49,7 @@
                  
                 </div>
             <div class="input-group">
-                <button id = "main_button"> Confirm </button> <br>
+                <button id = "main_button" onclick="confirm()"> Confirm </button> <br>
             </div>
               </section>
 
@@ -54,14 +58,43 @@
             var queryString = decodeURIComponent(window.location.search);
             queryString = queryString.substring(1);
             var queries = queryString.split("&");
-            for (var i = 0; i < queries.length; i++)
-            {
-console.log(queries[i]);
+
+
+            function confirm(){
+                var idnumber = $('#idnumber').val();
+                var lastname = $('#lastname').val();
+                var name = $('#name').val();
+                var price = 6001;
+                var agentID = null;
+                var usrID = $('#email').val();
+                var  deptID = queries[2];
+                var destID = queries[3];
+                var depTime = queries[0];
+
+                console.log(idnumber+" "+lastname+" "+name+" "+price+" "+deptID)
+
+
+                $.post("api/ticket/insertTicket", {
+                ownerN: name,
+                ownerS: lastname,
+                price: 6001,
+                docId: idnumber,
+                usrID: usrID,
+                agentId: agentID,
+                deptId: deptID,
+                destId: deptID, depTime: depTime
+                    },
+
+                    function (r) {
+                    console.log("Working?")
+
+                    });
             }
 
 
         </script>
-
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
 
 </body>
 </html>
