@@ -1,14 +1,12 @@
 package org.yoptascript.inc.api;
 
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.logging.*;
-
 import org.yoptascript.inc.certs.KeysReader;
 
+import java.io.IOException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;

@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.yoptascript.inc.certs.KeysReader;
 
+import java.io.IOException;
+import java.util.Date;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -12,8 +14,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
-import java.util.Date;
 
 @Secured
 @Provider
@@ -79,6 +79,5 @@ public class AuthFilter implements ContainerRequestFilter {
         if ((new Date()).after(claims.getIssuedAt())) {
             throw new Exception("invalid issue date");
         }
-
     }
 }

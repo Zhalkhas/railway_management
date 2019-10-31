@@ -47,7 +47,7 @@ public class Statements {
 //    }
 
     public JsonArray getRoutes(String dept, String dest, String date) throws SQLException {
-        //TODO: show price
+        //TODO: show price, unique routes
         if (dept == null || dest == null || date == null) {
             throw new SQLException("not enough info");
         }
@@ -192,13 +192,13 @@ public class Statements {
       return json;
   }
 
-  public JsonArray getAllTicketsOfUser(int userId) throws SQLException {
+  public JsonArray getAllPastTicketsOfUser(int userId) throws SQLException {
       if (userId < 1) {
           throw new SQLException("no info");
       }
       PreparedStatement statement = conn.prepareStatement("select T.ticketId, SCH1.departureTime, ST1.name, SCH2.arrivalTime, ST2.name, SCH1.trainId\n"
           + "from TICKET T, SCHEDULE SCH1, SCHEDULE SCH2, STATION ST1, STATION ST2, USER U\n"
-          + "where T.passengerID = U.userId and U.userId = ? and T.Schedule_scheduleID = SCH1.scheduleId and SCH1.stationId = ST1.stationId and SCH2.stationId = ST2.stationId and SCH1.trainId = SCH2.trainId and SCH2.scheduleId = T.ScheduleIdArrival and SCH1.departureTime <= SCH2.arrivalTime;");
+          + "where T.passengerID = U.userId and U.userId = ? and T.Schedule_scheduleID = SCH1.scheduleId and SCH1.stationId = ST1.stationId and SCH2.stationId = ST2.stationId and SCH1.trainId = SCH2.trainId and SCH2.scheduleId = T.ScheduleIdArrival and SCH1.departureTime <= SCH2.arrivalTime and SCH2.arrivalTime < now();");
       statement.setInt(1, userId);
       ResultSet rs = statement.executeQuery();
       JsonArray json = new JsonArray();
@@ -213,6 +213,29 @@ public class Statements {
           json.add(jsob);
       }
       return json;
+  }
+
+  public JsonArray getAllFutureTicketsOfUser(int userId) throws SQLException {
+    if (userId < 1) {
+      throw new SQLException("no info");
+    }
+    PreparedStatement statement = conn.prepareStatement("select T.ticketId, SCH1.departureTime, ST1.name, SCH2.arrivalTime, ST2.name, SCH1.trainId\n"
+        + "from TICKET T, SCHEDULE SCH1, SCHEDULE SCH2, STATION ST1, STATION ST2, USER U\n"
+        + "where T.passengerID = U.userId and U.userId = ? and T.Schedule_scheduleID = SCH1.scheduleId and SCH1.stationId = ST1.stationId and SCH2.stationId = ST2.stationId and SCH1.trainId = SCH2.trainId and SCH2.scheduleId = T.ScheduleIdArrival and SCH1.departureTime <= SCH2.arrivalTime and SCH1.departureTime > now();");
+    statement.setInt(1, userId);
+    ResultSet rs = statement.executeQuery();
+    JsonArray json = new JsonArray();
+    while(rs.next()){
+      JsonObject jsob = new JsonObject();
+      jsob.addProperty("ticketId", rs.getInt(1));
+      jsob.addProperty("depTime", rs.getString(2));
+      jsob.addProperty("depName", rs.getString(3));
+      jsob.addProperty("arrivalTime", rs.getString(4));
+      jsob.addProperty("arrivalName", rs.getString(5));
+      jsob.addProperty("trainId", rs.getString(6));
+      json.add(jsob);
+    }
+    return json;
   }
 
   public void deleteTicket(int ticketId) throws SQLException {

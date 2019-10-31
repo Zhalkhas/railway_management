@@ -37,7 +37,7 @@ public class Search {
 
     @Path("/search")
     @GET
-    public Response getRouteStations(@QueryParam("dept") String dept, @QueryParam("dest") String dest, @QueryParam("date") String date){
+    public Response getRouteStations(@QueryParam("dept") String dept, @QueryParam("dest") String dest, @QueryParam("date") String date) {
         statements = new Statements();
         statements.connect();
         JsonArray routes = null;

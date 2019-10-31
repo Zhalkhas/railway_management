@@ -1,37 +1,47 @@
 package org.yoptascript.inc;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-
-import org.yoptascript.inc.certs.KeysReader;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.yoptascript.inc.sql.Statements;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 public class Main {
   public static void main(String[] args) {
     Statements s = new Statements();
+//    try {
+//      JsonArray res = s.getRouteStations("Kyzylorda", "Almaty", "2019-11-04");
+//      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//      System.out.println(gson.toJson(res));
+//    } catch (SQLException e) {
+//      e.printStackTrace();
+//    }
+    Document document = new Document();
     try {
-      JsonArray res = s.getRoutes("Kyzylorda", "Almaty", "2019-11-04");
-      Gson gson = new GsonBuilder().setPrettyPrinting().create();
-      System.out.println(gson.toJson(res));
-    } catch (SQLException e) {
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("NewFile.pdf"));
+      document.open();
+      document.add(new Paragraph("New paragraph"));
+      document.close();
+      writer.close();
+    } catch (DocumentException e) {
+      e.printStackTrace();
+    } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-    try {
-      new KeysReader("pub.der", "priv.der").getPublicKey();
-      new KeysReader("pub.der", "priv.der").getPrivateKey();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (InvalidKeySpecException e) {
-      e.printStackTrace();
-    }
+
+//    try {
+//      new KeysReader("pub.der", "priv.der").getPublicKey();
+//      new KeysReader("pub.der", "priv.der").getPrivateKey();
+//    } catch (NoSuchAlgorithmException e) {
+//      e.printStackTrace();
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    } catch (InvalidKeySpecException e) {
+//      e.printStackTrace();
+//    }
 
 //    try {
 //      Map<Integer, String> res = s.getStations("A");
