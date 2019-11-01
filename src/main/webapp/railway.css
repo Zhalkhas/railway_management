@@ -224,9 +224,9 @@ tbody tr:hover {
 
 .search
 {
-	/*position: absolute;*/
+	position: absolute;
 	/*top: 35%;*/
-	/*left: 19%;*/
+	left: 19%;
 
 
 }
@@ -249,8 +249,9 @@ tbody tr:hover {
 	border-radius: 20px;
 	text-transform: uppercase;
 	color: white;
-	/*position: relative;*/
+	position: relative;
 	top: 20px;
+	align-self: center;
 }
 
 .agent_search_button{
@@ -342,19 +343,7 @@ tbody tr:hover {
 	top: 20px;
 	margin: 5px;
 }
-#plus-minus:hover
-{
-	font-family: 'Open Sans', sans-serif;
-	background: linear-gradient(135deg, #a777e3, #6e8efb);
-	/*border: 1px solid white;*/
-	padding: 7px 10px;
-	border-radius: 5px;
-	text-transform: uppercase;
-	color: white;
-	position: relative;
-	top: 0px;
-	margin: 5px;
-}
+
 
 
 @import url(https://fonts.googleapis.com/css?family=Nunito);
