@@ -90,17 +90,17 @@
         });
     }
 
-    function updateListofFutureTrips(items) {
+    function updateListOfFutureTrips(items) {
         $("#table_of_trips tbody tr").remove();
         $("#table_of_trips").html("");
         items = JSON.parse(items);
 
         items.forEach(function (index) {
             var ticketId = index.ticketId;
-            var depTime = index.departureTime;
+            var depTime = index.depTime;
             var arrivalTime = index.arrivalTime;
-            var depStationName = index.name1;
-            var arrivalStationName = index.name2;
+            var depStationName = index.depName;
+            var arrivalStationName = index.arrivalName;
             var trainId = index.trainId;
 
 
@@ -117,17 +117,27 @@
 
 
 
-    function getPassenger(){
-        $.get("api/ticket/allTickets", {
-                  userId: 1},
+    function getPastTrips(){
+        $.get("api/ticket/allPastTickets", {
+                  userId: 1}, //TODO: userId should be here
 
               function(r) {
                   updateListOfPastTrips(r);
               });
     }
 
+    function getFutureTrips(){
+        $.get("api/ticket/allFutureTickets", {
+                  userId: 1}, //TODO: userId send from the login page
+
+              function(r) {
+                  updateListOfFutureTrips(r);
+              });
+    }
+
     $(document).ready(function (){
-        getPassenger();
+        getPastTrips();
+        getFutureTrips();
     });
 </script>
 </body>
