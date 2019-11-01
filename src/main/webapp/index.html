@@ -89,17 +89,17 @@
     }
 
     function signInFunction() {
-        // console.log($('#email').val());
-        // console.log($('#password').val());
-        // $.ajax({
-        //     url: 'api/auth/login',
-        //     data: {u: $('#email').val(), p: $('#password').val()},
-        // 	contentType:'application/x-www-form-urlencoded',
-        // 	method:'POST'
-        // }).done(function (r) {
-        // 	console.log(r);
-        // 	return r;
-        // });
+        console.log($('#email').val());
+        console.log($('#password').val());
+        $.ajax({
+            url: 'api/auth/login',
+            data: {u: $('#email').val(), p: $('#password').val()},
+        	contentType:'application/x-www-form-urlencoded',
+        	method:'POST'
+        }).done(function (r) {
+        	console.log(r);
+        	return r;
+        });
     }
 
     function signUpFunction() {
@@ -127,6 +127,21 @@
                 updateList(r);
 
             });
+		// $.post("api/ticket/insertTicket", {
+		// 		   ownerN: 'aida',
+		// 		   ownerS: 'lastname',
+		// 		   price: 6001,
+		// 		   docId: 513211,
+		// 		   usrID: 51,
+		// 		   agentId: null,
+		// 		   deptId: 503,
+		// 		   destId: 504,
+		// 		   depTime: '2019-11-04 12:29:30'
+		// 	   },
+		//
+		// 	   function (r) {
+		// 		   console.log("Working?")
+		// 	   });
     }
 
     function updateList(items) {
@@ -161,7 +176,6 @@
     function book(){
         var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo;
         window.location.href='ticketinfo.html' + queryString;
-
     }
 
 
@@ -207,7 +221,7 @@
 
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8&callback=initMap">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

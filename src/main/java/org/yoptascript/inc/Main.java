@@ -31,7 +31,6 @@ public class Main {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-
 //    try {
 //      new KeysReader("pub.der", "priv.der").getPublicKey();
 //      new KeysReader("pub.der", "priv.der").getPrivateKey();
