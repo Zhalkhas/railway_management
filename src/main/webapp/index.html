@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="railway.css">
+    <title>Railway Station</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <h3>
+            <button type="button" id="signin" onclick="openBox()">Sign In</button>
+            <br>
+        </h3>
+    </div>
+
+    <div class="profile">
+
+    </div>
+
+
+    <div class="row" class="d-flex justify-content-center">
+
+        <div class="search">
+            <h3>
+                FIND TICKETS
+            </h3>
+
+            <form>
+                <input type="text" id="from" name="route_from" placeholder="From">
+                <input type="text" id="to" name="route_to" placeholder="To">
+                <input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date"
+                       placeholder="Departure date">
+                <!--		<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
+
+            </form>
+            <button type="button" id="main_button" onclick="findFunction()">Find</button>
+            <br>
+        </div>
+    </div>
+
+
+    <div class="row" id="results">
+
+        <section id="appWrapper">
+            <ul class="itemList" id="listContent">
+
+            </ul>
+        </section>
+    </div>
+</div>
+<div class="row">
+
+</div>
+
+
+<div class="row">
+    <div id="map"></div>
+</div>
+<div class="row">
+
+</div>
+<script>
+
+    let argDepTime;
+    let argTrainID;
+    let argFrom;
+    let argTo;
+
+    $('div.profile').hide();
+
+    function openBox() {
+        $('div.profile').toggle();
+    }
+
+    function signInFunction() {
+        console.log($('#email').val());
+        console.log($('#password').val());
+        $.ajax({
+            url: 'api/auth/login',
+            data: {u: $('#email').val(), p: $('#password').val()},
+            contentType: 'application/x-www-form-urlencoded',
+            method: 'POST'
+        }).done(function (r) {
+            console.log(r);
+            location.reload();
+            return r;
+        });
+    }
+
+    function signUpFunction() {
+    }
+
+    function findFunction() {
+        document.getElementById("map").innerHTML = "";
+        var from = $('#from').val();
+        var to = $('#to').val();
+        var departureDate = $('#departureDate').val();
+        // var returnDate = $('#returnDate').val();
+
+        $.get("api/search/getRoutes", {
+                dept: from,
+                dest: to,
+                date: departureDate
+            },
+
+            function (r) {
+                updateList(r);
+
+            });
+    }
+
+    function updateList(items) {
+        document.getElementById("listContent").innerHTML = "";
+        $("#table_of_routes tbody tr").remove();
+        $("#table_of_routes").html("");
+        items = JSON.parse(items);
+        let listItems = document.querySelector('.item');
+        let lst = document.querySelector('.itemList');
+
+        items.forEach(function (index) {
+            var from = index.name1;
+            var to = index.name2;
+            var depTime = index.departureTime;
+            var arrivalTime = index.arrivalTime;
+            var trainID = index.trainId;
+            console.log(from, to, depTime, arrivalTime, trainID);
+
+            argTrainID = trainID;
+            argDepTime = depTime;
+            argFrom = from;
+            argTo = to;
+
+            lst.appendChild(document.createElement('li'));
+            let lstChild = lst.lastChild;
+            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " + ")'> Book </button>";
+            lstChild.className = 'item';
+
+        });
+    }
+
+    function book() {
+        var queryString = "?" + argDepTime + "&" + argTrainID + "&" + argFrom + "&" + argTo;
+        window.location.href = 'ticketinfo.html' + queryString;
+
+    }
+
+
+    function mapOpen() {
+        let geocoder;
+        geocoder = new google.maps.Geocoder();
+        let locationFrom;
+        let locationTo;
+        let map;
+
+        geocoder.geocode({'address': argFrom}, function (results, status) {
+            if (status == 'OK') {
+                locationFrom = results[0];
+                console.log(locationFrom);
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+
+        geocoder.geocode({'address': argTo}, function (results, status) {
+            if (status == 'OK') {
+                locationTo = results[0];
+                console.log(locationFrom);
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+
+        map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 4, center: locationFrom});
+    }
+
+    function logout() {
+        $.get("api/auth/logout");
+        location.reload();
+    }
+
+    $(document).ready(function () {
+        $.get('api/user', function (r) {
+            profile = $('.profile');
+            if (r === 'null') {
+                profile.html('<form class="bevertical">' +
+                    '<input type="text" id="email" name="e-mail" placeholder="e-mail"><br>' +
+                    '<input type="password" id="password" name="password" placeholder="password"><br>' +
+                    '<button type="button" class="signButtons" onclick="signUpFunction()"><a style="text-decoration:none"' +
+                    'href="registration.html">Sign Up</a>' +
+                    '</button><button type="button" class="signButtons" onclick="signInFunction()"><a> Sign In</a></button> </form>');
+            } else {
+                $("#signin").text(r);
+                profile.html('<button onclick="logout()" class="signButtons">Log out</button>');
+            }
+
+        })
+    })
+    // var marker = new google.maps.Marker({position: uluru, map: map});
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

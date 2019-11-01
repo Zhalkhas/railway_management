@@ -1,0 +1,10 @@
+<Resource name ="jdbc/DistDB"
+  auth = "Container"
+  type = "javax.sql.DataSource"
+  maxActive = "100"
+  maxIdle = "30"
+  maxWait = "10000"
+  username = "aida"
+  password = "pass"
+  driverClassName = "com.mysql.jdbc.Driver"
+  url = "jdbc:mysql://10.10.3.14:3306/railwaydb"/>
