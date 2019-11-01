@@ -53,9 +53,10 @@
             var departureName = index.departureName;
             var arrivalTime = index.arrivalTime;
             var arrivalName = index.arrivalName;
+            var idx = "ticket_" + index;
 
             $("#agent_table_body").append(
-                "<tr>" +
+                "<tr id='("+ idx +")'>" +
                 "<td class='column1'>" + ticketId + "</td>" +
                 "<td class='column2'>" + ownerN + "</td>" +
                 "<td class='column3'>" + ownerS + "</td>" +
@@ -70,6 +71,10 @@
                 "<td><button type='button' class='agent_button' onclick='agent_delete(+index+)'>delete</button></td>" +
                 "</tr>");
         });
+    }
+
+    function agent_delete(index){
+        $("#ticket_"+index ).remove();
     }
 
     $(document).ready(function () {
