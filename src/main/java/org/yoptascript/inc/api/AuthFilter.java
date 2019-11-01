@@ -1,71 +1,58 @@
 package org.yoptascript.inc.api;
 
+import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.yoptascript.inc.certs.KeysReader;
 
-import java.io.IOException;
-import java.util.Date;
 import javax.annotation.Priority;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import javax.ws.rs.ext.Provider;
+import java.net.URI;
+import java.rmi.MarshalledObject;
+import java.util.Date;
+import java.util.Map;
 
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthFilter implements ContainerRequestFilter {
-
-    private static final String REALM = "example";
-    private static final String AUTHENTICATION_SCHEME = "Bearer";
-
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
+        String path = requestContext.getUriInfo().getPath();
+        String method = requestContext.getMethod();
 
-        // Get the Authorization header from the request
-        String authorizationHeader =
-                requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        String token = "";
 
-        // Validate the Authorization header
-        if (!isTokenBasedAuthentication(authorizationHeader)) {
-            abortWithUnauthorized(requestContext);
-            return;
+        Map<String, Cookie> cookies = requestContext.getCookies();
+        for (Map.Entry<String, Cookie> cookie : cookies.entrySet()) {
+            if (cookie.getKey().toLowerCase().equals("token")) {
+                token = cookie.getValue().getValue();
+                break;
+            }
         }
-
-        // Extract the token from the Authorization header
-        String token = authorizationHeader
-                .substring(AUTHENTICATION_SCHEME.length()).trim();
-
-        try {
-            // Validate the token
-            validateToken(token);
-        } catch (Exception e) {
-            requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("Exception", e.toString()).build());
+        if (!token.equals("")) {
+            try {
+                validateToken(token);
+            } catch (Exception e) {
+                abortWithUnauthorized(path, method, requestContext);
+            }
+        } else {
+            abortWithUnauthorized(path, method, requestContext);
         }
     }
 
-    private boolean isTokenBasedAuthentication(String authorizationHeader) {
-
-        // Check if the Authorization header is valid
-        // It must not be null and must be prefixed with "Bearer" plus a whitespace
-        // The authentication scheme comparison must be case-insensitive
-        return authorizationHeader != null && authorizationHeader.toLowerCase()
-                .startsWith(AUTHENTICATION_SCHEME.toLowerCase() + " ");
-    }
-
-    private void abortWithUnauthorized(ContainerRequestContext requestContext) {
-
-        // Abort the filter chain with a 401 status code response
-        // The WWW-Authenticate header is sent along with the response
-        requestContext.abortWith(
-                Response.status(Response.Status.UNAUTHORIZED)
-                        .header(HttpHeaders.WWW_AUTHENTICATE,
-                                AUTHENTICATION_SCHEME + " realm=\"" + REALM + "\"")
-                        .build());
+    private void abortWithUnauthorized(String path, String method, ContainerRequestContext requestContext) {
+        if (path.equals("user") && method.toLowerCase().equals("get")) {
+            requestContext.abortWith(Response.ok(false).build());
+        } else {
+            requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
+        }
     }
 
     private void validateToken(String token) throws Exception {
@@ -75,9 +62,6 @@ public class AuthFilter implements ContainerRequestFilter {
                         .getPublicKey())
                 .parseClaimsJws(token);
         Claims claims = jws.getBody();
-        String username = claims.getSubject();
-        if ((new Date()).after(claims.getIssuedAt())) {
-            throw new Exception("invalid issue date");
-        }
+        System.out.println(claims);
     }
 }

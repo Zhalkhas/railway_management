@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="railway.css">
+    <title>
+        Sign Up
+
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<section class="wrapper">
+    <div class="main-content">
+        <h3>Sign Up</h3>
+        <form action="api/user/newUser" method="POST" class="bevertical">
+            <div class="input-group">
+                <label for="fname">First name</label>
+                <input type="text" placeholder="First name" id="fname" name="fname" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="lname">Last Name</label>
+                <input type="text" placeholder="Last name" id="lname" name="lname" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" placeholder="Email" id="email" name="email" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" placeholder="Password" id="password" name="password">
+            </div>
+            <div class="input-group">
+                <input type="submit" id="main_button" value="Sign up">
+<!--                <button id="main_button" onclick="function f() {-->
+<!--                    alert('Ty pidor');-->
+<!--             }">Sign up</button> <br>-->
+            </div>
+        </form>
+        <p>OR</p>
+        <p>Already have an account? <a href="main.html">Sign in</a>.</p>
+    </div>
+</section>
+
+
+</body>
+</html>
