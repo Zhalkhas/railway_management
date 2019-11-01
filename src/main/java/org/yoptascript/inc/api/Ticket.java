@@ -173,4 +173,25 @@ public class Ticket {
         json.addProperty("available", check);
         return Response.ok(json.toString()).build();
     }
+
+    @Path("/all")
+    @GET
+    public Response getAllTickets() {
+        JsonArray array = new JsonArray();
+        for(int i = 0; i < 10; i++){
+            JsonObject json = new JsonObject();
+            json.addProperty("ticketId", i);
+            json.addProperty("ownerN", "a");
+            json.addProperty("ownerS", "b");
+            json.addProperty("price", i);
+            json.addProperty("passengerID", i);
+            json.addProperty("departureTime", i);
+            json.addProperty("departureName", i);
+            json.addProperty("arrivalTime", i);
+            json.addProperty("arrivalName", i);
+            array.add(json);
+        }
+        return Response.ok(array).build();
+    }
 }
+

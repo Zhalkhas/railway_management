@@ -33,27 +33,27 @@
 	</div>
 
 
-<div class="row">
-	<div class ="row" >
 
-		<div class="search">
-			<h3>
-				FIND TICKETS
-			</h3>
+		<div class ="row" class="d-flex justify-content-center">
 
-			<form>
-				<input type="text" id="from" name="route_from" placeholder="From">
-				<input type="text" id="to" name="route_to" placeholder="To">
-				<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date"
-				       placeholder="Departure date">
-				<!--		<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
+			<div class="search" >
+				<h3>
+					FIND TICKETS
+				</h3>
 
-			</form>
-			<button type="button" id="main_button" onclick="findFunction()">Find</button>
-			<br>
+				<form>
+					<input type="text" id="from" name="route_from" placeholder="From">
+					<input type="text" id="to" name="route_to" placeholder="To">
+					<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date"
+					       placeholder="Departure date">
+					<!--		<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
+
+				</form>
+				<button type="button" id="main_button" onclick="findFunction()">Find</button>
+				<br>
+			</div>
 		</div>
-	</div>
-</div>
+
 
 	<div class ="row" id = "results">
 
@@ -66,15 +66,15 @@
 </div>
 <div class="row">
 
-</div> 
+</div>
 
 
 <div class = "row">
-    <div id="map"> </div>
+	<div id="map"> </div>
 </div>
 <div class="row">
-    
-</div> 
+
+</div>
 <script>
 
     let argDepTime;
@@ -152,8 +152,8 @@
 
             lst.appendChild(document.createElement('li'));
             let lstChild = lst.lastChild;
-	        lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
-	        lstChild.className = 'item';
+            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
+            lstChild.className = 'item';
 
         });
     }
@@ -203,11 +203,11 @@
         map = new google.maps.Map(
             document.getElementById('map'), {zoom: 4, center: locationFrom});
     }
-   // var marker = new google.maps.Marker({position: uluru, map: map});
+    // var marker = new google.maps.Marker({position: uluru, map: map});
 
 </script>
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=initMap">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
