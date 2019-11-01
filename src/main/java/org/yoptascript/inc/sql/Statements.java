@@ -3,7 +3,6 @@ package org.yoptascript.inc.sql;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import javax.json.Json;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,8 +53,8 @@ public class Statements {
         }
         JsonArray json = new JsonArray();
         PreparedStatement statement = conn.prepareStatement("select ST.name, ST2.name as arrival, SCH.departureTime, SCH2.arrivalTime, SCH.trainId \n"
-                + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
-                + "where ST.name = ? and ST2.name = ? and date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime;");
+            + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
+            + "where ST.name = ? and ST2.name = ? and date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime and date(SCH.departureTime) = date(SCH2.arrivalTime);");
         statement.setString(1, dept);
         statement.setString(2, dest);
         statement.setString(3, date);
