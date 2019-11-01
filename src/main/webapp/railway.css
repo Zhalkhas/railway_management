@@ -5,7 +5,8 @@
 /*}*/
 
 .row{
-	height: 200px;
+	height: 250px;
+
 }
 body
 {
@@ -223,16 +224,17 @@ tbody tr:hover {
 
 .search
 {
-	position: absolute;
-	top: 35%;
-	left: 19%;
+	/*position: absolute;*/
+	/*top: 35%;*/
+	/*left: 19%;*/
 	text-align: center;
+
 }
 .profile
 {
-	position: absolute;
-	top: 5%;
-	right: 5%;
+	/*position: absolute;*/
+	/*top: 5%;*/
+	/*right: 5%;*/
 	/*border: 1px solid white; */
 	padding: 5px;
 	margin: 5px;
@@ -247,7 +249,7 @@ tbody tr:hover {
 	border-radius: 20px; 
 	text-transform: uppercase;
 	color: white;
-	position: relative;
+	/*position: relative;*/
 	top: 20px;
 }
 
@@ -260,7 +262,7 @@ tbody tr:hover {
 	border-radius: 10px;
 	text-transform: uppercase;
 	color: white;
-	position: relative;
+	/*position: relative;*/
 	top: 20px;
 	margin: 5px;
 }
@@ -290,19 +292,6 @@ tbody tr:hover {
 /*	top: 20px;*/
 /*	margin: 5px;*/
 /*}*/
-
-#plus-minus{
-	font-family: 'Open Sans', sans-serif;
-	background: linear-gradient(135deg, #6e8efb, #a777e3);
-	border: none;
-	padding: 7px 10px;
-	border-radius: 5px; 
-	text-transform: uppercase;
-	color: white;
-	position: relative;
-	top: 0px;
-	margin: 5px;
-}
 
 #main_button:hover
 {
@@ -449,7 +438,7 @@ flex-direction: column;
 	border-radius: 10px; 
 	text-transform: uppercase;
 	color: white;
-	position: relative;
+	/*position: relative;*/
 	align-self: center;
 	height: 50px;
 	
@@ -486,3 +475,13 @@ flex-direction: column;
 		padding: 1rem 2rem 1rem 1rem;
 		color: black;
 	}
+
+	#map {
+        height: 300px;  /* The height is 400 pixels */
+		width: 100%;  
+		
+		/* The width is the width of the web page */
+	   }
+	   .container{
+		flex-direction: column; 
+	   }
