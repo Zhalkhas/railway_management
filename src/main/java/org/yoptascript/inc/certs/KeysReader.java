@@ -25,7 +25,6 @@ public class KeysReader {
         String projPath = "";
         File file = new File(KeysReader.class.getProtectionDomain().getCodeSource().getLocation().getFile());
         projPath = file.getPath();
-        System.out.println(projPath);
         byte[] keyBytes = Files.readAllBytes(Paths.get(projPath+'/'+pubname));
         X509EncodedKeySpec spec =
                 new X509EncodedKeySpec(keyBytes);
@@ -37,7 +36,6 @@ public class KeysReader {
         String projPath = "";
         File file = new File(KeysReader.class.getProtectionDomain().getCodeSource().getLocation().getFile());
         projPath = file.getPath();
-        System.out.println(projPath);
         byte[] keyBytes = Files.readAllBytes(Paths.get(projPath+'/'+privname));
         PKCS8EncodedKeySpec spec =
                 new PKCS8EncodedKeySpec(keyBytes);

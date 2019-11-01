@@ -251,6 +251,19 @@ tbody tr:hover {
 	top: 20px;
 }
 
+.agent_button{
+	font-family: 'Open Sans', sans-serif;
+	background: linear-gradient(135deg, #6e8efb, #a777e3);
+	border: none;
+	padding: 7px 40px;
+	border-radius: 10px;
+	text-transform: uppercase;
+	color: white;
+	position: relative;
+	top: 20px;
+	margin: 5px;
+}
+
 .signButtons
 {
 	font-family: 'Open Sans', sans-serif;
