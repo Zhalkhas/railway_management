@@ -3,6 +3,7 @@ package org.yoptascript.inc.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.other.PDFCreator;
 import org.yoptascript.inc.sql.Statements;
 
@@ -35,25 +36,33 @@ public class Ticket {
     @Produces("application/pdf")
     public Response insertTicket(@FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
-                                 @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("depId") int deptId, @FormParam("destId") int destId,
-                                 @FormParam("date") String date) {
-        statements = new Statements();
-        statements.connect();
+                                 @FormParam("docId") int docId, @FormParam("usrId") String usrId,
+                                 @FormParam("agentId") int agentId, @FormParam("depId") String deptId, @FormParam("destId") String destId,
+                                 @FormParam("depTime") String date) {
+//        statements = new Statements();
+//        statements.connect();
         //TODO: make usrId as email and check it on db, depId to depName, destId to destName and also add date to check the schedule
-        try {
-            statements.insertTicket(ownerN, ownerS, price, docId,
-                    usrId, agentId, deptId, destId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), Integer.toString(usrId),
+//        try {
+//            statements.insertTicket(ownerN, ownerS, price, docId,
+//                    usrId, agentId, deptId, destId);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+        List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), usrId,
                 Integer.toString(agentId));
         String name = ownerN + ownerS + usrId + deptId + destId + ".pdf";
+        System.out.println(name);
         creator = new PDFCreator(name, ticket);
+        creator.createPdf();
         File file = new File(name);
-        statements.disconnect();
-        return Response.ok(file).build();
+        EmailNotificator notificator = new EmailNotificator();
+        notificator.sendPdf("aida.eduard@nu.edu.kz", "Ticket", "Pdf ticket", name);
+        System.out.println(file.getPath());
+        creator = null;
+//        statements.disconnect();
+//        Response.ResponseBuilder res = Response.ok(fileInputStream, MediaType.APPLICATION_OCTET_STREAM);
+//        res.header("Content-Disposition", "attachment; filename="+name);
+        return Response.ok().build();
     }
 
     @Path("/changeTicket")
@@ -174,9 +183,9 @@ public class Ticket {
         return Response.ok(json.toString()).build();
     }
 
-    @Path("/all")
+    @Path("/all2")
     @GET
-    public Response getAllTickets() {
+    public Response getAllTickets2() {
         JsonArray array = new JsonArray();
         for(int i = 0; i < 10; i++){
             JsonObject json = new JsonObject();

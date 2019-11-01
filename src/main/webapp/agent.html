@@ -67,7 +67,7 @@
                 "<td class='column7'>" + departureName + "</td>" +
                 "<td class='column8'>" + arrivalTime + "</td>" +
                 "<td class='column9'>" + arrivalName + "</td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_create("+i+")'>create</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_confirm("+i+")'>create</button></td>" +
                 "<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
                 "<td><button type='button' class='agent_button' onclick='agent_delete("+i+")'>delete</button></td>" +
                 "</tr>");
@@ -76,6 +76,14 @@
     }
 
     function agent_delete(index) {
+        $("#ticket_"+index).remove();
+    }
+
+    function agent_confirm(index) {
+        $("#ticket_"+index).remove();
+    }
+
+    function agent_edit(index) {
         $("#ticket_"+index).remove();
     }
 

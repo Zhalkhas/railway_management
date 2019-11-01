@@ -65,7 +65,7 @@
                 var lastname = $('#lastname').val();
                 var name = $('#name').val();
                 var price = 6001;
-                var agentID = null;
+                var agentID = 156;
                 var usrID = $('#email').val();
                 var deptID = queries[2];
                 var destID = queries[3];
@@ -88,7 +88,15 @@
 
                     function (r) {
                     console.log("Working?")
-
+                        // var filename = "ticket" + new Date().getTime() + ".pdf";
+                        // var blob = new Blob([r.response], { type: 'application/pdf' });
+                        // window.navigator.msSaveBlob(blob, filename);
+                        // var file = new File([r], filename, { type: 'application/force-download' });
+                        // window.open(URL.createObjectURL(file));
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(r);
+                        link.download = "PdfName-" + new Date().getTime() + ".pdf";
+                        link.click();
                     });
             }
 

@@ -198,7 +198,7 @@ public class Statements {
         }
         PreparedStatement statement = conn.prepareStatement("select T.ticketId, SCH1.departureTime, ST1.name, SCH2.arrivalTime, ST2.name, SCH1.trainId\n"
                 + "from TICKET T, SCHEDULE SCH1, SCHEDULE SCH2, STATION ST1, STATION ST2, USER U\n"
-                + "where T.passengerID = U.userId and U.userId = ? and T.Schedule_scheduleID = SCH1.scheduleId and SCH1.stationId = ST1.stationId and SCH2.stationId = ST2.stationId and SCH1.trainId = SCH2.trainId and SCH2.scheduleId = T.ScheduleIdArrival and SCH1.departureTime <= SCH2.arrivalTime and SCH2.arrivalTime < now();");
+                + "where T.passengerID = U.userId and U.userId = ? and T.Schedule_scheduleID = SCH1.scheduleId and SCH1.stationId = ST1.stationId and SCH2.stationId = ST2.stationId and SCH1.trainId = SCH2.trainId and SCH2.scheduleId = T.ScheduleIdArrival and SCH1.departureTime <= SCH2.arrivalTime and SCH2.departureTime < now();");
         statement.setInt(1, userId);
         ResultSet rs = statement.executeQuery();
         JsonArray json = new JsonArray();
@@ -280,6 +280,7 @@ public class Statements {
     }
 
     public JsonArray getAllTickets() throws SQLException {
+        //TODO: finish method for tickets of agent
         PreparedStatement statement = conn.prepareStatement("select * from TICKET;");
         statement.executeQuery();
         return new JsonArray();
