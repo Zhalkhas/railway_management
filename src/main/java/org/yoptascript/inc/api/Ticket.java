@@ -38,22 +38,22 @@ public class Ticket {
                                  @FormParam("docId") int docId, @FormParam("usrId") int usrId,
                                  @FormParam("agentId") int agentId, @FormParam("depId") int deptId, @FormParam("destId") int destId,
                                  @FormParam("date") String date) {
-      statements = new Statements();
-      statements.connect();
-      //TODO: make usrId as email and check it on db, depId to depName, destId to destName and also add date to check the schedule
-      try {
-          statements.insertTicket(ownerN, ownerS, price, docId,
-                  usrId, agentId, deptId, destId);
-      } catch (SQLException e) {
-          e.printStackTrace();
-      }
-      List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), Integer.toString(usrId),
-          Integer.toString(agentId));
-      String name = ownerN + ownerS + usrId + deptId + destId + ".pdf";
-      creator = new PDFCreator(name, ticket);
-      File file = new File(name);
-      statements.disconnect();
-      return Response.ok(file).build();
+        statements = new Statements();
+        statements.connect();
+        //TODO: make usrId as email and check it on db, depId to depName, destId to destName and also add date to check the schedule
+        try {
+            statements.insertTicket(ownerN, ownerS, price, docId,
+                    usrId, agentId, deptId, destId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), Integer.toString(usrId),
+                Integer.toString(agentId));
+        String name = ownerN + ownerS + usrId + deptId + destId + ".pdf";
+        creator = new PDFCreator(name, ticket);
+        File file = new File(name);
+        statements.disconnect();
+        return Response.ok(file).build();
     }
 
     @Path("/changeTicket")
@@ -66,7 +66,7 @@ public class Ticket {
         statements.connect();
         try {
             statements.changeTicket(ticketId, ownerN, ownerS, price, docId,
-                usrId, agentId, deptId, destId);
+                    usrId, agentId, deptId, destId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,6 +89,29 @@ public class Ticket {
         return Response.ok(json.toString()).build();
     }
 
+    @Path("/all")
+    @GET
+    public Response getAllTickets() {
+        JsonArray array = new JsonArray();
+        //for(int i = 0; i < 10; i++){
+        JsonObject json = new JsonObject();
+        System.out.println("before:"+json);
+        json.addProperty("ticketId", 1);
+        json.addProperty("ownerN", "a");
+        json.addProperty("ownerS", "b");
+        json.addProperty("price", 1);
+        json.addProperty("passengerID", 1);
+        json.addProperty("departureTime", 1);
+        json.addProperty("departureName", 1);
+        json.addProperty("arrivalTime", 1);
+        json.addProperty("arrivalName", 1);
+        System.out.println(json);
+        array.add(json);
+        System.out.println(array);
+        //}
+        return Response.ok(array.toString()).build();
+    }
+
     @Path("/allPastTickets")
     @GET
     public Response getAllPastTicketsOfUser(@QueryParam("userId") int userId) {
@@ -104,20 +127,20 @@ public class Ticket {
         return Response.ok(json.toString()).build();
     }
 
-  @Path("/allFutureTickets")
-  @GET
-  public Response getAllFutureTicketsOfUser(@QueryParam("userId") int userId) {
-    statements = new Statements();
-    statements.connect();
-    JsonArray json = new JsonArray();
-    try {
-      json = statements.getAllFutureTicketsOfUser(userId);
-    } catch (SQLException e) {
-      e.printStackTrace();
+    @Path("/allFutureTickets")
+    @GET
+    public Response getAllFutureTicketsOfUser(@QueryParam("userId") int userId) {
+        statements = new Statements();
+        statements.connect();
+        JsonArray json = new JsonArray();
+        try {
+            json = statements.getAllFutureTicketsOfUser(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        statements.disconnect();
+        return Response.ok(json.toString()).build();
     }
-    statements.disconnect();
-    return Response.ok(json.toString()).build();
-  }
 
     @DELETE
     @Path("{ticketId: [0-9]+}")
