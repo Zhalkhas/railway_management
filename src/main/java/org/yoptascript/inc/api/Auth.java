@@ -5,11 +5,9 @@ import io.jsonwebtoken.Jwts;
 import org.yoptascript.inc.sql.Statements;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.security.KeyPair;
 import java.util.Date;
-//import java.util.UUID;
 
 @Path("/auth")
 public class Auth {
@@ -28,20 +26,18 @@ public class Auth {
             Statements statements = new Statements();
             statements.login(username, pass);
             String token = getToken(username);
-            return Response.ok().header("Authorization", "Bearer " + token).build();
+            NewCookie newcookie = new NewCookie("token", token, "/","","", 3600*24, false);
+            return Response.ok().cookie(newcookie).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.FORBIDDEN).header("Exception", e.toString()).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
     }
 
     private String getToken(String username) {
         JwtBuilder jwts = Jwts.builder();
         jwts.setSubject(username);
-        //long current = (new Date()).getTime();
         jwts.setIssuedAt(new Date());
-        //jwts.setExpiration(new Date(current + 86400000)); //one day
         jwts.signWith(keys.getPrivate());
-        //jwts.setId(String.valueOf(UUID.randomUUID()));
         return jwts.compact();
     }
 }
