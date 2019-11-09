@@ -9,7 +9,9 @@
 </head>
 <body>
 
-
+<div class="agent_search_button" >
+    <a href="index.html" id="main_button"  >Go To Search</a> <br>
+</div>
 
 <table class="table" id agent_table>
     <thead>
@@ -34,8 +36,6 @@
     </tbody>
 </table>
 
-<button class="agent_search_button">  <a href="index.html"> Go to search </a> </button>
-
 <script>
     function updateList(items) {
         console.log(items);
@@ -43,7 +43,7 @@
         $("#agent_table_body").html("");
         items = JSON.parse(items);
         console.log(items);
-        var i = 0;
+        var i = 1;
         items.forEach(function (index) {
             var ticketId = index.ticketId;
             var ownerN = index.ownerN;
@@ -54,12 +54,10 @@
             var departureName = index.departureName;
             var arrivalTime = index.arrivalTime;
             var arrivalName = index.arrivalName;
-            var idx = "ticket_" + index;
-
-            // var arg = [index, ownerN , ownerS,price,passengerID,departureTime,departureName,arrivalTime,arrivalName];
+            var idx = "ticket_" + i;
 
             $("#agent_table_body").append(
-                "<tr id='"+ idx +"'>" +
+                "<tr id='"+idx+"'>" +
                 "<td class='column1'>" + ticketId + "</td>" +
                 "<td class='column2'>" + ownerN + "</td>" +
                 "<td class='column3'>" + ownerS + "</td>" +
@@ -69,40 +67,30 @@
                 "<td class='column7'>" + departureName + "</td>" +
                 "<td class='column8'>" + arrivalTime + "</td>" +
                 "<td class='column9'>" + arrivalName + "</td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_confirm(" +i+ ")'>confirm</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_edit("+ticketId+")'>edit</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_delete(+i+)'>delete</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_confirm("+i+")'>create</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_delete("+i+")'>delete</button></td>" +
                 "</tr>");
             i++;
         });
     }
 
-
-    function agent_delete(index){
-        $("#ticket_"+index ).remove();
+    function agent_delete(index) {
+        $("#ticket_"+index).remove();
     }
 
-    function agent_confirm(index){
-
+    function agent_confirm(index) {
+        $("#ticket_"+index).remove();
     }
 
-    function agent_edit( arg ){
-        var queryString = "?"+arg;
-        // for(var i=0 ;i<arg.size(); i++){
-        //     queryString += arg[i]+"&";
-        //     console.log(arg[i]);
-        // }
-        console.log(arg);
-        window.location.href='editing.html' + queryString;
-
-
+    function agent_edit(index) {
+        $("#ticket_"+index).remove();
     }
-
 
     $(document).ready(function () {
         $.get("api/ticket/all", function (r) {
-            updateList(r)
-        })
+            updateList(r);
+        });
     });
 
 
