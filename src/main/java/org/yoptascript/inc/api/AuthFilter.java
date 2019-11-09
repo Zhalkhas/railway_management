@@ -50,6 +50,7 @@ public class AuthFilter implements ContainerRequestFilter {
     private void abortWithUnauthorized(String path, String method, ContainerRequestContext requestContext) {
         if (path.equals("user") && method.toLowerCase().equals("get")) {
             requestContext.abortWith(Response.ok("null").build());
+
         } else {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
         }

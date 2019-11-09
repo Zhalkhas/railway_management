@@ -9,9 +9,9 @@ import java.util.Properties;
 public class MySqlConnection {
   // init database constants
   private static final String DATABASE_DRIVER = "com.mysql.cj.jdbc.Driver";
-  private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/Railway65";
+  private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/railway65";
   private static final String USERNAME = "root";
-  private static final String PASSWORD = "232725Sy";
+  private static final String PASSWORD = "pass";
   private static final String MAX_POOL = "250";
 
   // init connection object

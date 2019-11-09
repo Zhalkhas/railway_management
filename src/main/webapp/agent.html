@@ -43,6 +43,8 @@
         $("#agent_table_body").html("");
         items = JSON.parse(items);
         console.log(items);
+
+        var i = 1;
         items.forEach(function (index) {
             var ticketId = index.ticketId;
             var ownerN = index.ownerN;
@@ -54,8 +56,10 @@
             var arrivalTime = index.arrivalTime;
             var arrivalName = index.arrivalName;
 
+            var idx = "ticket_" + i;
+
             $("#agent_table_body").append(
-                "<tr>" +
+                "<tr id='"+idx+"'>" +
                 "<td class='column1'>" + ticketId + "</td>" +
                 "<td class='column2'>" + ownerN + "</td>" +
                 "<td class='column3'>" + ownerS + "</td>" +
@@ -65,17 +69,31 @@
                 "<td class='column7'>" + departureName + "</td>" +
                 "<td class='column8'>" + arrivalTime + "</td>" +
                 "<td class='column9'>" + arrivalName + "</td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_create(+index+)'>create</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_edit(+index+)'>edit</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_delete(+index+)'>delete</button></td>" +
+
+                "<td><button type='button' class='agent_button' onclick='agent_confirm("+i+")'>create</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_delete("+i+")'>delete</button></td>" +
                 "</tr>");
+            i++;
         });
+    }
+
+    function agent_delete(index) {
+        $("#ticket_"+index).remove();
+    }
+
+    function agent_confirm(index) {
+        $("#ticket_"+index).remove();
+    }
+
+    function agent_edit(index) {
+        $("#ticket_"+index).remove();
     }
 
     $(document).ready(function () {
         $.get("api/ticket/all", function (r) {
-            updateList(r)
-        })
+            updateList(r);
+        });
     });
 
 

@@ -3,10 +3,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="railway.css">
-    <title>Railway Station</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="railway.css">
+	<title>Railway Station</title>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 </head>
 
@@ -53,6 +54,7 @@
             </ul>
         </section>
     </div>
+
 </div>
 <div class="row">
 
@@ -61,6 +63,7 @@
 
 <div class="row">
     <div id="map"></div>
+
 </div>
 <div class="row">
 
@@ -90,11 +93,17 @@
             console.log(r);
             location.reload();
             return r;
+
         });
     }
 
     function signUpFunction() {
+
+
     }
+
+    function bookFunction() {
+   }
 
     function findFunction() {
         document.getElementById("map").innerHTML = "";
@@ -113,6 +122,22 @@
                 updateList(r);
 
             });
+
+		// $.post("api/ticket/insertTicket", {
+		// 		   ownerN: 'aida',
+		// 		   ownerS: 'lastname',
+		// 		   price: 6001,
+		// 		   docId: 513211,
+		// 		   usrID: 51,
+		// 		   agentId: null,
+		// 		   deptId: 503,
+		// 		   destId: 504,
+		// 		   depTime: '2019-11-04 12:29:30'
+		// 	   },
+		//
+		// 	   function (r) {
+		// 		   console.log("Working?")
+		// 	   });
     }
 
     function updateList(items) {
@@ -138,16 +163,17 @@
 
             lst.appendChild(document.createElement('li'));
             let lstChild = lst.lastChild;
-            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " + ")'> Book </button>";
+
+            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
             lstChild.className = 'item';
 
         });
     }
 
-    function book() {
-        var queryString = "?" + argDepTime + "&" + argTrainID + "&" + argFrom + "&" + argTo;
-        window.location.href = 'ticketinfo.html' + queryString;
 
+    function book(){
+        var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo;
+        window.location.href='ticketinfo.html' + queryString;
     }
 
 
@@ -212,18 +238,12 @@
 
         })
     })
-    // var marker = new google.maps.Marker({position: uluru, map: map});
 
 </script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8">
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8&callback=initMap">
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 
 </html>

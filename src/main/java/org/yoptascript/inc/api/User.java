@@ -35,7 +35,6 @@ public class User {
         Claims claims = jws.getBody();
         System.out.println(claims.getSubject());
         return Response.ok(claims.getSubject()).build();
-
     }
 
     @Path("/newUser")
@@ -56,5 +55,4 @@ public class User {
         user.addProperty("p", pass);
         return Response.ok(user.toString()).build();
     }
-
 }
