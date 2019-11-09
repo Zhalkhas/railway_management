@@ -287,4 +287,12 @@ public class Statements {
         statement.executeQuery();
         return new JsonArray();
     }
+
+    public String getRole(String email) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select status from USER where email = ?;");
+        statement.setString(1, email);
+        ResultSet rs = statement.executeQuery();
+        rs.next();
+        return rs.getString(1);
+    }
 }
