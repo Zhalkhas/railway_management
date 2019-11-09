@@ -51,23 +51,8 @@
             email: email,
             password: password
         }).then(function (r) {
+            r = JSON.parse(r);
             login(r);
-            alert("then");
-            alert(r);
-            $.ajax({
-                url: 'api/auth/login',
-                data: {u: r.u, p: r.p},
-                contentType: 'application/x-www-form-urlencoded',
-                method: 'POST'
-            }).done(function (r) {
-                console.log(r);
-                alert(r);
-                location.replace("passenger_profile.html");
-            });
-        }).done(function (r) {
-            alert("login");
-            alert(r);
-            console.log(r);
         });
 
         function login(creds) {
@@ -77,9 +62,7 @@
                 contentType: 'application/x-www-form-urlencoded',
                 method: 'POST'
             }).done(function (r) {
-                console.log(r);
-                location.reload();
-                return r;
+                location.replace("passenger_profile.html");
             });
         }
     }
