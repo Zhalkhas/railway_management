@@ -65,6 +65,7 @@
                 var lastname = $('#lastname').val();
                 var name = $('#name').val();
                 var price = 6001;
+
                 var agentID = 156;
                 var usrID = $('#email').val();
                 var deptID = queries[2];
@@ -82,12 +83,14 @@
                 usrID: usrID,
                 agentId: agentID,
                 deptId: deptID,
+
                 destId: destID,
                            depTime: depTime
                     },
 
                     function (r) {
                     console.log("Working?")
+
                         // var filename = "ticket" + new Date().getTime() + ".pdf";
                         // var blob = new Blob([r.response], { type: 'application/pdf' });
                         // window.navigator.msSaveBlob(blob, filename);
@@ -104,6 +107,5 @@
         </script>
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
 </body>
 </html>

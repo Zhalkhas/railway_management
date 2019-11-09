@@ -224,6 +224,7 @@ tbody tr:hover {
 
 .search
 {
+
 	position: absolute;
 	/*top: 35%;*/
 	left: 19%;
@@ -249,6 +250,7 @@ tbody tr:hover {
 	border-radius: 20px;
 	text-transform: uppercase;
 	color: white;
+
 	position: relative;
 	top: 20px;
 	align-self: center;

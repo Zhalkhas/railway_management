@@ -2,10 +2,18 @@ package org.yoptascript.inc.api;
 
 import com.google.gson.JsonObject;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import org.yoptascript.inc.certs.KeysReader;
 import org.yoptascript.inc.sql.Statements;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/user")
@@ -18,8 +26,15 @@ public class User {
 
     @Secured
     @GET
-    public Response isAuthorized(){
-      return Response.ok(true).build();
+    public Response isAuthorized(@CookieParam("token") String token) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        Jws<Claims> jws;
+        jws = Jwts.parser()
+                .setSigningKey((new KeysReader("pub.der", "priv.der"))
+                        .getPublicKey())
+                .parseClaimsJws(token);
+        Claims claims = jws.getBody();
+        System.out.println(claims.getSubject());
+        return Response.ok(claims.getSubject()).build();
     }
 
     @Path("/newUser")
@@ -35,7 +50,9 @@ public class User {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         statements.disconnect();
-        return Response.ok().build();
+        JsonObject user = new JsonObject();
+        user.addProperty("u", email);
+        user.addProperty("p", pass);
+        return Response.ok(user.toString()).build();
     }
-
 }

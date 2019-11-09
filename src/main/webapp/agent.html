@@ -43,6 +43,7 @@
         $("#agent_table_body").html("");
         items = JSON.parse(items);
         console.log(items);
+
         var i = 1;
         items.forEach(function (index) {
             var ticketId = index.ticketId;
@@ -54,6 +55,7 @@
             var departureName = index.departureName;
             var arrivalTime = index.arrivalTime;
             var arrivalName = index.arrivalName;
+
             var idx = "ticket_" + i;
 
             $("#agent_table_body").append(
@@ -67,6 +69,7 @@
                 "<td class='column7'>" + departureName + "</td>" +
                 "<td class='column8'>" + arrivalTime + "</td>" +
                 "<td class='column9'>" + arrivalName + "</td>" +
+
                 "<td><button type='button' class='agent_button' onclick='agent_confirm("+i+")'>create</button></td>" +
                 "<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
                 "<td><button type='button' class='agent_button' onclick='agent_delete("+i+")'>delete</button></td>" +
