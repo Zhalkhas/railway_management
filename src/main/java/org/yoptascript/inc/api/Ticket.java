@@ -174,9 +174,9 @@ public class Ticket {
         return Response.ok(json.toString()).build();
     }
 
-    @Path("/all")
+    @Path("/all/2")
     @GET
-    public Response getAllTickets() {
+    public Response getAllTickets2() {
         JsonArray array = new JsonArray();
         for(int i = 0; i < 10; i++){
             JsonObject json = new JsonObject();

@@ -43,6 +43,7 @@
         $("#agent_table_body").html("");
         items = JSON.parse(items);
         console.log(items);
+        var i = 0;
         items.forEach(function (index) {
             var ticketId = index.ticketId;
             var ownerN = index.ownerN;
@@ -54,6 +55,7 @@
             var arrivalTime = index.arrivalTime;
             var arrivalName = index.arrivalName;
             var idx = "ticket_" + index;
+
             // var arg = [index, ownerN , ownerS,price,passengerID,departureTime,departureName,arrivalTime,arrivalName];
 
             $("#agent_table_body").append(
@@ -67,10 +69,11 @@
                 "<td class='column7'>" + departureName + "</td>" +
                 "<td class='column8'>" + arrivalTime + "</td>" +
                 "<td class='column9'>" + arrivalName + "</td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_confirm(" +index+ ")'>confirm</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_confirm(" +i+ ")'>confirm</button></td>" +
                 "<td><button type='button' class='agent_button' onclick='agent_edit("+ticketId+")'>edit</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_delete(+index+)'>delete</button></td>" +
+                "<td><button type='button' class='agent_button' onclick='agent_delete(+i+)'>delete</button></td>" +
                 "</tr>");
+            i++;
         });
     }
 
