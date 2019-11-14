@@ -3,24 +3,21 @@ package org.yoptascript.inc.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.other.PDFCreator;
 import org.yoptascript.inc.sql.Statements;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+//import org.yoptascript.inc.other.EmailNotificator;
 
 @Path("/ticket")
 public class Ticket {
@@ -31,15 +28,15 @@ public class Ticket {
     Ticket() {
     }
 
-    @Path("/insertTicket")
-    @POST
-    @Produces("application/pdf")
-    public Response insertTicket(@FormParam("ownerN") String ownerN,
-                                 @FormParam("ownerS") String ownerS, @FormParam("price") double price,
-
-                                 @FormParam("docId") int docId, @FormParam("usrId") String usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("depId") String deptId, @FormParam("destId") String destId,
-                                 @FormParam("depTime") String date) {
+//    @Path("/insertTicket")
+//    @POST
+//    @Produces("application/pdf")
+//    public Response insertTicket(@FormParam("ownerN") String ownerN,
+//                                 @FormParam("ownerS") String ownerS, @FormParam("price") double price,
+//
+//                                 @FormParam("docId") int docId, @FormParam("usrId") String usrId,
+//                                 @FormParam("agentId") int agentId, @FormParam("depId") String deptId, @FormParam("destId") String destId,
+//                                 @FormParam("depTime") String date) {
 //        statements = new Statements();
 //        statements.connect();
         //TODO: make usrId as email and check it on db, depId to depName, destId to destName and also add date to check the schedule
@@ -49,22 +46,22 @@ public class Ticket {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-        List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), usrId,
-                Integer.toString(agentId));
-        String name = ownerN + ownerS + usrId + deptId + destId + ".pdf";
-        System.out.println(name);
-        creator = new PDFCreator(name, ticket);
-        creator.createPdf();
-        File file = new File(name);
-        EmailNotificator notificator = new EmailNotificator();
-        notificator.sendPdf("aida.eduard@nu.edu.kz", "Ticket", "Pdf ticket", name);
-        System.out.println(file.getPath());
-        creator = null;
+//        List<String> ticket = Arrays.asList(ownerN, ownerS, Double.toString(price), Integer.toString(docId), usrId,
+//                Integer.toString(agentId));
+//        String name = ownerN + ownerS + usrId + deptId + destId + ".pdf";
+//        System.out.println(name);
+//        creator = new PDFCreator(name, ticket);
+//        creator.createPdf();
+//        File file = new File(name);
+//        EmailNotificator notificator = new EmailNotificator();
+//        notificator.sendPdf("aida.eduard@nu.edu.kz", "Ticket", "Pdf ticket", name);
+//        System.out.println(file.getPath());
+//        creator = null;
 //        statements.disconnect();
 //        Response.ResponseBuilder res = Response.ok(fileInputStream, MediaType.APPLICATION_OCTET_STREAM);
 //        res.header("Content-Disposition", "attachment; filename="+name);
-        return Response.ok().build();
-    }
+//        return Response.ok().build();
+//    }
 
     @Path("/changeTicket")
     @PUT
@@ -124,12 +121,12 @@ public class Ticket {
 
     @Path("/allPastTickets")
     @GET
-    public Response getAllPastTicketsOfUser(@QueryParam("userId") int userId) {
+    public Response getAllPastTicketsOfUser(@CookieParam("username") String username) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllPastTicketsOfUser(userId);
+            json = statements.getAllPastTicketsOfUser(username);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -139,12 +136,12 @@ public class Ticket {
 
     @Path("/allFutureTickets")
     @GET
-    public Response getAllFutureTicketsOfUser(@QueryParam("userId") int userId) {
+    public Response getAllFutureTicketsOfUser(@CookieParam("username") String username) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllFutureTicketsOfUser(userId);
+            json = statements.getAllFutureTicketsOfUser(username);
         } catch (SQLException e) {
             e.printStackTrace();
         }
