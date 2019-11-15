@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 //import org.yoptascript.inc.other.EmailNotificator;
 
+@Secured
 @Path("/ticket")
 public class Ticket {
 
@@ -63,142 +64,153 @@ public class Ticket {
 //        return Response.ok().build();
 //    }
 
+    @Secured
     @Path("/changeTicket")
     @PUT
     public Response changeTicket(@FormParam("ticketId") int ticketId, @FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
                                  @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("deptId") int deptId, @FormParam("destId") int destId) {
-        statements = new Statements();
-        statements.connect();
-        try {
-            statements.changeTicket(ticketId, ownerN, ownerS, price, docId,
+                                 @FormParam("agentId") int agentId, @FormParam("deptId") int deptId, @FormParam("destId") int destId,
+                                 @CookieParam("role") String role) {
+        if (role.equalsIgnoreCase("agent")) {
+            statements = new Statements();
+            statements.connect();
+            try {
+                statements.changeTicket(ticketId, ownerN, ownerS, price, docId,
                     usrId, agentId, deptId, destId);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException e) {
+              return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+            } finally {
+              statements.disconnect();
+            }
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        statements.disconnect();
-        return Response.ok().build();
     }
 
+    @Secured
     @GET
     @Path("{ticketId: [0-9]+}")
-    public Response getTicket(@PathParam("ticketId") int ticketId) {
-        statements = new Statements();
-        statements.connect();
-        JsonObject json = new JsonObject();
-        try {
-            json = statements.getTicket(ticketId);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public Response getTicket(@PathParam("ticketId") int ticketId, @CookieParam("role") String role) {
+        if (role.equalsIgnoreCase("agent")) {
+            statements = new Statements();
+            statements.connect();
+            JsonObject json = new JsonObject();
+            try {
+                json = statements.getTicket(ticketId);
+            } catch (SQLException e) {
+              return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+            } finally {
+              statements.disconnect();
+            }
+            return Response.ok(json.toString()).build();
+        } else {
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        statements.disconnect();
-        return Response.ok(json.toString()).build();
     }
 
+    @Secured
     @Path("/all")
     @GET
-    public Response getAllTickets() {
-        JsonArray array = new JsonArray();
-        //for(int i = 0; i < 10; i++){
-        JsonObject json = new JsonObject();
-        System.out.println("before:"+json);
-        json.addProperty("ticketId", 1);
-        json.addProperty("ownerN", "a");
-        json.addProperty("ownerS", "b");
-        json.addProperty("price", 1);
-        json.addProperty("passengerID", 1);
-        json.addProperty("departureTime", 1);
-        json.addProperty("departureName", 1);
-        json.addProperty("arrivalTime", 1);
-        json.addProperty("arrivalName", 1);
-        System.out.println(json);
-        array.add(json);
-        System.out.println(array);
-        //}
-        return Response.ok(array.toString()).build();
+    public Response getAllTickets(@CookieParam("username") String username, @CookieParam("role") String role) {
+        if (role.equalsIgnoreCase("agent")) {
+            statements = new Statements();
+            statements.connect();
+            JsonArray json = new JsonArray();
+            try {
+                json = statements.getAllTickets(username);
+            } catch (SQLException e) {
+              return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+            } finally {
+              statements.disconnect();
+            }
+            return Response.ok(json.toString()).build();
+        } else {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
     }
 
+    @Secured
     @Path("/allPastTickets")
     @GET
-    public Response getAllPastTicketsOfUser(@CookieParam("username") String username) {
+    public Response getAllPastTicketsOfUser(@CookieParam("username") String username, @CookieParam("role") String role) {
+      if (role.equalsIgnoreCase("passenger")) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllPastTicketsOfUser(username);
+          json = statements.getAllPastTicketsOfUser(username);
         } catch (SQLException e) {
-            e.printStackTrace();
+          return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+          statements.disconnect();
         }
-        statements.disconnect();
         return Response.ok(json.toString()).build();
+      } else {
+        return Response.status(Response.Status.FORBIDDEN).build();
+      }
     }
 
+    @Secured
     @Path("/allFutureTickets")
     @GET
-    public Response getAllFutureTicketsOfUser(@CookieParam("username") String username) {
+    public Response getAllFutureTicketsOfUser(@CookieParam("username") String username, @CookieParam("role") String role) {
+      if (role.equalsIgnoreCase("passenger")) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
         try {
-            json = statements.getAllFutureTicketsOfUser(username);
+          json = statements.getAllFutureTicketsOfUser(username);
         } catch (SQLException e) {
-            e.printStackTrace();
+          return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+          statements.disconnect();
         }
-        statements.disconnect();
         return Response.ok(json.toString()).build();
+      } else {
+        return Response.status(Response.Status.FORBIDDEN).build();
+      }
     }
 
+    @Secured
     @DELETE
     @Path("{ticketId: [0-9]+}")
-    public Response deleteTicket(@PathParam("ticketId") int ticketId) {
+    public Response deleteTicket(@PathParam("ticketId") int ticketId, @CookieParam("role") String role) {
         statements = new Statements();
         statements.connect();
         try {
             statements.deleteTicket(ticketId); // can return boolean if deleted
         } catch (SQLException e) {
-            e.printStackTrace();
+          return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+          statements.disconnect();
         }
-        statements.disconnect();
         return Response.ok().build();
     }
 
+    @Secured
     @Path("/checkTicket")
     @GET
     public Response checkTicketAvailability(@QueryParam("dept") String dept, @QueryParam("dest") String dest,
-                                            @QueryParam("t") int train, @QueryParam("date") String date) {
+                                            @QueryParam("t") int train, @QueryParam("date") String date, @CookieParam("role") String role) {
+      if (role.equalsIgnoreCase("agent")) {
         statements = new Statements();
         statements.connect();
         boolean check = false;
         try {
-            check = statements.checkTicket(dept, dest, train, date);
+          check = statements.checkTicket(dept, dest, train, date);
         } catch (SQLException e) {
-            e.printStackTrace();
+          return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+          statements.disconnect();
         }
-        statements.disconnect();
         JsonObject json = new JsonObject();
         json.addProperty("available", check);
         return Response.ok(json.toString()).build();
-    }
-
-    @Path("/all2")
-    @GET
-    public Response getAllTickets2() {
-        JsonArray array = new JsonArray();
-        for(int i = 0; i < 10; i++){
-            JsonObject json = new JsonObject();
-            json.addProperty("ticketId", i);
-            json.addProperty("ownerN", "a");
-            json.addProperty("ownerS", "b");
-            json.addProperty("price", i);
-            json.addProperty("passengerID", i);
-            json.addProperty("departureTime", i);
-            json.addProperty("departureName", i);
-            json.addProperty("arrivalTime", i);
-            json.addProperty("arrivalName", i);
-            array.add(json);
-        }
-        return Response.ok(array).build();
+      } else {
+        return Response.status(Response.Status.FORBIDDEN).build();
+      }
     }
 }
 
