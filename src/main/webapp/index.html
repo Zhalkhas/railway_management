@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="railway.css">
 	<title>Railway Station</title>
@@ -11,8 +12,16 @@
 </head>
 
 <body>
-<div class = "container-fluid">
-	<div class ="row">
+
+<div class="container-fluid">
+	<div class="row">
+		<h3>
+			<button type="button" class="signButtons" onclick="GoToProfile()">Sign In</button>
+			<br>
+		</h3>
+	</div>
+
+	<div class="row">
 		<h3>
 			<button type="button" id="signin" onclick="openBox()">Sign In</button>
 			<br>
@@ -21,56 +30,49 @@
 
 	<div class="profile">
 
-		<form class="bevertical">
-			<input type="text"  id="email" name="e-mail" placeholder="e-mail"><br>
-			<input type="password" id="password" name="password" placeholder="password"><br>
-			<button type="button" class="signButtons" onclick="signUpFunction()"><a style="text-decoration:none"
-			                                                                        href="registration.html">Sign Up</a>
-			</button>
-
-			<button type="button" class="signButtons" onclick="signInFunction()"><a> Sign In</a></button>
-		</form>
 	</div>
 
 
+	<div class="row" class="d-flex justify-content-center">
 
-		<div class ="row" class="d-flex justify-content-center">
+		<div class="search">
+			<h3>
+				FIND TICKETS
+			</h3>
 
-			<div class="search" >
-				<h3>
-					FIND TICKETS
-				</h3>
+			<form>
+				<input type="text" id="from" name="route_from" placeholder="From">
+				<input type="text" id="to" name="route_to" placeholder="To">
+				<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date"
+				       placeholder="Departure date">
+				<!--    <input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
 
-				<form>
-					<input type="text" id="from" name="route_from" placeholder="From">
-					<input type="text" id="to" name="route_to" placeholder="To">
-					<input type="date" id="departureDate" data-date-inline-picker="true" name="departure_date"
-					       placeholder="Departure date">
-					<!--		<input type="date" id="returnDate" data-date-inline-picker="true" name="return_date" placeholder="Return date">-->
-
-				</form>
-				<button type="button" id="main_button" onclick="findFunction()">Find</button>
-				<br>
-			</div>
+			</form>
+			<button type="button" id="main_button" onclick="findFunction()">Find</button>
+			<br>
 		</div>
+	</div>
 
 
-	<div class ="row" id = "results">
+	<div class="row" id="results">
 
 		<section id="appWrapper">
-			<ul class = "itemList" id ="listContent">
+			<ul class="itemList" id="listContent">
 
 			</ul>
 		</section>
 	</div>
+
 </div>
+
 <div class="row">
 
 </div>
 
 
-<div class = "row">
-	<div id="map"> </div>
+<div class="row">
+	<div id="map"></div>
+
 </div>
 <div class="row">
 
@@ -94,21 +96,16 @@
         $.ajax({
             url: 'api/auth/login',
             data: {u: $('#email').val(), p: $('#password').val()},
-        	contentType:'application/x-www-form-urlencoded',
-        	method:'POST'
+            contentType: 'application/x-www-form-urlencoded',
+            method: 'POST'
         }).done(function (r) {
-        	console.log(r);
-        	return r;
+            console.log(r);
+            location.reload();
+            return r;
+
         });
     }
 
-    function signUpFunction() {
-
-    }
-
-    function bookFunction() {
-
-    }
 
     function findFunction() {
         document.getElementById("map").innerHTML = "";
@@ -127,22 +124,23 @@
                 updateList(r);
 
             });
-		// $.post("api/ticket/insertTicket", {
-		// 		   ownerN: 'aida',
-		// 		   ownerS: 'lastname',
-		// 		   price: 6001,
-		// 		   docId: 513211,
-		// 		   usrID: 51,
-		// 		   agentId: null,
-		// 		   deptId: 503,
-		// 		   destId: 504,
-		// 		   depTime: '2019-11-04 12:29:30'
-		// 	   },
-		//
-		// 	   function (r) {
-		// 		   console.log("Working?")
-		// 	   });
     }
+
+   function  GoToProfile(){
+
+       var cookie = document.cookie.split("role=")[1][0];
+       console.log(cookie);
+        if( cookie == 'a'){
+            window.location.href='agent.html';
+        }
+        else if(cookie == 'u'){
+            window.location.href='passenger_profile.html';
+        }
+        else if(cookie == 'm'){
+            window.location.href='manager.html';
+        }
+    }
+
 
     function updateList(items) {
         document.getElementById("listContent").innerHTML = "";
@@ -167,16 +165,15 @@
 
             lst.appendChild(document.createElement('li'));
             let lstChild = lst.lastChild;
-            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime+ " Arrival time: "+ arrivalTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
+
+            lstChild.innerHTML = "<p class='content' onclick=\"mapOpen()\"> From: " + from + " To: " + to + " Daparture time: " + depTime + " trainID: " + trainID + "</p> <button id ='book' onclick ='book( " +")'> Book </button>";
             lstChild.className = 'item';
 
         });
     }
-
     function book(){
         var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo;
         window.location.href='ticketinfo.html' + queryString;
-
     }
 
     var geocoder;
@@ -191,7 +188,7 @@
             center: latlng
         }
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-	getRoute();
+        getRoute();
     }
     // var marker = new google.maps.Marker({position: uluru, map: map});
 
@@ -202,13 +199,13 @@
                 dest: argTo,
                 date: argDepTime
             },
-	        function (r) {
+            function (r) {
                 makeRoute(r);
             });
     }
 
     function makeRoute(r){
-	    var route2 = JSON.parse(r);
+        var route2 = JSON.parse(r);
 
         var directionsService = new google.maps.DirectionsService();
         var directionsRenderer = new google.maps.DirectionsRenderer();
@@ -235,10 +232,31 @@
         });
     }
 
+    function logout() {
+        $.get("api/auth/logout");
+        location.reload();
+    }
+
+    $(document).ready(function () {
+        $.get('api/user', function (r) {
+            profile = $('.profile');
+            if (r === 'null') {
+                profile.html('<form class="bevertical">' +
+                    '<input type="text" id="email" name="e-mail" placeholder="e-mail"><br>' +
+                    '<input type="password" id="password" name="password" placeholder="password"><br>' +
+                    '<button type="button" class="signButtons" onclick="signUpFunction()"><a style="text-decoration:none"' +
+                    'href="registration.html">Sign Up</a>' +
+                    '</button><button type="button" class="signButtons" onclick="signInFunction()"><a> Sign In</a></button> </form>');
+            } else {
+                $("#signin").text(r);
+                profile.html('<button onclick="logout()" class="signButtons">Log out</button>');
+            }
+
+        })
+    })
 
 </script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=">
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQR5gOXlyelftC_6ZGmfyk73w6kA3pBv8">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
