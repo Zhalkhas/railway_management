@@ -31,10 +31,10 @@ public class Search {
         try {
             cities = statements.getStations(like);
         } catch (SQLException e) {
-//            LOGGER.error(e);
-            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
         }
-        statements.disconnect();
 //        LOGGER.info("User searched city with name {}", like);
         return Response.ok((new Gson()).toJson(cities)).build();
     }
@@ -48,10 +48,10 @@ public class Search {
         try {
             routes = statements.getRouteStations(dept, dest, date);
         } catch (SQLException e) {
-//            LOGGER.error(e);
-            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
         }
-        statements.disconnect();
 //        LOGGER.info("User checked route between {} and {} on the {}", dept, dest, date);
         return Response.ok(routes.toString()).build();
     }
@@ -66,8 +66,9 @@ public class Search {
         try {
             routes = statements.getRoutes(dept, dest, date);
         } catch (SQLException e) {
-//            LOGGER.error(e);
-            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
         }
         statements.disconnect();
         //LOGGER.info("User checked route between {} and {} on the {}", dept, dest, date);
