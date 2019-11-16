@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Employee</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+
+<div class="w3-container w3-center w3-margin">
+    <h1 >Manage Employee</h1>
+</div>
+
+<div class="w3-container w3-left w3-margin-top">
+    <h2 class="w3-wide">Employee Table</h2>
+</div>
+
+<div>
+    <table class="w3-table w3-bordered w3-margin-top">
+
+        <tr >
+            <th class="w3-center w3-text-black">EmployeeID</th>
+            <th class="w3-center w3-text-black">Name</th>
+            <th class="w3-center w3-text-black">Surname</th>
+            <th class="w3-center w3-text-black">Start of Work</th>
+            <th class="w3-center w3-text-black">End of Work</th>
+            <th class="w3-center w3-text-black">Hours per week</th>
+            <th class="w3-center w3-text-black">Salary</th>
+            <th class="w3-center w3-text-black">Station</th>
+        </tr>
+
+        <tbody id="tableEmployee">
+
+        </tbody>
+    </table>
+
+</div>
+
+<div>
+
+    <h2 class="w3-wide w3-margin">Change </h2>
+
+
+        <input type="text" id="emplName" name="emplName" placeholder="Name" class="w3-margin">
+
+        <input type="text" id="emplSurname" name="emplSurname" placeholder="Surname"  class="w3-margin">
+        <div>
+            Start of work:<br><input type="datetime-local"  id="startWork" data-date-inline-picker="true" name="startWork"
+                             placeholder="Work Starts" class="w3-margin"></br>
+            End of work:<br><input type="datetime-local" id="endWork" data-date-inline-picker="true" name="endWork"
+                           placeholder="Work Ends" class="w3-margin"></br>
+        </div>
+
+
+        <input type="text" id="hoursPerWeek" name="hoursPerWeek" placeholder="Work hours Per Week"  class="w3-margin">
+
+        <input type="text" id="salary" name="salary" placeholder="Salary" class="w3-margin">
+
+        <input type="text" id="station" name="station" placeholder="Station Name" class="w3-margin">
+
+    </form>
+
+
+    <button class = "w3-margin-bottom" type="button" id="changeEmployee_button"  onclick="changeEmployeeFunction() "  >Change  </button>
+
+
+</div>
+
+<script>
+    function updateEmployeeFunction(items) {
+        $("#table_of_employee tbody tr").remove();
+        $("#table_of_employee").html("");
+        items = JSON.parse(items);
+
+        items.forEach(function (index) {
+
+            var emplName = index.emplName;
+            var emplSurname = index.emplSurname;
+            var startWork = index.startWork;
+            var endWork = index.endWork;
+            var hoursPerWeek = index.hoursPerWeek;
+            var salary = index.salary;
+            var station = index.station;
+
+
+
+            $("#tableEmployee").append("<tr><td class=\"column1\">"
+                // + trainId + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column2\">"
+                // + depTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column3\">"
+                // + arrivalTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column4\">"
+                // + depStationName + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
+                // + arrivalStationName + "</td><button type='button' onclick='deleteItemFunction()'>Delete>book</button><br><td class=\"column5\">"
+                // + availability + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
+                // + routeIs + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
+                // + maintenanceR + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br></tr><br>");
+
+                + emplName + "</td><td class=\"column2\">"
+                + emplSurname + "</td><td class=\"column3\">"
+                + startWork + "</td><td class=\"column4\">"
+                + endWork + "</td><td class=\"column5\">"
+                + hoursPerWeek + "</td><td class=\"column6\">"
+                + salary + "</td><td class=\"column7\">"
+                + station + "</td><td class=\"column8\"></td>" +
+                "<br></tr><br>");
+
+
+        });
+    }
+
+    function getEmployeeFunction() {
+        $.ajax({
+            url : 'api/manager/employees',
+            dataType : 'json',
+            success : function(r) {
+                updateEmployeeFunction(r);
+            }
+        });
+    }
+
+    function changeEmployeeFunction() {
+        var emplName = $('#emplName').val();
+        var emplSurname = $('#emplSurname').val();
+        var startWork = $('#startWork').val();
+        var endWork = $('#endWork').val();
+        var salary = $('#salary').val();
+        var station = $('#station').val();
+
+
+        r = $.get("api/manager/changeEmployee");
+        if(r.status>=400){
+            alert("Check the values entered, please");
+        }
+
+        else if(emplName.match("\\w+") && emplSurname.match("\\w+") && startWork.match("\\w+")
+            && endWork.match("\\w+") && salary.match("\\w+") && station.match("\\w+") ){
+            $.post("api/manager/changeEmployee",
+                { newEntry: emplName, emplSurname, startWork, endWork,salary, station}, function() {
+                getEmployeeFunction();
+            });
+        }
+
+        else {
+            alert('Enter values to all fields, please');
+        }
+    }
+
+    $(document).ready(function (){
+
+        $("#changeEmployee_button").on('click', function () {
+            changeEmployeeFunction();
+        });
+
+    });
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="w3-container w3-center w3-margin">
-    <h1 style="color: #ffffff ">Manager Profile Page</h1>
+    <h1 style="color: #ffffff ">Manage Route</h1>
 </div>
 
 <div class="w3-container w3-left w3-margin-top">
@@ -87,15 +87,15 @@
 
     <form class="w3-margin-bottom">
 
-        <input type="text" id="trainID2" name="trainID" placeholder="Train number" class="w3-margin">
+        <input type="text" id="trainID2" name="trainID2" placeholder="Train number" class="w3-margin">
 
-        <input type="text" id="from2" name="from" placeholder="From"  class="w3-margin">
+        <input type="text" id="from2" name="from2" placeholder="From"  class="w3-margin">
 
-        <input type="datetime-local"  id="depTime2" data-date-inline-picker="true" name="departure from"
+        <input type="datetime-local"  id="depTime2" data-date-inline-picker="true" name="departure from2"
                placeholder="Departure date and time" class="w3-margin">
-        <input type="text" id="to2" name="to" placeholder="To"  class="w3-margin">
+        <input type="text" id="to2" name="to2" placeholder="To"  class="w3-margin">
 
-        <input type="datetime-local" id="arrTime2" data-date-inline-picker="true" name="arrival to"
+        <input type="datetime-local" id="arrTime2" data-date-inline-picker="true" name="arrival to2"
                placeholder="Arrival date and time" class="w3-margin">
     </form>
 
@@ -140,9 +140,9 @@
                 + depTime + "</td><td class=\"column3\">"
                 + arrivalTime + "</td><td class=\"column4\">"
                 + depStationName + "</td><td class=\"column5\">"
-                + arrivalStationName + "</td><td class=\"column5\">"
-                + availability + "</td><td class=\"column5\">"
-                + routeIs + "</td><td class=\"column5\">"
+                + arrivalStationName + "</td><td class=\"column6\">"
+                + availability + "</td><td class=\"column7\">"
+                + routeIs + "</td><td class=\"column8\">"
                 + maintenanceR + "</td><button type='button' id = 'delete_item' onclick='deleteItemFunction()'>Delete Route</button><br></tr><br>");
 
 
