@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.apache.log4j.Logger;
 import org.yoptascript.inc.certs.KeysReader;
 
 import javax.annotation.Priority;
@@ -24,6 +25,8 @@ import java.util.Map;
 public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
+        Logger log = Logger.getLogger("log4j");
+        log.info(requestContext);
         String path = requestContext.getUriInfo().getPath();
         String method = requestContext.getMethod();
 

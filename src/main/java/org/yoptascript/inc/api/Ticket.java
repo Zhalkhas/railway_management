@@ -11,18 +11,11 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("/ticket")
+@Log
 public class Ticket {
 
     private Statements statements;
@@ -99,6 +92,7 @@ public class Ticket {
         return Response.ok(json.toString()).build();
     }
 
+    @Log
     @Path("/all")
     @GET
     public Response getAllTickets() {
@@ -168,8 +162,9 @@ public class Ticket {
 
     @Path("/checkTicket")
     @GET
-    public Response checkTicketAvailability(@QueryParam("dept") String dept, @QueryParam("dest") String dest,
+    public Response checkTicketAvailability(@CookieParam ("role") String role, @QueryParam("dept") String dept, @QueryParam("dest") String dest,
                                             @QueryParam("t") int train, @QueryParam("date") String date) {
+
         statements = new Statements();
         statements.connect();
         boolean check = false;

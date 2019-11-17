@@ -295,4 +295,15 @@ public class Statements {
         rs.next();
         return rs.getString(1);
     }
+    public ResultSet notifyChangesPass (int id) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select u.email, s.arrivalTime," +
+                " s.departureTime from USER u, TICKET t, SCHEDULE s where s.scheduleId=t.Schedule_scheduleId and \n" +
+                "t.Schedule_scheduleId= ? and t.USER_userId=u.userId union \n" +
+                "select u.email, s.arrivalTime, s.departureTime from USER u, TICKET t, SCHEDULE s where s.scheduleId=t.Schedule_scheduleId and \n" +
+                "t.Schedule_scheduleId=? and t.EMPLOYEE_employeeId=u.userId;;");
+        statement.setInt(1, id);
+        statement.setInt(2, id);
+        ResultSet rs = statement.executeQuery();
+        return rs;
+    }
 }

@@ -4,14 +4,18 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.sql.Statements;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.sql.SQLException;
 
 public class Main {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SQLException {
     Statements s = new Statements();
+    EmailNotificator n= new EmailNotificator();
+    n.sendEdit(s.notifyChangesPass(516));
 //    try {
 //      JsonArray res = s.getRouteStations("Kyzylorda", "Almaty", "2019-11-04");
 //      Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -19,18 +23,18 @@ public class Main {
 //    } catch (SQLException e) {
 //      e.printStackTrace();
 //    }
-    Document document = new Document();
-    try {
-      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("NewFile.pdf"));
-      document.open();
-      document.add(new Paragraph("New paragraph"));
-      document.close();
-      writer.close();
-    } catch (DocumentException e) {
-      e.printStackTrace();
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
+//    Document document = new Document();
+//    try {
+//      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("NewFile.pdf"));
+//      document.open();
+//      document.add(new Paragraph("New paragraph"));
+//      document.close();
+//      writer.close();
+//    } catch (DocumentException e) {
+//      e.printStackTrace();
+//    } catch (FileNotFoundException e) {
+//      e.printStackTrace();
+//    }
 
 //    try {
 //      new KeysReader("pub.der", "priv.der").getPublicKey();
