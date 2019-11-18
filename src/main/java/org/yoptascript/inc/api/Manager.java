@@ -67,7 +67,7 @@ public class Manager {
   @PUT
   @Path("/changeEmployee")
   public Response changeEmployee(@CookieParam("role") String role, @FormParam("salary") int salary, @FormParam("start") String start,
-                                 @FormParam("start") String end, @FormParam("hPerWeek") int hPerWeek) {
+                                 @FormParam("end") String end, @FormParam("hPerWeek") int hPerWeek) {
     if (role.equalsIgnoreCase("manager")) {
       statements = new Statements();
       statements.connect();
