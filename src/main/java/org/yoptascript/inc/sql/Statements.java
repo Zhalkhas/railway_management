@@ -362,8 +362,10 @@ public class Statements {
         return json;
     }
 
-    public JsonArray getSchedules() throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("select * from SCHEDULE;");
+    public JsonArray getSchedules(String username) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select arrivalTime, departureTime, trainId, scheduleId, STATION.name, availability, routeIsClosed, maintenanceR from SCHEDULE, EMPLOYEE, USER, STATION "
+            + "where ? = email and userId = employeeId and STATION_stationId = SCHEDULE.stationId and STATION_stationId = STATION.stationId;");
+        statement.setString(1, username);
         JsonArray json = new JsonArray();
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
@@ -372,7 +374,7 @@ public class Statements {
             jsob.addProperty("departureTime", rs.getString(2));
             jsob.addProperty("trainId", rs.getInt(3));
             jsob.addProperty("scheduleId", rs.getInt(4));
-            jsob.addProperty("stationId", rs.getInt(5));
+            jsob.addProperty("departureName", rs.getString(5));
             jsob.addProperty("availability", rs.getInt(6));
             jsob.addProperty("routeIsClosed", rs.getBoolean(7));
             jsob.addProperty("maintenanceR", rs.getString(8));
@@ -407,7 +409,7 @@ public class Statements {
     public void deleteRoute(int id) throws SQLException {
       PreparedStatement statement = conn.prepareStatement("delete from SCHEDULE where scheduleId = ?");
       statement.setInt(1, id);
-      statement.executeQuery();
+      statement.execute();
     }
 
     public boolean createStation(String name, String username) throws SQLException {
@@ -419,11 +421,11 @@ public class Statements {
         PreparedStatement
             statement2 =
             conn.prepareStatement(
-                "insert into station (name, MANAGER_EMPLOYEE_employeeId) values (?, "
-                    + "(select MANAGER_EMPLOYEE_employeeId from EMPLOYEE, USER where email = ? and userId = empployeeId));");
+                "insert into station (name, managerId) values (?, "
+                    + "(select employeeId from EMPLOYEE, USER where email = ? and userId = employeeId));");
         statement2.setString(1, name);
         statement2.setString(2, username);
-        statement2.executeQuery();
+        statement2.execute();
         isCreated = true;
       }
       rs.close();

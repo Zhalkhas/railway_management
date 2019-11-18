@@ -33,12 +33,12 @@ public class Auth {
             Statements statements = new Statements();
             statements.login(username, pass);
             String token = getToken(username);
-            // String role = statements.getRole(username);
+            String role = statements.getRole(username);
             statements.disconnect();
             NewCookie tokencookie = new NewCookie("token", token, "/", "", "", 3600 * 24, false);
-            // NewCookie rolecookie = new NewCookie("role", role, "/", "", "", 3600 * 24, false);
+            NewCookie rolecookie = new NewCookie("role", role, "/", "", "", 3600 * 24, false);
             NewCookie usertoken = new NewCookie("username", username, "/", "", "", 3600 * 24, false);
-            return Response.ok().cookie(tokencookie).cookie(usertoken).build();//.cookie(rolecookie).build();
+            return Response.ok().cookie(tokencookie).cookie(usertoken).cookie(rolecookie).build();
         } catch (Exception e) {
             return Response.status(Response.Status.FORBIDDEN).header("err", e.toString()).build();
         }

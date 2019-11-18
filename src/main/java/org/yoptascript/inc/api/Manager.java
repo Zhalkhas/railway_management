@@ -24,13 +24,13 @@ public class Manager {
   @Secured
   @Path("/schedules")
   @GET
-  public Response getSchedules(@CookieParam("role") String role) {
+  public Response getSchedules(@CookieParam("role") String role, @CookieParam("username") String username) {
     if (role.equalsIgnoreCase("manager")) {
       statements = new Statements();
       statements.connect();
       JsonArray json = new JsonArray();
       try {
-        json = statements.getSchedules();
+        json = statements.getSchedules(username);
       } catch (SQLException e) {
         return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
       } finally {

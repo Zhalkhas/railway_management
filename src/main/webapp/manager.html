@@ -24,13 +24,13 @@
         <tr >
             <th class="w3-center w3-text-black">Train Number</th>
             <th class="w3-center w3-text-black">Departure Time</th>
-            <th class="w3-center w3-text-black">Arrival Time</th>
 <!--            <th class="w3-center w3-text-black">Schedule ID</th>-->
             <th class="w3-center w3-text-black">From</th>
             <th class="w3-center w3-text-black">To</th>
             <th class="w3-center w3-text-black">Availability</th>
             <th class="w3-center w3-text-black">Route is closed?</th>
             <th class="w3-center w3-text-black">Maintenance of the route</th>
+            <th class="w3-center w3-text-black"></th>
         </tr>
 
         <tbody id="tableSchedule">
@@ -116,14 +116,14 @@
 
         items.forEach(function (index) {
 
-            var depTime = index.depTime;
+            var depTime = index.departureTime;
             var arrivalTime = index.arrivalTime;
-            var depStationName = index.depName;
-            var arrivalStationName = index.arrivalName;
+            var depStationName = index.departureName;
             var trainId = index.trainId;
             var availability = index.availability;
             var routeIs = index.routeIsClosed;
             var maintenanceR = index.maintenanceR;
+            var scheduleId = index.scheduleId;
 
 
             $("#tableSchedule").append("<tr><td class=\"column1\">"
@@ -131,35 +131,36 @@
                 // + depTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column3\">"
                 // + arrivalTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column4\">"
                 // + depStationName + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
-                // + arrivalStationName + "</td><button type='button' onclick='deleteItemFunction()'>Delete>book</button><br><td class=\"column5\">"
-                // + availability + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
-                // + routeIs + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
+                // + availability + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column6\">"
+                // + routeIs + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column7\">"
                 // + maintenanceR + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br></tr><br>");
 
                 + trainId + "</td><td class=\"column2\">"
                 + depTime + "</td><td class=\"column3\">"
                 + arrivalTime + "</td><td class=\"column4\">"
                 + depStationName + "</td><td class=\"column5\">"
-                + arrivalStationName + "</td><td class=\"column6\">"
-                + availability + "</td><td class=\"column7\">"
-                + routeIs + "</td><td class=\"column8\">"
-                + maintenanceR + "</td><button type='button' id = 'delete_item' onclick='deleteItemFunction()'>Delete Route</button><br></tr><br>");
+                + availability + "</td><td class=\"column6\">"
+                + routeIs + "</td><td class=\"column7\">"
+                + maintenanceR + "</td><td class=\"column8\"" + "<button type='button' id='delete_item' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
 
 
         });
     }
 
-    function deleteItemFunction(id){
+    function deleteItemFunction(scheduleId){
         $.ajax({
-            url : 'api/manager/deleteRoute'+id,
-            dataType : 'json',
+            url : 'api/manager/deleteRoute',
+            data : {
+                id: scheduleId
+            },
             type: 'DELETE',
             success : function(r) {
-                updateSchedule(r);
+                getSchedule();
             }
         });
     }
 
+    // can be removed
     function deleteRouteSpecFunction(){
         $.ajax({
             url : 'api/manager/deleteRoute',
@@ -190,7 +191,6 @@
     function getSchedule() {
         $.ajax({
             url : 'api/manager/schedules',
-            dataType : 'json',
             success : function(r) {
                 updateSchedule(r);
             }
@@ -204,22 +204,27 @@
         var arrTime = $('#arrTime').val();
         var trainID = $('#trainID').val();
 
-
-        r = $.get("api/manager/createRoute");
-        if(r.status>=400){
-            alert("Check the values entered, please");
-        }
-
-        else if(from.match("\\w+") && to.match("\\w+") && depTime.match("\\w+")
-            && arrTime.match("\\w+") && trainID.match("\\w+")){
-            $.post("api/manager/createRoute", { newEntry: from,to,depTime,arrTime,trainID}, function() {
+        $.ajax({
+                   url: "api/manager/createRoute",
+            data: {
+                   trainNumber: trainID,
+                   from: from,
+                   to: to,
+                   departureTime: depTime,
+                   arrivalTime: arrTime
+               },
+            method: 'POST',
+                   contentType: 'application/x-www-form-urlencoded'
+        }).done(function (r) {
+            if(r.status>=400) {
+                alert("Check the values entered, please");
+            } else if(from.match("\\w+") && to.match("\\w+") && depTime.match("\\w+")
+                      && arrTime.match("\\w+") && trainID.match("\\w+")){
                 getSchedule();
-            });
-        }
-
-        else {
-            alert('Enter values to all fields, please');
-        }
+            } else {
+                alert('Enter values to all fields, please');
+            }
+        });
     }
 
     function createStationFunction() {
@@ -228,19 +233,16 @@
 
 
         if(stationName.match("\\w+") ){
-            $.post("api/manager/createStation", { newEntry: stationName}, function() {
+            $.post("api/manager/createStation", { name: stationName}, function() {
                 getSchedule();
             });
-        }
-
-        else {
+        } else {
             alert('Enter station name, please');
         }
-
-
     }
 
     $(document).ready(function (){
+        getSchedule();
 
         $("#createRoute_button").on('click', function () {
             createRouteFunction();
