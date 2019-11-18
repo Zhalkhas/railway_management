@@ -156,52 +156,60 @@
         var arrTime = $('#arrTime').val();
         var trainID = $('#trainID').val();
 
-        $.ajax({
-                   url: "api/manager/createRoute",
-                   data: {
-                       trainNumber: trainID,
-                       from: from,
-                       to: to,
-                       departureTime: depTime,
-                       arrivalTime: arrTime
-                   },
-                   method: 'POST',
-                   contentType: 'application/x-www-form-urlencoded'
-               }).done(function (r) {
-            getSchedule();
-            if(r.status>=400) {
-                alert("Check the values entered, please");
-            } else if(from.match("\\w+") && to.match("\\w+") && depTime.match("\\w+")
-                      && arrTime.match("\\w+") && trainID.match("\\w+")){
-                getSchedule();
-            } else {
-                alert('Enter values to all fields, please');
-            }
-        });
+        if(from.match("\\w+") && to.match("\\w+") && depTime.match("\\w+")
+            && arrTime.match("\\w+") && trainID.match("\\w+")){
+            $.ajax({
+                url: "api/manager/createRoute",
+                data: {
+                    trainNumber: trainID,
+                    from: from,
+                    to: to,
+                    departureTime: depTime,
+                    arrivalTime: arrTime
+                },
+                method: 'POST',
+                contentType: 'application/x-www-form-urlencoded'
+            }).done(function (r) {
+
+                if(r.status>=400) {
+                    alert("Check the values entered, please");
+                } else{
+                    getSchedule();
+                }
+            });
+        } else {
+            alert('Enter values to all fields, please');
+        }
+
+
     }
 
     function createStationFunction() {
 
         var stationName = $('#stationName').val();
 
-        $.ajax({
-                   url: "api/manager/createStation",
-                   data: {
-                       stationName: stationName
+        if(stationName.match("\\w+") ){
+            $.ajax({
+                url: "api/manager/createStation",
+                data: {
+                    stationName: stationName
 
-                   },
-                   method: 'POST',
-                   contentType: 'application/x-www-form-urlencoded'
-               }).done(function (r) {
-            getSchedule();
-            if(r.status>=400) {
-                alert("Check the values entered, please");
-            } else if(stationName.match("\\w+") ){
-                getSchedule();
-            } else {
-                alert('Enter values to all fields, please');
-            }
-        });
+                },
+                method: 'POST',
+                contentType: 'application/x-www-form-urlencoded'
+            }).done(function (r) {
+
+                if(r.status>=400) {
+                    alert("Check the values entered, please");
+                } else {
+                    getSchedule();
+                }
+            });
+        } else {
+            alert('Enter values to all fields, please');
+        }
+
+
         // if(stationName.match("\\w+") ){
         //     $.post("api/manager/createStation", { name: stationName}, function() {
         //         getSchedule();
