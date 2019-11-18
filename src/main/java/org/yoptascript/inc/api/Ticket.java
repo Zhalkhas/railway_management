@@ -11,6 +11,7 @@ import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -63,6 +64,26 @@ public class Ticket {
 //        res.header("Content-Disposition", "attachment; filename="+name);
 //        return Response.ok().build();
 //    }
+
+    @Path("/insertTicket")
+    @POST
+    public Response insertTicket(@FormParam("ownerN") String ownerN,
+                                 @FormParam("ownerS") String ownerS, @FormParam("price") double price,
+                                 @FormParam("docId") int docId, @FormParam("usrId") String usrId,
+                                 @FormParam("agentId") int agentId, @FormParam("deptId") String deptId, @FormParam("destId") String destId,
+                                 @FormParam("date") String date) {
+        statements = new Statements();
+        statements.connect();
+        try {
+            statements.insertTicket(ownerN, ownerS, price, docId,
+                    usrId, agentId, deptId, destId, date);
+        } catch (SQLException e) {
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
+        }
+        return Response.ok().build();
+    }
 
     @Secured
     @Path("/changeTicket")
