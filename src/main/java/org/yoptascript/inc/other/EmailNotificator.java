@@ -35,7 +35,7 @@ public class EmailNotificator {
         prop.put("mail.smtp.socketFactory.port", "465");
         prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         Session session = Session.getInstance(prop, new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
+            protected PasswordAuthentication getPasswordAuthentication()     {
                 return new PasswordAuthentication("scumlean.railway@gmail.com", "javahtml");
             }
         });

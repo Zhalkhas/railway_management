@@ -40,6 +40,7 @@ public class ApiApp extends Application {
         singletons.add(new Search());
         singletons.add(new User());
         singletons.add(new Manager());
+        singletons.add(new LogFilter());
     }
 
     @Override

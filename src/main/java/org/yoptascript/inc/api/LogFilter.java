@@ -2,34 +2,28 @@ package org.yoptascript.inc.api;
 
 import org.apache.log4j.Logger;
 
-import javax.annotation.Priority;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.*;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
-@Log
 @Provider
 @PreMatching
-public class LogFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class LogFilter implements  ContainerResponseFilter {
     private Logger logger = Logger.getLogger("log4j");
-    @Override
-    public void filter(ContainerRequestContext containerRequestContext) throws IOException {
-        logger.info("request:" + getRequestContext(containerRequestContext));
-    }
+
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
-        logger.info("request:" + getRequestContext(containerRequestContext));
-        logger.info("response:" + getResponseContext(containerResponseContext));
+        logger.info(getLogEntry(containerRequestContext, containerResponseContext));
     }
 
-    private String getRequestContext(ContainerRequestContext c){
+    private String getLogEntry(ContainerRequestContext req, ContainerResponseContext resp){
         //TODO:implement normal logging
-        return c.toString();
-    }
-
-    private String getResponseContext(ContainerResponseContext c){
-        //TODO:implement normal logging
-        return c.toString();
+        StringBuilder logEntry = new StringBuilder();
+        logEntry.append("<uri>").append(req.getUriInfo().getAbsolutePath().getPath()).append("</uri>");
+        logEntry.append("<method>").append(req.getMethod()).append("<method>");
+        logEntry.append("<req_headers>").append(req.getHeaders()).append("</req_headers>");
+        logEntry.append("<resp_headers>").append(resp.getStringHeaders()).append("</resp_headers>");
+        logEntry.append("<status>").append(resp.getStatus()).append("</status>");
+        return new String(logEntry);
     }
 }
