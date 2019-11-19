@@ -346,20 +346,23 @@ public class Statements {
         return res;
     }
 
-    public JsonArray getEmployees() throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("select * from USER, EMPLOYEE where status = 'agent';");
+    public JsonArray getEmployees(String email) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select E.employeeId, U.FName, U.LName, E.salary, E.StartOfWork, E.EndOfWork, E.STATION_stationId from USER U, USER U1, EMPLOYEE E, EMPLOYEE E1 "
+            + "where U.status = 'agent' and U.userId = E.employeeId and E1.employeeId = U1.userId and U1.email = ? and E.STATION_stationId = E1.STATION_stationId;");
+        statement.setString(1, email);
         JsonArray json = new JsonArray();
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
             JsonObject jsob = new JsonObject();
-            jsob.addProperty("FName", rs.getString(2));
-            jsob.addProperty("LName", rs.getString(3));
-            jsob.addProperty("email", rs.getString(4));
-            jsob.addProperty("salary", rs.getInt(8));
-            jsob.addProperty("StartOfWork", rs.getString(9));
-            jsob.addProperty("EndOfWork", rs.getString(10));
-            jsob.addProperty("hoursOfWorkPerWeek", rs.getInt(11));
-            jsob.addProperty("STATION_stationId", rs.getInt(12));
+            jsob.addProperty("emplId", rs.getString(1));
+            jsob.addProperty("emplName", rs.getString(2));
+            jsob.addProperty("emplSurname", rs.getString(3));
+            //jsob.addProperty("email", rs.getString(4));
+            jsob.addProperty("salary", rs.getInt(4));
+            jsob.addProperty("startWork", rs.getString(5));
+            jsob.addProperty("endWork", rs.getString(6));
+            //jsob.addProperty("hoursOfWorkPerWeek", rs.getInt(11));
+            jsob.addProperty("station", rs.getInt(7));
             json.add(jsob);
         }
         rs.close();
@@ -388,13 +391,13 @@ public class Statements {
         return json;
     }
 
-    public void changeEmployee(int salary, String start, String end, int hPerWeek)
+    public void changeEmployee(int id, int salary, String start, String end)
         throws SQLException {
-      PreparedStatement statement = conn.prepareStatement("update EMPLOYEE set salary = ?, StartOfWork = ?, EndOfWork = ?, hoursOfWorkPerWeek = ?");
+      PreparedStatement statement = conn.prepareStatement("update EMPLOYEE set salary = ?, StartOfWork = ?, EndOfWork = ? where employeeId = ?");
       statement.setInt(1, salary);
       statement.setString(2, start);
       statement.setString(3, end);
-      statement.setInt(4, hPerWeek);
+      statement.setInt(4, id);
       statement.execute();
     }
 

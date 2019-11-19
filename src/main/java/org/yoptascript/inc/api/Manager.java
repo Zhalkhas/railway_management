@@ -45,13 +45,13 @@ public class Manager {
   @Secured
   @Path("/employees")
   @GET
-  public Response getEmployees(@CookieParam("role") String role) {
+  public Response getEmployees(@CookieParam("role") String role, @CookieParam("username") String email) {
     if (role.equalsIgnoreCase("manager")) {
       statements = new Statements();
       statements.connect();
       JsonArray json = new JsonArray();
       try {
-        json = statements.getEmployees();
+        json = statements.getEmployees(email);
       } catch (SQLException e) {
         return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
       } finally {
@@ -66,13 +66,13 @@ public class Manager {
   @Secured
   @PUT
   @Path("/changeEmployee")
-  public Response changeEmployee(@CookieParam("role") String role, @FormParam("salary") int salary, @FormParam("start") String start,
-                                 @FormParam("end") String end, @FormParam("hPerWeek") int hPerWeek) {
+  public Response changeEmployee(@CookieParam("role") String role, @FormParam("emplId") int id, @FormParam("salary") int salary, @FormParam("start") String start,
+                                 @FormParam("end") String end) {
     if (role.equalsIgnoreCase("manager")) {
       statements = new Statements();
       statements.connect();
       try {
-        statements.changeEmployee(salary, start, end, hPerWeek);
+        statements.changeEmployee(id, salary, start, end);
       } catch (SQLException e) {
         return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
       } finally {
