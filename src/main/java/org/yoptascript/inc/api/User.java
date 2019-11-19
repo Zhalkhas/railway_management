@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import org.apache.log4j.Level;
 import org.yoptascript.inc.certs.KeysReader;
 import org.yoptascript.inc.sql.Statements;
 
@@ -13,9 +12,13 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
-import javax.ws.rs.*;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+
 @Path("/user")
 public class User {
 
@@ -37,30 +40,43 @@ public class User {
         return Response.ok(claims.getSubject()).build();
     }
 
-    @Path("/logs")
-    @GET
-    //@Secured
-    public Response toggleLog(){
-        Level level = (Logger.getLogger("log4j").getLevel() == Level.OFF) ? Level.ALL : Level.OFF;
-        Logger.getLogger("log4j").setLevel(level);
-        return Response.ok((level == Level.OFF) ? "off":"all").build();
-    }
     @Path("/newUser")
     @POST
     public Response createUser(@FormParam("email") String email, @FormParam("password") String pass,
                                @FormParam("fname") String fname, @FormParam("lname") String lname) {
         statements = new Statements();
         statements.connect();
+        boolean isCreated = false;
         try {
-            statements.createUser(email, pass, fname, lname);
+            isCreated = statements.createUser(email, pass, fname, lname);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
         }
-        statements.disconnect();
         JsonObject user = new JsonObject();
         user.addProperty("u", email);
         user.addProperty("p", pass);
-        return Response.ok(user.toString()).build();
+        return isCreated ? Response.ok(user.toString()).build() : Response.status(Response.Status.CONFLICT).build();
+    }
+
+    @Secured
+    @GET
+    @Path("/profile")
+    public Response profile(@CookieParam("role") String role) {
+        JsonObject json = new JsonObject();
+        switch (role) {
+            case ("user"):
+                json.addProperty("path","passenger_profile.html");
+                break;
+            case ("agent"):
+                json.addProperty("path","agent.html");
+                break;
+            case ("manager"):
+                json.addProperty("path", "manager.html");
+                break;
+        }
+        return Response.ok(json.toString()).build();
     }
 }

@@ -117,12 +117,8 @@
         });
     }
 
-
-
-
     function getPastTrips(){
-        $.get("api/ticket/allPastTickets", {
-                  userId: 1}, //TODO: userId should be here
+        $.get("api/ticket/allPastTickets", //TODO: userId should be here
 
               function(r) {
                   updateListOfPastTrips(r);
@@ -130,8 +126,7 @@
     }
 
     function getFutureTrips(){
-        $.get("api/ticket/allFutureTickets", {
-                  userId: 1}, //TODO: userId send from the login page
+        $.get("api/ticket/allFutureTickets", //TODO: userId send from the login page
 
               function(r) {
                   updateListOfFutureTrips(r);

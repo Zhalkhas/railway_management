@@ -66,7 +66,8 @@
                 var name = $('#name').val();
                 var price = 6001;
 
-                var agentID = 156;
+                //TODO: check employee on server side and delete a line below
+                var agentID = 1;
                 var usrID = $('#email').val();
                 var deptID = queries[2];
                 var destID = queries[3];
@@ -80,12 +81,12 @@
                 ownerS: lastname,
                 price: 6001,
                 docId: idnumber,
-                usrID: usrID,
+                usrId: usrID,
                 agentId: agentID,
                 deptId: deptID,
 
                 destId: destID,
-                           depTime: depTime
+                           date: depTime
                     },
 
                     function (r) {
@@ -96,10 +97,11 @@
                         // window.navigator.msSaveBlob(blob, filename);
                         // var file = new File([r], filename, { type: 'application/force-download' });
                         // window.open(URL.createObjectURL(file));
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(r);
-                        link.download = "PdfName-" + new Date().getTime() + ".pdf";
-                        link.click();
+
+                        // var link = document.createElement('a');
+                        // link.href = window.URL.createObjectURL(r);
+                        // link.download = "PdfName-" + new Date().getTime() + ".pdf";
+                        // link.click();
                     });
             }
 

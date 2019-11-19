@@ -39,6 +39,7 @@ public class ApiApp extends Application {
         singletons.add(new Ticket());
         singletons.add(new Search());
         singletons.add(new User());
+        singletons.add(new Manager());
     }
 
     @Override

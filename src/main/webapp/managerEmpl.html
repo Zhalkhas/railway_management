@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Employee</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+
+<div class="w3-container w3-center w3-margin">
+    <h1 >Manage Employee</h1>
+</div>
+
+<div class="w3-container w3-left w3-margin-top">
+    <h2 class="w3-wide">Employee Table</h2>
+</div>
+
+<div>
+    <table class="w3-table w3-bordered w3-margin-top">
+
+        <tr >
+            <th class="w3-center w3-text-black">EmployeeID</th>
+            <th class="w3-center w3-text-black">Name</th>
+            <th class="w3-center w3-text-black">Surname</th>
+<!--            <th class="w3-center w3-text-black">Role</th>-->
+            <th class="w3-center w3-text-black">Start of Work</th>
+            <th class="w3-center w3-text-black">End of Work</th>
+<!--            <th class="w3-center w3-text-black">Hours per week</th>-->
+            <th class="w3-center w3-text-black">Salary</th>
+            <th class="w3-center w3-text-black">Station</th>
+            <th class="w3-center w3-text-black"></th>
+        </tr>
+
+        <tbody id="tableEmployee">
+
+        </tbody>
+    </table>
+
+</div>
+
+<div>
+
+    <h2 class="w3-wide w3-margin">Change </h2>
+
+        <input type="text" id="emplId" name="emplId" placeholder="Employee ID" class="w3-margin">
+<!--        <input type="text" id="emplName" name="emplName" placeholder="Name" class="w3-margin">-->
+
+<!--        <input type="text" id="emplSurname" name="emplSurname" placeholder="Surname"  class="w3-margin">-->
+<!--        <input type="text" id="role" name="role" placeholder="Role"  class="w3-margin">-->
+        <input type=text  id="startWork"  name="startWork" placeholder="Work Starts" class="w3-margin">
+        <input type=text id="endWork"  name="endWork" placeholder="Work Ends" class="w3-margin">
+
+<!-- <input type="text" id="hoursPerWeek" name="hoursPerWeek" placeholder="Work hours Per Week"  class="w3-margin">-->
+
+        <input type="text" id="salary" name="salary" placeholder="Salary" class="w3-margin">
+
+        <input type="text" id="station" name="station" placeholder="Station Name" class="w3-margin">
+
+    </form>
+
+
+    <button class = "w3-margin-bottom" type="button" id="updateEmployee_button"  onclick="updateEmployee() "  >Change  </button>
+
+
+</div>
+
+<div>
+
+    <button id="managerStart_button" class="closing" onClick="window.location.href = 'ManagerStart.html';" >Manager Main Page</button>
+
+</div>
+
+<script>
+    let list;
+    function updateTable(items) {
+        document.getElementById("tableEmployee").innerHTML = "";
+        $("#table_of_employee tbody tr").remove();
+        $("#table_of_employee").html("");
+        items = JSON.parse(items);
+        list = [];
+        list = items;
+        var id = 0;
+        items.forEach(function (index) {
+            var emplId = index.emplId;
+            var emplName = index.emplName;
+            var emplSurname = index.emplSurname;
+            // var role = index.role;
+            var startWork = index.startWork;
+            var endWork = index.endWork;
+            // var hoursPerWeek = index.hoursPerWeek;
+            var salary = index.salary;
+            var station = index.station;
+
+            $("#tableEmployee").append("<tr><td class=\"column1\">"
+
+                + emplId + "</td><td class=\"column2\">"
+                + emplName + "</td><td class=\"column3\">"
+                + emplSurname + "</td><td class=\"column4\">"
+                //+ role + "</td><td class=\"column5\">"
+                + startWork + "</td><td class=\"column5\">"
+                + endWork + "</td><td class=\"column6\">"
+                // + hoursPerWeek + "</td><td class=\"column7\">"
+                + salary + "</td><td class=\"column7\">"
+                + station + "</td><td class=\"column8\">"
+                +  "<button type='button' onclick='update(" + id + ")'>Update</button></td></tr><br>");
+                id++;
+        });
+    }
+
+    function getEmployeeFunction() {
+        $.ajax({
+            url : 'api/manager/employees',
+            success : function(r) {
+                updateTable(r);
+            }
+        });
+    }
+
+    function updateEmployee() {
+
+        var emplId = $('#emplId').val();
+        // var emplName = $('#emplName').val();
+        // var emplSurname = $('#emplSurname').val();
+        // var role = $('#role').val();
+        var startWork = $('#startWork').val();
+        var endWork = $('#endWork').val();
+        var salary = $('#salary').val();
+        var station = $('#station').val();
+
+        if(emplId.match("\\w+") // emplName.match("\\w+") && emplSurname.match("\\w+") && role.match("\\w+")
+            && startWork.match("\\w+") && endWork.match("\\w+") && salary.match("\\w+") && station.match("\\w+")){
+            $.ajax({
+                url: "api/manager/changeEmployee",
+                data: {
+                    emplId: emplId,
+                    // emplName: emplName,
+                    // emplSurname: emplSurname,
+                    // role: role,
+                    start: startWork,
+                    end: endWork,
+                    salary: salary,
+                    station: station
+                },
+                method: 'PUT',
+                contentType: 'application/x-www-form-urlencoded'
+            }).done(function (r) {
+                // getEmployeeFunction();
+                if(r.status>=400) {
+                    alert("Check the values entered, please");
+                } else {
+                    getEmployeeFunction();
+                    reset();
+                }
+            });
+        } else {
+            alert('Enter values to all fields, please');
+        }
+    }
+
+    function update(id){
+        obj = list[id];
+        $('#emplId').val(obj.emplId);
+        $('#salary').val(obj.salary);
+        $('#startWork').val(obj.startWork);
+        $('#endWork').val(obj.endWork);
+        $('#station').val(obj.station);
+    }
+
+    function reset(){
+        $('#emplId').val('');
+        // $('#emplName').val('');
+        // $('#emplSurname').val('');
+        // $('#role').val('');
+        $('#startWork').val('');
+        $('#endWork').val('');
+        $('#salary').val('');
+        $('#station').val('');
+    }
+
+    $(document).ready(function (){
+        getEmployeeFunction();
+
+        $("#updateEmployee_button").on('click', function () {
+            updateEmployee();
+        });
+    });
+</script>
+</body>
+</html>

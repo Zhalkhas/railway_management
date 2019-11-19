@@ -13,30 +13,37 @@ public class PDFCreator {
   private Document document;
   private String name;
   private List<String> ticketInfo;
-  private PdfWriter pdfWriter;
+  PdfWriter pdfWriter;
 
   public PDFCreator(String name, List<String> ticketInfo) {
     document = new Document();
     this.name = name;
     this.ticketInfo = ticketInfo;
-
+    createPdf();
   }
 
-  public void createPdf() {
+  private void createPdf() {
     try {
       pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(name));
       document.open();
-      document.addAuthor("Yoptascript.inc");
-      document.addTitle(name);
-      for (String s : ticketInfo) {
-        document.add(new Paragraph(s));
-      }
-
+      fillTheDocument();
       document.close();
       pdfWriter.close();
     } catch (DocumentException e) {
       e.printStackTrace();
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void fillTheDocument() {
+    try {
+      document.addAuthor("Yoptascript.inc");
+      document.addTitle(name);
+      for (String s : ticketInfo) {
+        document.add(new Paragraph(s));
+      }
+    } catch (DocumentException e) {
       e.printStackTrace();
     }
   }
