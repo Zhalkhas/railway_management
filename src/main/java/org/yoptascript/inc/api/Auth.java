@@ -48,7 +48,7 @@ public class Auth {
     @Path("/logout")
     public Response logout() {
         NewCookie tokencookie = new NewCookie("token", null, "/", null, null, 0, false, true);
-        NewCookie rolecookie = new NewCookie("token", null, "/", null, null, 0, false, true);
+        NewCookie rolecookie = new NewCookie("role", null, "/", null, null, 0, false, true);
         NewCookie usertoken = new NewCookie("username", null, "/", null, null, 0, false, true);
         return Response.ok().cookie(tokencookie).cookie(rolecookie).cookie(usertoken).build();
     }

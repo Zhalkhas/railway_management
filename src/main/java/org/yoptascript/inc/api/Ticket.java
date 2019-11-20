@@ -146,6 +146,20 @@ public class Ticket {
             } finally {
               statements.disconnect();
             }
+//          JsonArray json = new JsonArray();
+//          for (int i = 0; i < 10; i++) {
+//            JsonObject jsob = new JsonObject();
+//            jsob.addProperty("ticketId", i);
+//            jsob.addProperty("ownerN", "name" + i);
+//            jsob.addProperty("ownerS", "surname" + i);
+//            jsob.addProperty("price", i * 10000);
+//            jsob.addProperty("passengerID", i * 10 + i * 20);
+//            jsob.addProperty("departureTime", "18:00");
+//            jsob.addProperty("departureName", "city" + i);
+//            jsob.addProperty("arrivalTime", "23:59");
+//            jsob.addProperty("arrivalName", "city" + 100*i);
+//            json.add(jsob);
+//          }
             return Response.ok(json.toString()).build();
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -156,7 +170,7 @@ public class Ticket {
     @Path("/allPastTickets")
     @GET
     public Response getAllPastTicketsOfUser(@CookieParam("username") String username, @CookieParam("role") String role) {
-      if (role.equalsIgnoreCase("passenger")) {
+      if (role.equalsIgnoreCase("user")) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();
@@ -177,7 +191,7 @@ public class Ticket {
     @Path("/allFutureTickets")
     @GET
     public Response getAllFutureTicketsOfUser(@CookieParam("username") String username, @CookieParam("role") String role) {
-      if (role.equalsIgnoreCase("passenger")) {
+      if (role.equalsIgnoreCase("user")) {
         statements = new Statements();
         statements.connect();
         JsonArray json = new JsonArray();

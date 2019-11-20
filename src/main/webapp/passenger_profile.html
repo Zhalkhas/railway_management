@@ -2,27 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <link rel="stylesheet" type="text/css" href="railway.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-
-
-    <title>Passenger Profile Page</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
+    <title>Passenger Profile</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src="bootstrap.min.js"></script>
 </head>
 
 <body>
-<div class="w3-container w3-center w3-margin">
-    <h1  style="color: #ffffff ">Passenger Profile Page</h1>
+<div class="main-header">
+    <div class="go-home-button">
+        <a href="index.html"  >Go To Search</a> <br>
+    </div>
+
+    <div class ="main-header-right">
+        <div class="logtype-block">Logged as ueba</div>
+        <div class="userpic-block">
+            <img src="./img/userpic.png">
+        </div>
+        <div class="signin-block">
+            <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
+        </div>
+    </div>
 </div>
 
-
-
-
-<div class="w3-container w3-left w3-margin-top">
-    <h2 class="w3-wide">Past Trips</h2>
-</div>
+<p class="basic-text">Past Trips</p>
 
 <div>
     <table class="w3-table w3-bordered w3-margin-top">
@@ -34,6 +40,7 @@
             <th class="w3-center w3-text-black">Departure Station Name</th>
             <th class="w3-center w3-text-black">Arrival Station Name</th>
             <th class="w3-center w3-text-black">Train id</th>
+            <th class="w3-center w3-text-black"></th>
         </tr>
         <!--        </thead>-->
         <tbody id="tablePast">
@@ -42,9 +49,9 @@
     </table>
 </div>
 
-<div class="w3-container w3-left w3-margin-top">
-    <h2 class="w3-wide">Future Trips</h2>
-</div>
+<p class="basic-text">Future Trips</p>
+
+
 <div>
     <table class="w3-table w3-bordered w3-margin-top">
         <!--        <thead>-->
@@ -55,8 +62,8 @@
             <th class="w3-center w3-text-black">Departure Station Name</th>
             <th class="w3-center w3-text-black">Arrival Station Name</th>
             <th class="w3-center w3-text-black">Train id</th>
+            <th class="w3-center w3-text-black"></th>
         </tr>
-        <!--        </thead>-->
         <tbody id="tableFuture">
 
         </tbody>
@@ -64,11 +71,25 @@
 </div>
 
 
-<div class="w3-center w3-margin-top" >
-    <a href="index.html" id="main_button"  >Go To Search</a> <br>
-</div>
+<section class="wrapper">
+    <div class="main-content signin-form" id="mail-sender" style="display: none;">
+        <h3>Send Message to Agent</h3>
+        <form class="bevertical">
+
+            <input type="text" id="message" name="message" placeholder="Enter your message">
+            <input type="text" id="schedule" name="schedule" placeholder="Enter your Departure Station Name">
+        </form>
+        <button type="button" id="sendMessage_button" class = "button"   onclick="sendMessageFunction() "  >Send</button>
+    </div>
+</section>
 
 <script>
+
+    function logout() {
+        $.get("api/auth/logout");
+        window.location.replace("index.html");
+    }
+
     function updateListOfPastTrips(items) {
         $("#table_of_trips tbody tr").remove();
         $("#table_of_trips").html("");
@@ -84,12 +105,13 @@
 
 
             $("#tablePast").append("<tr><td class=\"column1\">"
-                                   + ticketId + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
-                                   + depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
-                                   + arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
-                                   + depStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
-                                   + arrivalStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
-                                   + trainId + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
+                                   + ticketId + "</td><br><td class=\"column2\">"
+                                   + depTime + "</td><br><td class=\"column3\">"
+                                   + arrivalTime + "</td><br><td class=\"column4\">"
+                                   + depStationName + "</td><br><td class=\"column5\">"
+                                   + arrivalStationName + "</td><br><td class=\"column5\">"
+                                   + trainId + "</td><td class=\"column7\""
+                                   + "<button type='button' class='button' id='send_item' onclick='showMessageFunction(\"" + depStationName + "\")'>Change</button>" + "</td><br></tr><br>");
         });
     }
 
@@ -108,29 +130,53 @@
 
 
             $("#tableFuture").append("<tr><td class=\"column1\">"
-                                     + ticketId + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column2\">"
-                                     + depTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column3\">"
-                                     + arrivalTime + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column4\">"
-                                     + depStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
-                                     + arrivalStationName + "</td><button type='button' onclick='bookFunction()'>book</button><br><td class=\"column5\">"
-                                     + trainId + "</td><button type='button' onclick='bookFunction()'>book</button><br></tr><br>");
+                                     + ticketId + "</td><br><td class=\"column2\">"
+                                     + depTime + "</td><br><td class=\"column3\">"
+                                     + arrivalTime + "</td><br><td class=\"column4\">"
+                                     + depStationName + "</td><br><td class=\"column5\">"
+                                     + arrivalStationName + "</td><br><td class=\"column5\">"
+                                     + trainId + "</td><td class=\"column7\""
+                                     + "<button type='button' class='button' id='send_item' onclick='showMessageFunction(" +"\"" + depStationName + "\")'>Change</button></td><br></tr><br>");
         });
     }
 
-    function getPastTrips(){
-        $.get("api/ticket/allPastTickets", //TODO: userId should be here
+    function showMessageFunction(depStationName){
+        $('#schedule').val(depStationName);
+        document.getElementById("mail-sender").style.display = "block";
+    }
 
+    function getPastTrips(){
+        $.get("api/ticket/allPastTickets",
               function(r) {
                   updateListOfPastTrips(r);
               });
     }
 
     function getFutureTrips(){
-        $.get("api/ticket/allFutureTickets", //TODO: userId send from the login page
-
+        $.get("api/ticket/allFutureTickets",
               function(r) {
                   updateListOfFutureTrips(r);
               });
+    }
+
+
+    function sendMessageFunction() {
+        var message = $('#message').val();
+        var station = $('#schedule').val();
+        if(message.match("\\w+")){
+            $.post("api/user/newMessage", { message: message, station: station}, function(r) {
+               if(r.status >=400){
+                   alert("Error");
+               }else{
+                   alert("Sent message");
+                   $('#message').val('');
+                   $('#schedule').val('');
+                   document.getElementById("mail-sender").style.display = "none";
+               }
+            });
+        } else {
+            alert('Enter your message, please');
+        }
     }
 
     $(document).ready(function (){

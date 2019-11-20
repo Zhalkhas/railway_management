@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.yoptascript.inc.certs.KeysReader;
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.sql.Statements;
 
 import java.io.IOException;
@@ -59,6 +60,26 @@ public class User {
         user.addProperty("u", email);
         user.addProperty("p", pass);
         return isCreated ? Response.ok(user.toString()).build() : Response.status(Response.Status.CONFLICT).build();
+    }
+
+    @Secured
+    @POST
+    @Path("/newMessage")
+    public Response sendMessage(@CookieParam("role") String role, @CookieParam("username") String email,
+                                @FormParam("message") String message, @FormParam("station") String station) {
+        statements = new Statements();
+        statements.connect();
+        String agentMail = "";
+        try {
+            agentMail = statements.getAgentEmail(station);
+        } catch(SQLException e) {
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
+        }
+        EmailNotificator notificator = new EmailNotificator();
+        notificator.sendEdit(agentMail, "CHANGES IN TICKET", message);
+        return Response.ok().build();
     }
 
     @Secured
