@@ -25,8 +25,6 @@ import java.util.Map;
 public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        Logger log = Logger.getLogger("log4j");
-        log.info(requestContext);
         String path = requestContext.getUriInfo().getPath();
         String method = requestContext.getMethod();
 

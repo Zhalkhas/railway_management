@@ -12,7 +12,7 @@ public class LogFilter implements  ContainerResponseFilter {
     private Logger logger = Logger.getLogger("log4j");
 
     @Override
-    public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
+    public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext){
         logger.info(getLogEntry(containerRequestContext, containerResponseContext));
     }
 
@@ -20,7 +20,7 @@ public class LogFilter implements  ContainerResponseFilter {
         //TODO:implement normal logging
         StringBuilder logEntry = new StringBuilder();
         logEntry.append("<uri>").append(req.getUriInfo().getAbsolutePath().getPath()).append("</uri>");
-        logEntry.append("<method>").append(req.getMethod()).append("<method>");
+        logEntry.append("<method>").append(req.getMethod()).append("</method>");
         logEntry.append("<req_headers>").append(req.getHeaders()).append("</req_headers>");
         logEntry.append("<resp_headers>").append(resp.getStringHeaders()).append("</resp_headers>");
         logEntry.append("<status>").append(resp.getStatus()).append("</status>");

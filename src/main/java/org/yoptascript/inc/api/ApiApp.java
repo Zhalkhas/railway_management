@@ -19,16 +19,11 @@ public class ApiApp extends Application {
     private Set<Class<?>> empty = new HashSet<Class<?>>();
 
     public ApiApp() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        Logger log = Logger.getLogger("log4j");
-        log.info("-------app started-------");
         KeysReader keysReader = new KeysReader("pub.der", "priv.der");
         KeyPair keyPair;
         try {
             keyPair = new KeyPair(keysReader.getPublicKey(), keysReader.getPrivateKey());
-            System.out.println("successfully added keys");
         } catch (Exception e) {
-            log.error("cannot set keypair");
-            log.error(e.toString());
             System.out.println("cannot set keypair");
             System.out.println(e.toString());
             keyPair = new KeyPair(keysReader.getPublicKey(), keysReader.getPrivateKey());
