@@ -4,19 +4,49 @@
     <meta charset="UTF-8">
 
     <link rel="stylesheet" type="text/css" href="railway.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
     <title>Manage Route</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src="bootstrap.min.js"></script>
 </head>
 <body>
-<div class="w3-container w3-center w3-margin">
-    <h1 style="color: #ffffff ">Manage Route</h1>
+
+<div class="main-header">
+    <div class="go-home-button">
+        <a href="index.html">Go To Search</a> <br>
+    </div>
+    <div class="go-home-button">
+        <a href="logs.html">Logs</a> <br>
+    </div>
+    <div class="go-home-button">
+        <a href="managerEmpl.html">Manage Employee</a> <br>
+    </div>
+
+
+    <div class ="main-header-right">
+        <div class="logtype-block">Logged as ueba</div>
+        <div class="userpic-block">
+            <img src="./img/userpic.png">
+        </div>
+        <div class="signin-block">
+            <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
+
+        </div>
+    </div>
 </div>
 
-<div class="w3-container w3-left w3-margin-top">
-    <h2 class="w3-wide">Schedule</h2>
-</div>
+<!--<p class="basic-text">Manage Route</p>-->
+<p class="basic-text">Schedule</p>
+
+<!--<div class="w3-container w3-center w3-margin">-->
+<!--    <h1 style="color: #ffffff ">Manage Route</h1>-->
+<!--</div>-->
+
+<!--<div class="w3-container w3-left w3-margin-top">-->
+<!--    <h2 class="w3-wide">Schedule</h2>-->
+<!--</div>-->
 
 <div>
     <table class="w3-table w3-bordered w3-margin-top" id="tableContent">
@@ -24,11 +54,11 @@
         <tr >
             <th class="w3-center w3-text-black">Train Number</th>
             <th class="w3-center w3-text-black">Departure Time</th>
+            <th class="w3-center w3-text-black">Arrival Time</th>
             <!--            <th class="w3-center w3-text-black">Schedule ID</th>-->
             <th class="w3-center w3-text-black">From</th>
-            <th class="w3-center w3-text-black">To</th>
             <th class="w3-center w3-text-black">Availability</th>
-            <th class="w3-center w3-text-black">Route is closed?</th>
+            <th class="w3-center w3-text-black">Closed</th>
             <th class="w3-center w3-text-black">Maintenance of the route</th>
             <th class="w3-center w3-text-black"></th>
         </tr>
@@ -40,56 +70,92 @@
 
 </div>
 
-<div>
+<!--<div>-->
 
-    <h2 class="w3-wide w3-margin">Create Route</h2>
+<!--    <h2 class="w3-wide w3-margin">Create Route</h2>-->
 
-    <form class="w3-margin-bottom">
+<!--    <form class="w3-margin-bottom">-->
 
-        <input type="text" id="trainID" name="trainID" placeholder="Train number" class="w3-margin">
+<!--        <input type="text" id="trainID" name="trainID" placeholder="Train number" class="w3-margin">-->
 
-        <input type="text" id="from" name="from" placeholder="From"  class="w3-margin">
+<!--        <input type="text" id="from" name="from" placeholder="From"  class="w3-margin">-->
 
-        <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from"
-               placeholder="Departure date and time" class="w3-margin">
-        <input type="text" id="to" name="to" placeholder="To"  class="w3-margin">
+<!--        <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from"-->
+<!--               placeholder="Departure date and time" class="w3-margin">-->
+<!--        <input type="text" id="to" name="to" placeholder="To"  class="w3-margin">-->
 
-        <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to"
-               placeholder="Arrival date and time" class="w3-margin">
-    </form>
-
-
-    <button class = "w3-margin-bottom" type="button" id="createRoute_button"  onclick="createRouteFunction() "  >Create Route</button>
+<!--        <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to"-->
+<!--               placeholder="Arrival date and time" class="w3-margin">-->
+<!--    </form>-->
 
 
-</div>
+<!--    <button class = "w3-margin-bottom" type="button" id="createRoute_button"  onclick="createRouteFunction() "  >Create Route</button>-->
 
 
-<div>
+<!--</div>-->
 
-    <h2 class="w3-wide w3-margin">Create Station</h2>
+<section class="wrapper">
+    <div class="main-content signin-form">
+        <h3>Create Route</h3>
+        <form class="bevertical">
 
-    <form class="w3-margin-bottom">
+            <input type="text" id="from" name="from" placeholder="From">
+            <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from" placeholder="Departure date and time">
+            <br>
+            <input type="text" id="to" name="to" placeholder="To">
+            <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to" placeholder="Arrival date and time">
+            <br>
+            <input type="text" id="trainID" name="trainID" placeholder="Train number">
+        </form>
+        <button type="button" id="createRoute_button" class = "button"   onclick="createRouteFunction() "  >Create Route</button>
+    </div>
+</section>
 
-        <input type="text" id="stationName" name="stationName" placeholder="Station Name" class="w3-margin">
+<section class="wrapper">
+    <div class="main-content signin-form">
+        <h3>Create Station</h3>
+        <form class="bevertical">
 
-    </form>
+            <input type="text" id="stationName" name="stationName" placeholder="Station Name">
+
+        </form>
+        <button type="button" id="createStation_button" class = "button"   onclick="createStationFunction() "  >Create Station</button>
+    </div>
+</section>
 
 
-    <button class = "w3-margin-bottom" type="button" id="createStation_button"  onclick="createStationFunction() "  >Create Station</button>
+<!--<div>-->
+
+<!--    <h2 class="w3-wide w3-margin">Create Station</h2>-->
+
+<!--    <form class="w3-margin-bottom">-->
+
+<!--        <input type="text" id="stationName" name="stationName" placeholder="Station Name" class="w3-margin">-->
+
+<!--    </form>-->
 
 
-</div>
+<!--    <button class = "w3-margin-bottom" type="button" id="createStation_button"  onclick="createStationFunction() "  >Create Station</button>-->
 
-<div>
 
-    <button id="managerStart_button" class="closing" onClick="window.location.href = 'ManagerStart.html';" >Manager Main Page</button>
+<!--</div>-->
 
-</div>
+<!--<div>-->
+
+<!--    <button id="managerStart_button" class="closing" onClick="window.location.href = 'ManagerStart.html';" >Manager Main Page</button>-->
+
+<!--</div>-->
 
 
 
 <script>
+
+    function logout() {
+        $.get("api/auth/logout");
+        window.location.replace("index.html");
+    }
+
+
 
     function updateSchedule(items) {
         document.getElementById("tableSchedule").innerHTML = "";
@@ -120,10 +186,9 @@
                                        + depTime + "</td><td class=\"column3\">"
                                        + arrivalTime + "</td><td class=\"column4\">"
                                        + depStationName + "</td><td class=\"column5\">"
-                                       + depStationName + "</td><td class=\"column5\">"
                                        + availability + "</td><td class=\"column6\">"
                                        + routeIs + "</td><td class=\"column7\">"
-                                       + maintenanceR + "</td><td class=\"column8\"" + "<button type='button' id='delete_item' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
+                                       + maintenanceR + "</td><td class=\"column8\"" + "<button type='button' class='button' id='delete_item' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
         });
     }
 
@@ -232,6 +297,8 @@
         });
 
     });
+
+
 
 </script>
 </body>

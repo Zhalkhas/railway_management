@@ -52,7 +52,7 @@ public class Statements {
             throw new SQLException("not enough info");
         }
         JsonArray json = new JsonArray();
-        PreparedStatement statement = conn.prepareStatement("select ST.name, ST2.name as arrival, SCH.departureTime, SCH2.arrivalTime, SCH.trainId \n"
+        PreparedStatement statement = conn.prepareStatement("select ST.name, ST2.name, SCH.departureTime, SCH2.arrivalTime, SCH.trainId, SCH.availability, SCH.routeIsClosed \n"
             + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
             + "where ST.name = ? and ST2.name = ? and date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime and date(SCH.departureTime) = date(SCH2.arrivalTime);");
         statement.setString(1, dept);
@@ -60,22 +60,24 @@ public class Statements {
         statement.setString(3, date);
         ResultSet rs = statement.executeQuery();
         ResultSetMetaData rsmd = rs.getMetaData();
+        boolean isAvailable = true;
         while (rs.next()) {
             int columns = rsmd.getColumnCount();
             JsonObject jsob = new JsonObject();
-            for (int i = 1; i <= columns; i++) {
-                String colName = rsmd.getColumnName(i);
-                String name = "";
-                if (colName.equals("name")) {
-                    name = "name" + i;
-                } else {
-                    name = colName;
-                }
-                jsob.addProperty(name, rs.getObject(i).toString());
+            jsob.addProperty("name1", rs.getString(1));
+            jsob.addProperty("name2", rs.getString(2));
+            jsob.addProperty("departureTime", rs.getString(3));
+            jsob.addProperty("arrivalTime", rs.getString(4));
+            jsob.addProperty("trainId", rs.getInt(5));
+            if (rs.getInt(6) <= 0 || rs.getInt(7) == 1) {
+                isAvailable = false;
             }
             json.add(jsob);
         }
         rs.close();
+        JsonObject jsob = new JsonObject();
+        jsob.addProperty("opened", isAvailable);
+        json.add(jsob);
         return json;
     }
 
@@ -314,7 +316,7 @@ public class Statements {
         PreparedStatement statement = conn.prepareStatement("select ticketId, TicketOwnerName, TicketOwnerSurname, price, USER_userId, SCH.departureTime,\n"
             + "ST.name, SCH1.arrivalTime, ST1.name\n"
             + "from TICKET, USER, EMPLOYEE, SCHEDULE SCH, SCHEDULE SCH1, STATION ST, STATION ST1\n"
-            + "where employeeId = userId and email = ? and Schedule_scheduleId = SCH.scheduleId and ScheduleIdArrival = SCH1.scheduleId and\n"
+            + "where employeeId = userId and email = ? and STATION_stationId = ST.stationId and Schedule_scheduleId = SCH.scheduleId and ScheduleIdArrival = SCH1.scheduleId and\n"
             + "SCH.stationId = ST.stationId and SCH1.stationId = ST1.stationId order by SCH.departureTime asc;");
         statement.setString(1, agentEmail);
         ResultSet rs = statement.executeQuery();
@@ -334,6 +336,28 @@ public class Statements {
         }
         rs.close();
         return json;
+    }
+
+    public JsonArray ticketAgent(String email) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select t.ticketId,t.TicketOwnerName,t.TicketOwnerSurname,\n" +
+            "t.price,t.USER_userId,s.departureTime from TICKET t, Schedule s, USER u, EMPLOYEE e\n" +
+            "where u.email=? and u.status='agent' and \n" +
+            "e.employeeId=u.userId and e.STATION_stationId=s.stationId and t.Schedule_scheduleId=s.scheduleId;");
+        statement.setString(1, email);
+        ResultSet rs= statement.executeQuery();
+        JsonArray j = new JsonArray();
+        while (rs.next()) {
+            JsonObject json=new JsonObject();
+
+            json.addProperty("ticketId", rs.getInt(1));
+            json.addProperty("ticketOwnerName", rs.getString(2));
+            json.addProperty("ticketOwnerSurname", rs.getString(3));
+            json.addProperty("price", rs.getInt(4));
+            json.addProperty("userId", rs.getInt(5));
+            json.addProperty("departureTime", rs.getString(6));
+            j.add(json);
+        }
+        return j;
     }
 
     public String getRole(String email) throws SQLException {
@@ -412,6 +436,36 @@ public class Statements {
         statement.execute();
         PreparedStatement statement1 = conn.prepareStatement("");
     }
+
+//    public void createRoute(String[] stations, String[] arrT, String[] depT, int trainId) throws SQLException {
+//        int len=stations.length;
+//        PreparedStatement statement0 = conn.prepareStatement("select capacity from Train where trainId=?;");
+//        statement0.setInt(1,trainId);
+//        ResultSet rs = statement0.executeQuery();
+//        int cap = rs.getInt(1);
+//        PreparedStatement statement2 = conn.prepareStatement("select max(scheduleId) from SCHEDULE;");
+//        ResultSet rd = statement2.executeQuery();
+//        int scId = rd.getInt(1);
+//        scId++;
+//        for (int i = 0; i < len; i++){
+//            PreparedStatement statement1 = conn.prepareStatement("select stationId from STATION where name=?;");
+//            statement1.setString(1,stations[i]);
+//            ResultSet rs1 = statement1.executeQuery();
+//            int stId=rs.getInt(1);
+//
+//            PreparedStatement statement=conn.prepareStatement("insert into SCHEDULE (arrivalTime,departureTime," +
+//                "trainId,scheduleId,stationId,availability,routeIsClosed,maintenanceR) values (?,?,?,?,?,?,?,?);");
+//            statement.setString(1, arrT[i]);
+//            statement.setString(2,depT[i]);
+//            statement.setInt(3,trainId);
+//            statement.setInt(5,stId);
+//            statement.setInt(6, cap);
+//            statement.setString(7, "false");
+//            statement.setString(8, "good");
+//            statement.setInt(4, scId) ;
+//            scId++;
+//        }
+//    }
 
     public void deleteRoute(int id) throws SQLException {
       PreparedStatement statement = conn.prepareStatement("delete from SCHEDULE where scheduleId = ?");
