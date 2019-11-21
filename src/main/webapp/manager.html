@@ -26,27 +26,17 @@
 
 
     <div class ="main-header-right">
-        <div class="logtype-block">Logged as ueba</div>
-        <div class="userpic-block">
-            <img src="./img/userpic.png">
+        <div class="go-home-button">
+            <a href="schedule.html">Schedules</a><br>
         </div>
+        <div class="logtype-block"></div>
         <div class="signin-block">
             <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
 
         </div>
     </div>
 </div>
-
-<!--<p class="basic-text">Manage Route</p>-->
 <p class="basic-text">Schedule</p>
-
-<!--<div class="w3-container w3-center w3-margin">-->
-<!--    <h1 style="color: #ffffff ">Manage Route</h1>-->
-<!--</div>-->
-
-<!--<div class="w3-container w3-left w3-margin-top">-->
-<!--    <h2 class="w3-wide">Schedule</h2>-->
-<!--</div>-->
 
 <div>
     <table class="w3-table w3-bordered w3-margin-top" id="tableContent">
@@ -55,7 +45,6 @@
             <th class="w3-center w3-text-black">Train Number</th>
             <th class="w3-center w3-text-black">Departure Time</th>
             <th class="w3-center w3-text-black">Arrival Time</th>
-            <!--            <th class="w3-center w3-text-black">Schedule ID</th>-->
             <th class="w3-center w3-text-black">From</th>
             <th class="w3-center w3-text-black">Availability</th>
             <th class="w3-center w3-text-black">Closed</th>
@@ -69,31 +58,6 @@
     </table>
 
 </div>
-
-<!--<div>-->
-
-<!--    <h2 class="w3-wide w3-margin">Create Route</h2>-->
-
-<!--    <form class="w3-margin-bottom">-->
-
-<!--        <input type="text" id="trainID" name="trainID" placeholder="Train number" class="w3-margin">-->
-
-<!--        <input type="text" id="from" name="from" placeholder="From"  class="w3-margin">-->
-
-<!--        <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from"-->
-<!--               placeholder="Departure date and time" class="w3-margin">-->
-<!--        <input type="text" id="to" name="to" placeholder="To"  class="w3-margin">-->
-
-<!--        <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to"-->
-<!--               placeholder="Arrival date and time" class="w3-margin">-->
-<!--    </form>-->
-
-
-<!--    <button class = "w3-margin-bottom" type="button" id="createRoute_button"  onclick="createRouteFunction() "  >Create Route</button>-->
-
-
-<!--</div>-->
-
 <section class="wrapper">
     <div class="main-content signin-form">
         <h3>Create Route</h3>
@@ -122,32 +86,6 @@
         <button type="button" id="createStation_button" class = "button"   onclick="createStationFunction() "  >Create Station</button>
     </div>
 </section>
-
-
-<!--<div>-->
-
-<!--    <h2 class="w3-wide w3-margin">Create Station</h2>-->
-
-<!--    <form class="w3-margin-bottom">-->
-
-<!--        <input type="text" id="stationName" name="stationName" placeholder="Station Name" class="w3-margin">-->
-
-<!--    </form>-->
-
-
-<!--    <button class = "w3-margin-bottom" type="button" id="createStation_button"  onclick="createStationFunction() "  >Create Station</button>-->
-
-
-<!--</div>-->
-
-<!--<div>-->
-
-<!--    <button id="managerStart_button" class="closing" onClick="window.location.href = 'ManagerStart.html';" >Manager Main Page</button>-->
-
-<!--</div>-->
-
-
-
 <script>
 
     function logout() {
@@ -155,14 +93,11 @@
         window.location.replace("index.html");
     }
 
-
-
     function updateSchedule(items) {
         document.getElementById("tableSchedule").innerHTML = "";
         $("#table_of_schedule tbody tr").remove();
         $("#table_of_schedule").html("");
         items = JSON.parse(items);
-
         items.forEach(function (index) {
 
             var depTime = index.departureTime;
@@ -174,21 +109,13 @@
             var maintenanceR = index.maintenanceR;
             var scheduleId = index.scheduleId;
             $("#tableSchedule").append("<tr><td class=\"column1\">"
-                                       // + trainId + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column2\">"
-                                       // + depTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column3\">"
-                                       // + arrivalTime + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column4\">"
-                                       // + depStationName + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column5\">"
-                                       // + availability + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column6\">"
-                                       // + routeIs + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br><td class=\"column7\">"
-                                       // + maintenanceR + "</td><button type='button' onclick='deleteItemFunction()'>Delete</button><br></tr><br>");
-
                                        + trainId + "</td><td class=\"column2\">"
                                        + depTime + "</td><td class=\"column3\">"
                                        + arrivalTime + "</td><td class=\"column4\">"
                                        + depStationName + "</td><td class=\"column5\">"
                                        + availability + "</td><td class=\"column6\">"
                                        + routeIs + "</td><td class=\"column7\">"
-                                       + maintenanceR + "</td><td class=\"column8\"" + "<button type='button' class='button' id='delete_item' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
+                                       + maintenanceR + "</td><td class=\"column8\"" + "<button type='button' class='button' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
         });
     }
 
@@ -199,7 +126,7 @@
                        id: scheduleId
                    },
                    type: 'DELETE',
-                   success : function(r) {
+                   success : function() {
                        getSchedule();
                    }
                });
@@ -273,18 +200,24 @@
         } else {
             alert('Enter values to all fields, please');
         }
-
-
-        // if(stationName.match("\\w+") ){
-        //     $.post("api/manager/createStation", { name: stationName}, function() {
-        //         getSchedule();
-        //     });
-        // } else {
-        //     alert('Enter station name, please');
-        // }
     }
 
     $(document).ready(function (){
+
+        let lol = document.cookie.split(";");
+
+        for(var i = 0; i < lol.length; i++)
+        {
+            lol[i] = lol[i].split(" ");
+            for(var j = 0; j < lol[i].length; j++)
+            {
+                if(lol[i][j].startsWith("username="))
+                {
+                    var username = lol[i][j].slice(9,lol[i][j].length);
+                    $(".logtype-block").text("Logged as " + username);
+                }
+            }
+        }
 
         getSchedule();
 
@@ -295,11 +228,7 @@
         $("#createStation_button").on('click', function () {
             createStationFunction();
         });
-
     });
-
-
-
 </script>
 </body>
 </html>

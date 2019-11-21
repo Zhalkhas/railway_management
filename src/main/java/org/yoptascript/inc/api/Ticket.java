@@ -89,16 +89,13 @@ public class Ticket {
     @Path("/changeTicket")
     @PUT
     public Response changeTicket(@FormParam("ticketId") int ticketId, @FormParam("ownerN") String ownerN,
-                                 @FormParam("ownerS") String ownerS, @FormParam("price") double price,
-                                 @FormParam("docId") int docId, @FormParam("usrId") int usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("deptId") int deptId, @FormParam("destId") int destId,
+                                 @FormParam("ownerS") String ownerS, @FormParam("docId") int docId,
                                  @CookieParam("role") String role) {
         if (role.equalsIgnoreCase("agent")) {
             statements = new Statements();
             statements.connect();
             try {
-                statements.changeTicket(ticketId, ownerN, ownerS, price, docId,
-                    usrId, agentId, deptId, destId);
+                statements.changeTicket(ticketId, ownerN, ownerS, docId);
             } catch (SQLException e) {
               return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {

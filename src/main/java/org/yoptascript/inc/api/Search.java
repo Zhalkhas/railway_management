@@ -2,6 +2,7 @@ package org.yoptascript.inc.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import org.yoptascript.inc.sql.Statements;
 
@@ -15,8 +16,6 @@ import javax.ws.rs.core.Response;
 
 @Path("/search")
 public class Search {
-//    private static final Logger LOGGER = LogManager.getLogger(Search.class);
-
     public Search() {
     }
 
@@ -35,8 +34,23 @@ public class Search {
         } finally {
             statements.disconnect();
         }
-//        LOGGER.info("User searched city with name {}", like);
         return Response.ok((new Gson()).toJson(cities)).build();
+    }
+
+    @Path("/searchDay")
+    @GET
+    public Response searchDay(@QueryParam("date") String date) {
+        statements = new Statements();
+        statements.connect();
+        JsonArray json = new JsonArray();
+        try {
+            json = statements.searchDay(date);
+        } catch (SQLException e) {
+            return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+        } finally {
+            statements.disconnect();
+        }
+        return Response.ok(json.toString()).build();
     }
 
     @Path("/search")
@@ -52,7 +66,6 @@ public class Search {
         } finally {
             statements.disconnect();
         }
-//        LOGGER.info("User checked route between {} and {} on the {}", dept, dest, date);
         return Response.ok(routes.toString()).build();
     }
 

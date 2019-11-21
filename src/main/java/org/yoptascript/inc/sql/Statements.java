@@ -112,6 +112,30 @@ public class Statements {
         return json;
     }
 
+    public JsonArray searchDay(String date) throws SQLException {
+        if (date == null) {
+            throw new SQLException("not enough info");
+        }
+        PreparedStatement statement = conn.prepareStatement("select ST.name, ST2.name, SCH.departureTime, SCH2.arrivalTime, SCH.trainId, SCH.availability, SCH.routeIsClosed \n"
+                + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
+                + "where date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime and date(SCH.departureTime) = date(SCH2.arrivalTime)");
+        statement.setString(1, date);
+        JsonArray json = new JsonArray();
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            JsonObject jsob = new JsonObject();
+            jsob.addProperty("from", rs.getString(1));
+            jsob.addProperty("to", rs.getString(2));
+            jsob.addProperty("depTime", rs.getString(3));
+            jsob.addProperty("arrTime", rs.getString(4));
+            jsob.addProperty("trainId", rs.getInt(5));
+            jsob.addProperty("availability", rs.getInt(6));
+            jsob.addProperty("routeIsClosed", rs.getInt(7));
+            json.add(jsob);
+        }
+        return json;
+    }
+
     public Map<Integer, String> getStations(String like) throws SQLException {
         if (like == null) {
             throw new SQLException("not enough info");
@@ -167,22 +191,15 @@ public class Statements {
         statement.execute();
     }
 
-    public void changeTicket(int ticketId, String ownerN, String ownerS, double price, int docId,
-                             int usrId, int agentId, int deptId, int destId) throws SQLException {
-        if (ticketId < 1 || ownerN == null || ownerS == null || price < 0 || docId < 0 || usrId < 0 ||
-                agentId < 0 || deptId < 0 || destId < 0) {
+    public void changeTicket(int ticketId, String ownerN, String ownerS, int docId) throws SQLException {
+        if (ticketId < 1 || ownerN == null || ownerS == null || docId < 0) {
             throw new SQLException("not enough info");
         }
-        PreparedStatement statement = conn.prepareStatement("update TICKET set TicketOwnerName = ?, TicketOwnerSurname = ?, price = ?, documentID = ?, passsengerID = ?, AGENT_EMPLOYEE_employeeId = ?, Schedule_scheduleId = ?, ScheduleIdArrival = ? where ticketId = ?;");
+        PreparedStatement statement = conn.prepareStatement("update TICKET set TicketOwnerName = ?, TicketOwnerSurname = ?, documentID = ? where ticketId = ?;");
         statement.setString(1, ownerN);
         statement.setString(2, ownerS);
-        statement.setDouble(3, price);
-        statement.setInt(4, docId);
-        statement.setInt(5, usrId);
-        statement.setInt(6, agentId);
-        statement.setInt(7, deptId);
-        statement.setInt(8, destId);
-        statement.setInt(9, ticketId);
+        statement.setInt(3, docId);
+        statement.setInt(4, ticketId);
         statement.execute();
     }
 
@@ -313,7 +330,7 @@ public class Statements {
 
     public JsonArray getAllTickets(String agentEmail) throws SQLException {
         //TODO: check this statement
-        PreparedStatement statement = conn.prepareStatement("select ticketId, TicketOwnerName, TicketOwnerSurname, price, USER_userId, SCH.departureTime,\n"
+        PreparedStatement statement = conn.prepareStatement("select ticketId, TicketOwnerName, TicketOwnerSurname, price, documentID, SCH.departureTime,\n"
             + "ST.name, SCH1.arrivalTime, ST1.name\n"
             + "from TICKET, USER, EMPLOYEE, SCHEDULE SCH, SCHEDULE SCH1, STATION ST, STATION ST1\n"
             + "where employeeId = userId and email = ? and STATION_stationId = ST.stationId and Schedule_scheduleId = SCH.scheduleId and ScheduleIdArrival = SCH1.scheduleId and\n"
@@ -327,7 +344,7 @@ public class Statements {
             jsob.addProperty("ownerN", rs.getString(2));
             jsob.addProperty("ownerS", rs.getString(3));
             jsob.addProperty("price", rs.getInt(4));
-            jsob.addProperty("passengerID", rs.getInt(5));
+            jsob.addProperty("documentID", rs.getInt(5));
             jsob.addProperty("departureTime", rs.getString(6));
             jsob.addProperty("departureName", rs.getString(7));
             jsob.addProperty("arrivalTime", rs.getString(8));

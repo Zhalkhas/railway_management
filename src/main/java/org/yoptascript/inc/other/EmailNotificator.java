@@ -51,7 +51,6 @@ public class EmailNotificator {
         } catch (MessagingException var7) {
             var7.printStackTrace();
         }
-
     }
 
     public void sendPdf(String mail, String subject, String text, String file) {

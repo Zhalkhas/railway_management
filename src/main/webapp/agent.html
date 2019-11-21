@@ -1,102 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="railway.css">
-    <title>Agent_page</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="railway.css">
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
+	<title>Agent profile</title>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="/bootstrap.min.js"></script>
 
 </head>
 <body>
-
-<div class="agent_search_button" >
-    <a href="index.html" id="main_button"  >Go To Search</a> <br>
+<div class="main-header">
+	<div class="go-home-button">
+		<a href="index.html" id="main_button"  >Go To Search</a> <br>
+	</div>
+	<div class ="main-header-right">
+		<div class="go-home-button">
+			<a href="schedule.html">Schedules</a><br>
+		</div>
+		<div class="logtype-block"></div>
+		<div class="signin-block">
+			<button type="button" class="button" id="signin" onclick="logout()">Sign Out</button>
+		</div>
+	</div>
 </div>
 
-<table class="table" id agent_table>
-    <thead>
-    <tr class="table-head" id="agent_table_head">
-        <!--    ticketId, ownerN, ownerS, price, documentID, passengerID, departureTime, departureName, arrivalTime, arrivalName-->
-        <th class="column1">ticket_ID</th>
-        <th class="column2">ownerN</th>
-        <th class="column3">ownerS</th>
-        <th class="column4">price</th>
-        <th class="column5">passengerID</th>
-        <th class="column6">departureTime</th>
-        <th class="column7">departureName</th>
-        <th class="column8">arrivalTime</th>
-        <th class="column9">arrivalName</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody class="table-body" id="agent_table_body">
+<p class="basic-text">Ticket Information </p>
 
-    </tbody>
+<table class="table" id="agent_table">
+	<thead>
+	<tr class="table-head" id="agent_table_head">
+		<!--    ticketId, ownerN, ownerS, price, documentID, passengerID, departureTime, departureName, arrivalTime, arrivalName-->
+		<th class="column1">ticket_ID</th>
+		<th class="column2">ownerN</th>
+		<th class="column3">ownerS</th>
+		<th class="column4">price</th>
+		<th class="column5">documentID</th>
+		<th class="column6">departureTime</th>
+		<th class="column7">departureName</th>
+		<th class="column8">arrivalTime</th>
+		<th class="column9">arrivalName</th>
+		<th></th>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody class="table-body" id="agent_table_body">
+
+	</tbody>
 </table>
 
+<section class="wrapper">
+	<div class="main-content signin-form">
+		<h3>Update Ticket</h3>
+		<form class="bevertical">
+			<input type="text" id="ticketId" name="ticketId" placeholder="Tciket ID" class="w3-margin">
+
+			<input type=text  id="ownerN"  name="ownerN" placeholder="Passenger Name" class="w3-margin">
+			<input type=text id="ownerS"  name="ownerS" placeholder="Passenger Surname" class="w3-margin">
+			<input type=text id="docId"  name="docId" placeholder="Document ID" class="w3-margin">
+
+		</form>
+		<button type="button" id="updateEmployee_button" class = "button"   onclick="updateTicket() ">Update Ticket</button>
+	</div>
+</section>
+
 <script>
-    function updateList(items) {
-        console.log(items);
-        $("#agent_table_body tbody tr").remove();
-        $("#agent_table_body").html("");
-        items = JSON.parse(items);
-        console.log(items);
+	function logout() {
+		$.get("api/auth/logout");
+		window.location.replace("index.html");
+	}
 
-        var i = 1;
-        items.forEach(function (index) {
-            var ticketId = index.ticketId;
-            var ownerN = index.ownerN;
-            var ownerS = index.ownerS;
-            var price = index.price;
-            var passengerID = index.passengerID;
-            var departureTime = index.departureTime;
-            var departureName = index.departureName;
-            var arrivalTime = index.arrivalTime;
-            var arrivalName = index.arrivalName;
+	let list;
 
-            var idx = "ticket_" + i;
+	function updateList(items) {
+		document.getElementById("agent_table_body").innerHTML = "";
+		$("#agent_table_body tbody tr").remove();
+		$("#agent_table_body").html("");
+		items = JSON.parse(items);
 
-            $("#agent_table_body").append(
-                "<tr id='"+idx+"'>" +
-                "<td class='column1'>" + ticketId + "</td>" +
-                "<td class='column2'>" + ownerN + "</td>" +
-                "<td class='column3'>" + ownerS + "</td>" +
-                "<td class='column4'>" + price + "</td>" +
-                "<td class='column5'>" + passengerID + "</td>" +
-                "<td class='column6'>" + departureTime + "</td>" +
-                "<td class='column7'>" + departureName + "</td>" +
-                "<td class='column8'>" + arrivalTime + "</td>" +
-                "<td class='column9'>" + arrivalName + "</td>" +
+		list = [];
+		list = items;
+		var i = 0;
+		items.forEach(function (index) {
+			var ticketId = index.ticketId;
+			var ownerN = index.ownerN;
+			var ownerS = index.ownerS;
+			var price = index.price;
+			var passengerID = index.documentID;
+			var departureTime = index.departureTime;
+			var departureName = index.departureName;
+			var arrivalTime = index.arrivalTime;
+			var arrivalName = index.arrivalName;
+			var idx = "ticket_" + i;
 
-                "<td><button type='button' class='agent_button' onclick='agent_confirm("+i+")'>create</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
-                "<td><button type='button' class='agent_button' onclick='agent_delete("+i+")'>delete</button></td>" +
-                "</tr>");
-            i++;
-        });
-    }
+			$("#agent_table_body").append(
+					"<tr id='"+idx+"'>" +
+					"<td class='column1'>" + ticketId + "</td>" +
+					"<td class='column2'>" + ownerN + "</td>" +
+					"<td class='column3'>" + ownerS + "</td>" +
+					"<td class='column4'>" + price + "</td>" +
+					"<td class='column5'>" + passengerID + "</td>" +
+					"<td class='column6'>" + departureTime + "</td>" +
+					"<td class='column7'>" + departureName + "</td>" +
+					"<td class='column8'>" + arrivalTime + "</td>" +
+					"<td class='column9'>" + arrivalName + "</td>" +
+					"<td><button type='button' class='agent_button' onclick='agent_edit("+i+")'>edit</button></td>" +
+					"<td><button type='button' class='agent_button' onclick='agent_delete("+ticketId+","+i+")'>delete</button></td>" +
+					"</tr>");
+			i++;
+		});
+	}
 
-    function agent_delete(index) {
-        $("#ticket_"+index).remove();
-    }
+	function updateTicket() {
+		var ticketId = $('#ticketId').val();
+		var ownerN = $('#ownerN').val();
+		var ownerS = $('#ownerS').val();
+		var docId = $('#docId').val();
 
-    function agent_confirm(index) {
-        $("#ticket_"+index).remove();
-    }
+		if(ticketId.match("\\w+")
+		   && ownerN.match("\\w+") && ownerS.match("\\w+") && docId.match("\\w+") ){
+			$.ajax({
+					   url: "api/ticket/changeTicket",
+					   data: {
+						   ticketId: ticketId,
+						   ownerN: ownerN,
+						   ownerS: ownerS,
+						   docId: docId
+					   },
+					   method: 'PUT',
+					   contentType: 'application/x-www-form-urlencoded'
+				   }).done(function (r) {
+				// getEmployeeFunction();
+				if(r.status>=400) {
+					alert("Check the values entered, please");
+				} else {
+					reset();
+				}
+			});
+		} else {
+			alert('Enter values to all fields, please');
+		}
+	}
 
-    function agent_edit(index) {
-        $("#ticket_"+index).remove();
-    }
+	function reset(){
+		$('#ticketId').val('');
+		$('#ownerN').val('');
+		$('#ownerS').val('');
+		$('#docId').val('');
+		getTickets();
+	}
 
-    $(document).ready(function () {
-        $.get("api/ticket/all", function (r) {
-            updateList(r);
-        });
-    });
+	function agent_delete(index,i) {
 
+		$.ajax({
+				   url:'api/ticket/'+index,
+				   type: 'DELETE',
+				   success: function(r){
+					   $("#ticket_"+i).remove();
+					   getTickets();
+				   }
+			   }
+		)
+	}
+	function getTickets() {
+		$.get("api/ticket/all", function (r) {
+			updateList(r);
+		});
+	}
 
+	function agent_edit(id) {
+		obj = list[id];
+		$('#ticketId').val(obj.ticketId);
+		$('#ownerN').val(obj.ownerN);
+		$('#ownerS').val(obj.ownerS);
+		$('#docId').val(obj.documentID);
+	}
+
+	$(document).ready(function () {
+		let lol = document.cookie.split(";");
+
+		for(var i = 0; i < lol.length; i++)
+		{
+			lol[i] = lol[i].split(" ");
+			for(var j = 0; j < lol[i].length; j++)
+			{
+				if(lol[i][j].startsWith("username="))
+				{
+					var username = lol[i][j].slice(9,lol[i][j].length);
+					$(".logtype-block").text("Logged as " + username);
+				}
+			}
+		}
+
+		getTickets();
+
+		$.get('api/user', function (r) {
+			if (r === 'null') {
+				$(".logtype-block").text("")
+			} else {
+				$(".logtype-block").text("Logged in as " + r)
+			}
+		});
+	});
 </script>
 </body>
 </html>

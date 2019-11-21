@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="railway.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
+    <title>Schedule by Day</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src="bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="main-header">
+    <div class="go-home-button">
+        <a href="index.html">Go To Search</a> <br>
+    </div>
+    <div class ="main-header-right">
+        <div class="logtype-block"></div>
+        <div class="signin-block">
+            <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
+        </div>
+    </div>
+</div>
+
+<p class="basic-text">Schedule</p>
+
+<section class="wrapper">
+    <div class="main-content signin-form">
+        <h3>Search by date</h3>
+        <form class="bevertical">
+            Enter the date <input type="date"  id="depTime" data-date-inline-picker="true" name="departure from" placeholder="Enter the date">
+
+        </form>
+        <button type="button" id="search_button" class = "button"   onclick="searchFunction() "  >Search</button>
+    </div>
+</section>
+
+<div>
+    <table class="w3-table w3-bordered w3-margin-top" id="tableContent">
+
+        <tr >
+            <th class="w3-center w3-text-black">Train Number</th>
+            <th class="w3-center w3-text-black">Departure Station</th>
+            <th class="w3-center w3-text-black">Departure Time</th>
+            <th class="w3-center w3-text-black">Arrival Station</th>
+            <th class="w3-center w3-text-black">Arrival Time</th>
+            <th class="w3-center w3-text-black">Availability</th>
+            <th class="w3-center w3-text-black">Route is closed</th>
+
+            <th class="w3-center w3-text-black"></th>
+        </tr>
+
+        <tbody id="tableSchedule">
+
+        </tbody>
+    </table>
+
+</div>
+<script>
+
+    function logout() {
+        $.get("api/auth/logout");
+        window.location.replace("index.html");
+    }
+
+    function updateSchedule(items) {
+        document.getElementById("tableSchedule").innerHTML = "";
+        $("#table_of_schedule tbody tr").remove();
+        $("#table_of_schedule").html("");
+        items = JSON.parse(items);
+
+        items.forEach(function (index) {
+
+            var depTime = index.depTime;
+            var arrivalTime = index.arrTime;
+            var depStationName = index.from;
+            var arrStationName = index.to;
+            var trainId = index.trainId;
+            var availability = index.availability;
+            var routeIs = index.routeIsClosed;
+
+
+            $("#tableSchedule").append("<tr><td class=\"column1\">"
+
+                + trainId + "</td><td class=\"column2\">"
+                + depStationName + "</td><td class=\"column3\">"
+                + depTime + "</td><td class=\"column4\">"
+                + arrStationName + "</td><td class=\"column5\">"
+                + arrivalTime + "</td><td class=\"column6\">"
+                + availability + "</td><td class=\"column7\">"
+                + routeIs + "</td><td class=\"column8\"></tr><br>");
+        });
+    }
+
+    function searchFunction() {
+        var depTime = $('#depTime').val();
+
+
+        if(depTime.match("\\w+")){
+            $.ajax({
+                url: "api/search/searchDay",
+                data: {
+                    date: depTime
+                },
+                method: 'GET',
+                contentType: 'application/x-www-form-urlencoded'
+            }).done(function (r) {
+
+                if(r.status>=400) {
+                    alert("Check the values entered, please");
+                } else{
+                    updateSchedule(r);
+                }
+            });
+        } else {
+            alert('Enter values to all fields, please');
+        }
+    }
+
+    $(document).ready(function (){
+        let lol = document.cookie.split(";");
+
+        for(var i = 0; i < lol.length; i++)
+        {
+            lol[i] = lol[i].split(" ");
+            for(var j = 0; j < lol[i].length; j++)
+            {
+                if(lol[i][j].startsWith("username="))
+                {
+                    var username = lol[i][j].slice(9,lol[i][j].length);
+                    $(".logtype-block").text("Logged as " + username);
+                }
+            }
+        }
+
+        var cookie = document.cookie.split("role=")[1][0];
+        console.log(cookie);
+        let temp = cookie;
+
+        if(temp == "m")
+        {
+            $(".main-header").append("<div class='go-home-button'> <a href='logs.html'>Logs</a> <br></div><div class=\"go-home-button\">\n" +
+                                     "        <a href=\"manager.html\">Manage Route</a> <br>\n" +
+                                     "    </div>" +
+                                     "<div class=\"go-home-button\">\n" +
+                                     "        <a href=\"managerEmpl.html\">Manage Employer</a> <br>\n" +
+                                     "    </div>");
+        }
+        else if(temp == "a")
+        {
+            $(".main-header").append("<div class=\"go-home-button\">\n" +
+                                     "        <a href=\"agent.html\" >Manage Tickets</a> <br>\n" +
+                                     "    </div>");
+        }
+        else if(temp == "u")
+        {
+            $(".main-header").append("<div class=\"go-home-button\">\n" +
+                                     "        <a href=\"passenger_profile.html\" >Profile</a> <br>\n" +
+                                     "    </div>");
+        }
+    });
+</script>
+</body>
+</html>

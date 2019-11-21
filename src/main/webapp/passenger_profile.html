@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
     <title>Passenger Profile</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="bootstrap.min.js"></script>
 </head>
 
@@ -16,12 +16,14 @@
     <div class="go-home-button">
         <a href="index.html"  >Go To Search</a> <br>
     </div>
-
+    <div class="go-home-button">
+        <a href="schedule.html">Schedules</a><br>
+    </div>
     <div class ="main-header-right">
-        <div class="logtype-block">Logged as ueba</div>
-        <div class="userpic-block">
-            <img src="./img/userpic.png">
+        <div class="go-home-button">
+            <a href="schedule.html">Schedules</a><br>
         </div>
+        <div class="logtype-block"></div>
         <div class="signin-block">
             <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
         </div>
@@ -180,6 +182,20 @@
     }
 
     $(document).ready(function (){
+        let lol = document.cookie.split(";");
+
+        for(var i = 0; i < lol.length; i++)
+        {
+            lol[i] = lol[i].split(" ");
+            for(var j = 0; j < lol[i].length; j++)
+            {
+                if(lol[i][j].startsWith("username="))
+                {
+                    var username = lol[i][j].slice(9,lol[i][j].length);
+                    $(".logtype-block").text("Logged as " + username);
+                }
+            }
+        }
         getPastTrips();
         getFutureTrips();
     });
