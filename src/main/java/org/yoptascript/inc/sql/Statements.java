@@ -103,9 +103,10 @@ public class Statements {
         JsonArray json = new JsonArray();
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
-            JsonObject jsob = new JsonObject();
-            jsob.addProperty("station", rs.getString(1));
-            json.add(jsob);
+            // JsonObject jsob = new JsonObject();
+            // jsob.addProperty("station", rs.getString(1));
+            // json.add(jsob);
+            json.add(rs.getString(1));
         }
         rs.close();
         return json;
