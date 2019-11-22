@@ -3,6 +3,7 @@ package org.yoptascript.inc.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.other.PDFCreator;
 import org.yoptascript.inc.sql.Statements;
 
@@ -17,8 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-
-//import org.yoptascript.inc.other.EmailNotificator;
 
 @Secured
 @Path("/ticket")
@@ -95,7 +94,9 @@ public class Ticket {
             statements = new Statements();
             statements.connect();
             try {
-                statements.changeTicket(ticketId, ownerN, ownerS, docId);
+                String email = statements.changeTicket(ticketId, ownerN, ownerS, docId);
+                EmailNotificator notificator = new EmailNotificator();
+                notificator.sendEdit(email, "TICKET WAS CHANGED", "Please check your ticket#" + ticketId + ", agent made some changes to it");
             } catch (SQLException e) {
               return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {

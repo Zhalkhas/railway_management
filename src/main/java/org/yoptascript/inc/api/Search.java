@@ -2,7 +2,6 @@ package org.yoptascript.inc.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.yoptascript.inc.sql.Statements;
 
@@ -84,7 +83,8 @@ public class Search {
             statements.disconnect();
         }
         statements.disconnect();
-        //LOGGER.info("User checked route between {} and {} on the {}", dept, dest, date);
-        return Response.ok(routes.toString()).build();
+        //JsonObject jsob = (JsonObject) routes.get(6);
+        //TODO: if opened is true then routes, if false then something else
+        return Response.ok(routes.toString()).build(); //jsob.get("opened") == true ?
     }
 }

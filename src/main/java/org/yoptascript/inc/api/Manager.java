@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.other.LogEntry;
 import org.yoptascript.inc.sql.Statements;
 
@@ -17,6 +18,14 @@ import  org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.*;
+import java.util.List;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 @Secured
@@ -78,7 +87,9 @@ public class Manager {
             statements = new Statements();
             statements.connect();
             try {
-                statements.changeEmployee(id, salary, start, end);
+                List<String> info = statements.changeEmployee(id, salary, start, end);
+                EmailNotificator notificator = new EmailNotificator();
+                notificator.sendEdit(info.get(0), "MANAGER HAS MADE SOME CHANGES", "There are some updates from manager, salary: " + info.get(1) + ", start of work: " + info.get(2) + ", end of work: " + info.get(3));
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {

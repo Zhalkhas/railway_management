@@ -489,6 +489,21 @@ tbody tr:hover {
 	cursor: pointer;
 }
 
+td button
+{
+	height: 50px;
+	min-width: 100px;
+	background: #FA6B6B;
+	border-radius: 15px;
+	border: none;
+	text-align: center;
+	font-size: 15pt;
+	font-style: normal;
+	font-weight: 700;
+	margin: 7px;
+	color: white;
+}
+
 .column1 {
 	/*width: 260px;*/
 	padding-left: 40px;
