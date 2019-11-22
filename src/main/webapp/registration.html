@@ -19,13 +19,6 @@
         <a href="index.html">Go To Search</a><br>
     </div>
     <div class ="main-header-right">
-        <div class="logtype-block">Logged in as ueba</div>
-        <div class="userpic-block">
-            <img src="userpic.png">
-        </div>
-        <div class="signin-block">
-            <button type="button" class="button" id="signin" onclick="openBox()">Sign In</button>
-        </div>
     </div>
 </div>
 
@@ -65,6 +58,41 @@
         let lname = $("#lname").val();
         let email = $("#email").val();
         let password = $("#password").val();
+        let input = [fname, lname, email, password];
+        for(let i =0; i < 4; i++){
+            if(!input[i]){
+                alert("Invalid data entered!");
+                return;
+            }
+            if(input[i].length < 4){
+                let inp;
+                switch (input[i]) {
+                    case fname:
+                        inp = "First name";
+                        break;
+                    case lname:
+                        inp = "Last name";
+                        break;
+                    case email:
+                        inp = "Email";
+                        break;
+                }
+                alert(inp+" is too short");
+                return;
+            }
+        }
+
+        let mail_re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!mail_re.test(email.toLowerCase())){
+            alert("Invalid email!");
+            return;
+        }
+        let pass_re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        if(!pass_re.test(password)){
+            alert("Invalid password!\nNote that password should be more than 6 symbols, and contain at least one uppercase, one lowercase letter and one digit");
+            return;
+        }
+
         $.post("api/user/newUser", {
             fname: fname,
             lname: lname,

@@ -175,9 +175,8 @@ public class Manager {
                     line++;
                 }
                 reader.close();
-                LogEntry logEntries[] = new LogEntry[line];
+                LogEntry[] logEntries = new LogEntry[line];
                 line = 0;
-                System.out.println(builder);
                 Document log = Jsoup.parse(new String(builder));
                 Elements logEntry = log.body().select("log");
                 for (Element e : logEntry) {

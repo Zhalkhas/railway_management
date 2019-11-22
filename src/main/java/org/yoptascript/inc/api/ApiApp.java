@@ -4,10 +4,13 @@ package org.yoptascript.inc.api;
 import org.yoptascript.inc.certs.KeysReader;
 
 import org.apache.log4j.Logger;
+import org.yoptascript.inc.sql.Statements;
+
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
@@ -28,6 +31,13 @@ public class ApiApp extends Application {
             System.out.println(e.toString());
             keyPair = new KeyPair(keysReader.getPublicKey(), keysReader.getPrivateKey());
             e.printStackTrace();
+        }
+        try {
+            Statements statements = new Statements();
+            statements.testConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+            System.out.println("SQL not connected:"+e.toString());
         }
         singletons.add(new AuthFilter());
         singletons.add(new Auth(keyPair));
