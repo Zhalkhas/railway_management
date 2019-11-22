@@ -113,7 +113,7 @@
                                    + depStationName + "</td><br><td class=\"column5\">"
                                    + arrivalStationName + "</td><br><td class=\"column5\">"
                                    + trainId + "</td><td class=\"column7\""
-                                   + "<button type='button' class='button' id='send_item' onclick='showMessageFunction(\"" + depStationName + "\")'>Change</button>" + "</td><br></tr><br>");
+                                   + "<button type='button' class='button' onclick='showMessageFunction(\"" + depStationName + "\")'>Change</button>" + "</td><br></tr><br>");
         });
     }
 
@@ -138,11 +138,11 @@
                                      + depStationName + "</td><br><td class=\"column5\">"
                                      + arrivalStationName + "</td><br><td class=\"column5\">"
                                      + trainId + "</td><td class=\"column7\""
-                                     + "<button type='button' class='button' id='send_item' onclick='showMessageFunction(" +"\"" + depStationName + "\")'>Change</button></td><br></tr><br>");
+                                     + "<button type='button' class='button' onclick='showMessageFunction(" +"\"" + depStationName + "\")'>Change</button></td><br></tr><br>");
         });
     }
 
-    function showMessageFunction(depStationName){
+    function showMessageFunction(depStationName) {
         $('#schedule').val(depStationName);
         document.getElementById("mail-sender").style.display = "block";
     }

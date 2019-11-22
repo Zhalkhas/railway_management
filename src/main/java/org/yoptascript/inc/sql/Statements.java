@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Statements {
@@ -75,9 +77,9 @@ public class Statements {
             json.add(jsob);
         }
         rs.close();
-        JsonObject jsob = new JsonObject();
-        jsob.addProperty("opened", isAvailable);
-        json.add(jsob);
+//        JsonObject jsob = new JsonObject();
+//        jsob.addProperty("opened", isAvailable);
+//        json.add(jsob);
         return json;
     }
 
@@ -93,19 +95,16 @@ public class Statements {
             + "                and Sch1.stationId=st1.stationId and st1.name=? and Sch1.trainId=Sch.trainId and \n"
             + "                Sch.departureTime<Sch1.arrivalTime) as b\n"
             + "                where Sch.trainId=b.trainId and Sch.stationId=S1.stationId\n"
-            + "                and Sch.departureTime >= b.startT and Sch.arrivalTime <=b.endT ;");
+            + "                and Sch.departureTime >= b.startT and Sch.arrivalTime <=b.endT;");
         statement.setString(1, date);
         statement.setString(2, date);
         statement.setString(3, dept);
         statement.setString(4, dest);
         JsonArray json = new JsonArray();
         ResultSet rs = statement.executeQuery();
-        ResultSetMetaData rsmd = rs.getMetaData();
         while (rs.next()) {
             JsonObject jsob = new JsonObject();
-            jsob.addProperty(rsmd.getColumnName(1), rs.getInt(1));
-            jsob.addProperty(rsmd.getColumnName(2), rs.getString(2));
-            jsob.addProperty(rsmd.getColumnName(3), rs.getString(3));
+            jsob.addProperty("station", rs.getString(1));
             json.add(jsob);
         }
         rs.close();
@@ -191,7 +190,7 @@ public class Statements {
         statement.execute();
     }
 
-    public void changeTicket(int ticketId, String ownerN, String ownerS, int docId) throws SQLException {
+    public String changeTicket(int ticketId, String ownerN, String ownerS, int docId) throws SQLException {
         if (ticketId < 1 || ownerN == null || ownerS == null || docId < 0) {
             throw new SQLException("not enough info");
         }
@@ -201,6 +200,11 @@ public class Statements {
         statement.setInt(3, docId);
         statement.setInt(4, ticketId);
         statement.execute();
+        PreparedStatement statement1 = conn.prepareStatement("select email from USER, TICKET where USER_userId = userId and ticketId = ?;");
+        statement1.setInt(1, ticketId);
+        ResultSet rs = statement1.executeQuery();
+        rs.next();
+        return rs.getString(1);
     }
 
     public JsonObject getTicket(int ticketId) throws SQLException {
@@ -431,7 +435,7 @@ public class Statements {
         return json;
     }
 
-    public void changeEmployee(int id, int salary, String start, String end)
+    public List<String> changeEmployee(int id, int salary, String start, String end)
         throws SQLException {
       PreparedStatement statement = conn.prepareStatement("update EMPLOYEE set salary = ?, StartOfWork = ?, EndOfWork = ? where employeeId = ?");
       statement.setInt(1, salary);
@@ -439,6 +443,16 @@ public class Statements {
       statement.setString(3, end);
       statement.setInt(4, id);
       statement.execute();
+      PreparedStatement statement1 = conn.prepareStatement("select email, salary, StartOfWork, EndOfWork from USER, EMPLOYEE where employeeId = ? and userId = employeeId");
+      statement1.setInt(1, id);
+      ResultSet rs = statement1.executeQuery();
+      List<String> res = new ArrayList<>();
+      rs.next();
+      res.add(rs.getString(1));
+      res.add(rs.getString(2));
+      res.add(rs.getString(3));
+      res.add(rs.getString(4));
+      return res;
     }
 
     public void createRoute(int trainNumber, String from, String to, String departureTime, String arrivalTime) throws SQLException {

@@ -7,13 +7,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.yoptascript.inc.other.EmailNotificator;
 import org.yoptascript.inc.other.LogEntry;
 import org.yoptascript.inc.sql.Statements;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -82,7 +83,9 @@ public class Manager {
             statements = new Statements();
             statements.connect();
             try {
-                statements.changeEmployee(id, salary, start, end);
+                List<String> info = statements.changeEmployee(id, salary, start, end);
+                EmailNotificator notificator = new EmailNotificator();
+                notificator.sendEdit(info.get(0), "MANAGER HAS MADE SOME CHANGES", "There are some updates from manager, salary: " + info.get(1) + ", start of work: " + info.get(2) + ", end of work: " + info.get(3));
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {
