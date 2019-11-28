@@ -14,6 +14,10 @@ import org.yoptascript.inc.sql.Statements;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.SQLException;
+import  org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import javax.ws.rs.*;
 import java.util.List;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
@@ -170,6 +174,27 @@ public class Manager {
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
+    }
+
+    @Secured
+    @Path("/toggleLog")
+    @GET
+    public Response toggleLog(){
+        Logger log = Logger.getRootLogger();
+        log.info("TOGGLED LOG");
+        Level level = log.getLevel();
+        System.out.println("Level "+level);
+        log.setLevel(Level.ALL == level ? Level.OFF : Level.ALL);
+        return Response.ok().build();
+    }
+
+    @Secured
+    @Path("/logStatus")
+    @GET
+    public Response getLogStatus(){
+        Logger.getRootLogger().info("LOG STATUS");
+
+        return Response.ok(Logger.getRootLogger().getLevel() == Level.ALL).build();
     }
 
     @Secured

@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Muli:300,400,600&display=swap" rel="stylesheet">
     <title>Logs</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="bootstrap.min.js"></script>
 </head>
 <body>
@@ -24,14 +24,14 @@
     </div>
 
 
-    <div class ="main-header-right">
+    <div class="main-header-right">
         <div class="go-home-button">
             <a href="schedule.html">Schedules</a><br>
         </div>
         <div class="logtype-block"></div>
         <div class="signin-block">
             <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
-
+            <button type="button" class="button" id="toggle_log" onclick="toggleLog()"></button>
         </div>
     </div>
 </div>
@@ -41,7 +41,7 @@
 <div>
     <table class="w3-table w3-bordered w3-margin-top" id="tableContent">
 
-        <tr >
+        <tr>
             <th class="w3-center w3-text-black">Date</th>
             <th class="w3-center w3-text-black">Level</th>
             <th class="w3-center w3-text-black">URI</th>
@@ -96,30 +96,43 @@
 
     function getLogs() {
         $.ajax({
-            url : 'api/manager/log',
-            success : function(r) {
+            url: 'api/manager/log',
+            success: function (r) {
                 updateLogs(r);
             }
         });
     }
 
-    $(document).ready(function (){
+    function toggleLog() {
+        $.get("api/manager/toggleLog");
+        location.reload();
+    }
+
+    $(document).ready(function () {
         let lol = document.cookie.split(";");
 
-        for(var i = 0; i < lol.length; i++)
-        {
+        for (var i = 0; i < lol.length; i++) {
             lol[i] = lol[i].split(" ");
-            for(var j = 0; j < lol[i].length; j++)
-            {
-                if(lol[i][j].startsWith("username="))
-                {
-                    var username = lol[i][j].slice(9,lol[i][j].length);
+            for (var j = 0; j < lol[i].length; j++) {
+                if (lol[i][j].startsWith("username=")) {
+                    var username = lol[i][j].slice(9, lol[i][j].length);
                     $(".logtype-block").text("Logged as " + username);
                 }
             }
         }
 
         getLogs();
+        let toggle = $("#toggle_log");
+        $.get("api/manager/logStatus", function (r) {
+            console.log(typeof r);
+            if (r === "true") {
+                toggle.text("Logs enabled");
+            } else if (r === "false") {
+                toggle.text("Logs disabled");
+            } else {
+                toggle.hide();
+            }
+        })
     });
 </script>
 

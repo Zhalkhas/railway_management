@@ -9,7 +9,7 @@ import java.io.IOException;
 @Provider
 @PreMatching
 public class LogFilter implements  ContainerResponseFilter {
-    private Logger logger = Logger.getLogger("log4j");
+    private Logger logger = Logger.getRootLogger();
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext){
