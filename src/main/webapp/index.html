@@ -95,23 +95,33 @@
     function signInFunction() {
         console.log($('#email').val());
         console.log($('#password').val());
-        $.ajax({
-                   url: 'api/auth/login',
-                   data: {u: $('#email').val(), p: $('#password').val()},
-                   contentType:'application/x-www-form-urlencoded',
-                   method:'POST'
-               }).done(function (r) {
-            console.log(r);
-            console.log("cookie: " + document.cookie);
 
-            location.reload();
-            return r;
-        }).fail(function(data, textStatus, xhr) {
-            console.log("error", data.status);
-            console.log("STATUS: "+xhr);
+        let email = $('#email').val();
+        let password = $('#password').val();
 
-            alert("Invalid user");
-        });
+        if(email.match("\\w+") && password.match("\\w+"))
+        {
+            $.ajax({
+                       url: 'api/auth/login',
+                       data: {u: $('#email').val(), p: $('#password').val()},
+                       contentType:'application/x-www-form-urlencoded',
+                       method:'POST'
+                   }).done(function (r) {
+                console.log(r);
+                console.log("cookie: " + document.cookie);
+
+                location.reload();
+                return r;
+            }).fail(function(data, textStatus, xhr) {
+                console.log("error", data.status);
+                console.log("STATUS: "+xhr);
+
+                alert("Invalid user");
+            });
+        }
+        else{
+            alert("cannot sign in empty fields ;(");
+        }
     }
 
     function findFunction() {
@@ -233,8 +243,6 @@
             }
         });
     }
-
-    // var marker = new google.maps.Marker({position: uluru, map: map});
 
     function logout() {
         $.get("api/auth/logout");

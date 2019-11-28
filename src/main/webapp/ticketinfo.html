@@ -6,8 +6,22 @@
         Ticket Information
 
     </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
 </head>
 <body>
+<div class="main-header">
+    <div class="go-home-button">
+        <a href="index.html" style="color: #007bff">Go To Search</a><br>
+    </div>
+    <div class ="main-header-right">
+        <div class="logtype-block"></div>
+        <div class="signin-block">
+            <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
+        </div>
+    </div>
+</div>
+
 <section class="wrapper">
     <div class="main-content ticket-form" id="maincontent">
         <h3>Ticket Information </h3>
@@ -50,6 +64,11 @@
 
 <script>
 
+    function logout() {
+        $.get("api/auth/logout");
+        window.location.replace("index.html");
+    }
+
     var queryString = decodeURIComponent(window.location.search);
     queryString = queryString.substring(1);
     var queries = queryString.split("&");
@@ -88,6 +107,21 @@
                    console.log("Working?")
                });
     }
+
+    $(document).ready(function () {
+
+        let lol = document.cookie.split(";");
+
+        for (var i = 0; i < lol.length; i++) {
+            lol[i] = lol[i].split(" ");
+            for (var j = 0; j < lol[i].length; j++) {
+                if (lol[i][j].startsWith("username=")) {
+                    var username = lol[i][j].slice(9, lol[i][j].length);
+                    $(".logtype-block").text("Logged as " + username);
+                }
+            }
+        }
+    });
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

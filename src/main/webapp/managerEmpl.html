@@ -36,83 +36,44 @@
 </div>
 <p class="basic-text">Employee table</p>
 
-<div>
-    <table class="w3-table w3-bordered w3-margin-top">
+<table class="table" id="tableEmpl">
 
+    <thead>
         <tr >
-            <th class="w3-center w3-text-black">EmployeeID</th>
-            <th class="w3-center w3-text-black">Name</th>
-            <th class="w3-center w3-text-black">Surname</th>
-<!--            <th class="w3-center w3-text-black">Role</th>-->
-            <th class="w3-center w3-text-black">Start of Work</th>
-            <th class="w3-center w3-text-black">End of Work</th>
-<!--            <th class="w3-center w3-text-black">Hours per week</th>-->
-            <th class="w3-center w3-text-black">Salary</th>
-            <th class="w3-center w3-text-black">Station</th>
-            <th class="w3-center w3-text-black"></th>
+            <th class="column1">EmployeeID</th>
+            <th class="column2">Name</th>
+            <th class="column3">Surname</th>
+            <th class="column4">Start of Work</th>
+            <th class="column5">End of Work</th>
+            <th class="column6">Salary</th>
+            <th class="column7">Station</th>
+            <th></th>
         </tr>
+    </thead>
 
-        <tbody id="tableEmployee">
+    <tbody id="tableEmployee">
 
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-</div>
-
-<!--<div>-->
-
-<!--    <h2 class="w3-wide w3-margin">Change </h2>-->
-
-<!--        <input type="text" id="emplId" name="emplId" placeholder="Employee ID" class="w3-margin">-->
-<!--&lt;!&ndash;        <input type="text" id="emplName" name="emplName" placeholder="Name" class="w3-margin">&ndash;&gt;-->
-
-<!--&lt;!&ndash;        <input type="text" id="emplSurname" name="emplSurname" placeholder="Surname"  class="w3-margin">&ndash;&gt;-->
-<!--&lt;!&ndash;        <input type="text" id="role" name="role" placeholder="Role"  class="w3-margin">&ndash;&gt;-->
-<!--        <input type=text  id="startWork"  name="startWork" placeholder="Work Starts" class="w3-margin">-->
-<!--        <input type=text id="endWork"  name="endWork" placeholder="Work Ends" class="w3-margin">-->
-
-<!--&lt;!&ndash; <input type="text" id="hoursPerWeek" name="hoursPerWeek" placeholder="Work hours Per Week"  class="w3-margin">&ndash;&gt;-->
-
-<!--        <input type="text" id="salary" name="salary" placeholder="Salary" class="w3-margin">-->
-
-<!--        <input type="text" id="station" name="station" placeholder="Station Name" class="w3-margin">-->
-
-<!--    </form>-->
-
-
-<!--    <button class = "w3-margin-bottom" type="button" id="updateEmployee_button"  onclick="updateEmployee() "  >Change  </button>-->
-
-
-<!--</div>-->
 
 <section class="wrapper">
     <div class="main-content signin-form">
         <h3>Update Employee</h3>
         <form class="bevertical">
-            <input type="text" id="emplId" name="emplId" placeholder="Employee ID" class="w3-margin">
-            <!--        <input type="text" id="emplName" name="emplName" placeholder="Name" class="w3-margin">-->
+            <input type="text" id="emplId" name="emplId" placeholder="Employee ID">
+                    <input type=text  id="startWork"  name="startWork" placeholder="Work Starts">
+                    <input type=text id="endWork"  name="endWork" placeholder="Work Ends">
+                    <input type="text" id="salary" name="salary" placeholder="Salary">
+                    <input type="text" id="station" name="station" placeholder="Station Name">
 
-            <!--        <input type="text" id="emplSurname" name="emplSurname" placeholder="Surname"  class="w3-margin">-->
-            <!--        <input type="text" id="role" name="role" placeholder="Role"  class="w3-margin">-->
-                    <input type=text  id="startWork"  name="startWork" placeholder="Work Starts" class="w3-margin">
-                    <input type=text id="endWork"  name="endWork" placeholder="Work Ends" class="w3-margin">
-
-            <!-- <input type="text" id="hoursPerWeek" name="hoursPerWeek" placeholder="Work hours Per Week"  class="w3-margin">-->
-
-                    <input type="text" id="salary" name="salary" placeholder="Salary" class="w3-margin">
-
-                    <input type="text" id="station" name="station" placeholder="Station Name" class="w3-margin">
+                    <br><input style="border: none;" type="checkbox" id="checkbox1"/>Beginning of month salary
+                    <br><input style="border: none;" type="checkbox" id="checkbox2"/>End of month salary
 
         </form>
-        <button type="button" id="updateEmployee_button" class = "button"   onclick="updateEmployee() "  >Update Employee</button>
+        <button type="button" id="updateEmployee_button" class = "button"   onclick="updateEmployee() "  >Update</button>
     </div>
 </section>
-
-<!--<div>-->
-
-<!--    <button id="managerStart_button" class="closing" onClick="window.location.href = 'ManagerStart.html';" >Manager Main Page</button>-->
-
-<!--</div>-->
 
 <script>
 
@@ -134,22 +95,17 @@
             var emplId = index.emplId;
             var emplName = index.emplName;
             var emplSurname = index.emplSurname;
-            // var role = index.role;
             var startWork = index.startWork;
             var endWork = index.endWork;
-            // var hoursPerWeek = index.hoursPerWeek;
             var salary = index.salary;
             var station = index.station;
 
             $("#tableEmployee").append("<tr><td class=\"column1\">"
-
                 + emplId + "</td><td class=\"column2\">"
                 + emplName + "</td><td class=\"column3\">"
                 + emplSurname + "</td><td class=\"column4\">"
-                //+ role + "</td><td class=\"column5\">"
                 + startWork + "</td><td class=\"column5\">"
                 + endWork + "</td><td class=\"column6\">"
-                // + hoursPerWeek + "</td><td class=\"column7\">"
                 + salary + "</td><td class=\"column7\">"
                 + station + "</td><td class=\"column8\">"
                 +  "<button type='button' class='button' onclick='update(" + id + ")'>Update</button></td></tr><br>");
@@ -169,27 +125,39 @@
     function updateEmployee() {
 
         var emplId = $('#emplId').val();
-        // var emplName = $('#emplName').val();
-        // var emplSurname = $('#emplSurname').val();
-        // var role = $('#role').val();
         var startWork = $('#startWork').val();
         var endWork = $('#endWork').val();
         var salary = $('#salary').val();
         var station = $('#station').val();
+        let checkbox1 = 0;
+        let checkbox2 = 0;
 
-        if(emplId.match("\\w+") // emplName.match("\\w+") && emplSurname.match("\\w+") && role.match("\\w+")
-            && startWork.match("\\w+") && endWork.match("\\w+") && salary.match("\\w+") && station.match("\\w+")){
+        if(emplId.match("\\w+") && startWork.match("\\w+")
+            && endWork.match("\\w+") && salary.match("\\w+")
+            && station.match("\\w+")){
+
+            if($('#checkbox1').is(":checked"))
+            {
+                console.log("checkbox1");
+                checkbox1 = 1;
+            }
+
+            if($('#checkbox2').is(":checked"))
+            {
+                console.log("checkbox2");
+                checkbox2 = 1;
+            }
+
             $.ajax({
                 url: "api/manager/changeEmployee",
                 data: {
                     emplId: emplId,
-                    // emplName: emplName,
-                    // emplSurname: emplSurname,
-                    // role: role,
                     start: startWork,
                     end: endWork,
                     salary: salary,
-                    station: station
+                    station: station,
+                    checkbox1: checkbox1,
+                    checkbox2: checkbox2
                 },
                 method: 'PUT',
                 contentType: 'application/x-www-form-urlencoded'
@@ -218,13 +186,13 @@
 
     function reset(){
         $('#emplId').val('');
-        // $('#emplName').val('');
-        // $('#emplSurname').val('');
-        // $('#role').val('');
         $('#startWork').val('');
         $('#endWork').val('');
         $('#salary').val('');
         $('#station').val('');
+
+        $('input[type=checkbox]').prop('checked',false);
+        // $('#checkbox2').removeAttr('checked');
     }
 
     $(document).ready(function (){
@@ -245,10 +213,6 @@
         }
 
         getEmployeeFunction();
-
-        $("#updateEmployee_button").on('click', function () {
-            updateEmployee();
-        });
     });
 </script>
 </body>

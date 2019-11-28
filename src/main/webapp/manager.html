@@ -32,7 +32,6 @@
         <div class="logtype-block"></div>
         <div class="signin-block">
             <button type="button" class="button" id="signout" onclick="logout()">Sign Out</button>
-
         </div>
     </div>
 </div>
@@ -45,7 +44,7 @@
         <th class="column1">Train Number</th>
         <th class="column2">Departure Time</th>
         <th class="column3">Arrival Time</th>
-        <th class="column4">From</th>
+        <th class="column4">Station</th>
         <th class="column5">Availability</th>
         <th class="column6">Closed</th>
         <th class="column7">Maintenance of the route</th>
@@ -67,13 +66,14 @@
 
             <input type="text" id="from" name="from" placeholder="From">
             <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from" placeholder="Departure date and time">
+            Arrival Time
             <br>
-            <input type="text" id="to" name="to" placeholder="To">
             <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to" placeholder="Arrival date and time">
+            Departure Time
             <br>
             <input type="text" id="trainID" name="trainID" placeholder="Train number">
         </form>
-        <button type="button" id="createRoute_button" class = "button"   onclick="createRouteFunction() "  >Create Route</button>
+        <button type="button" id="createRoute_button" class = "button"   onclick="createRouteFunction() "  >Create</button>
     </div>
 </section>
 
@@ -85,7 +85,7 @@
             <input type="text" id="stationName" name="stationName" placeholder="Station Name">
 
         </form>
-        <button type="button" id="createStation_button" class = "button"   onclick="createStationFunction() "  >Create Station</button>
+        <button type="button" id="createStation_button" class = "button"   onclick="createStationFunction() "  >Create</button>
     </div>
 </section>
 <script>
@@ -145,21 +145,20 @@
 
     function createRouteFunction() {
         var from = $('#from').val();
-        var to = $('#to').val();
         var depTime = $('#depTime').val();
         var arrTime = $('#arrTime').val();
         var trainID = $('#trainID').val();
 
-        if(from.match("\\w+") && to.match("\\w+") && depTime.match("\\w+")
+        if(from.match("\\w+")  && depTime.match("\\w+")
            && arrTime.match("\\w+") && trainID.match("\\w+")){
             $.ajax({
                        url: "api/manager/createRoute",
                        data: {
                            trainNumber: trainID,
                            from: from,
-                           to: to,
                            departureTime: depTime,
-                           arrivalTime: arrTime
+                           arrivalTime: arrTime,
+                           scheduleId: 515
                        },
                        method: 'POST',
                        contentType: 'application/x-www-form-urlencoded'
@@ -208,13 +207,10 @@
 
         let lol = document.cookie.split(";");
 
-        for(var i = 0; i < lol.length; i++)
-        {
+        for(var i = 0; i < lol.length; i++) {
             lol[i] = lol[i].split(" ");
-            for(var j = 0; j < lol[i].length; j++)
-            {
-                if(lol[i][j].startsWith("username="))
-                {
+            for(var j = 0; j < lol[i].length; j++) {
+                if(lol[i][j].startsWith("username=")) {
                     var username = lol[i][j].slice(9,lol[i][j].length);
                     $(".logtype-block").text("Logged as " + username);
                 }

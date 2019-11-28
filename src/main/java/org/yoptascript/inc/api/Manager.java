@@ -78,14 +78,24 @@ public class Manager {
     @PUT
     @Path("/changeEmployee")
     public Response changeEmployee(@CookieParam("role") String role, @FormParam("emplId") int id, @FormParam("salary") int salary, @FormParam("start") String start,
-                                   @FormParam("end") String end) {
+                                   @FormParam("end") String end, @FormParam("checkbox1") int checkbox1, @FormParam("checkbox2") int checkbox2) {
         if (role.equalsIgnoreCase("manager")) {
             statements = new Statements();
             statements.connect();
             try {
                 List<String> info = statements.changeEmployee(id, salary, start, end);
                 EmailNotificator notificator = new EmailNotificator();
-                notificator.sendEdit(info.get(0), "MANAGER HAS MADE SOME CHANGES", "There are some updates from manager, salary: " + info.get(1) + ", start of work: " + info.get(2) + ", end of work: " + info.get(3));
+                String email = info.get(0);
+                notificator.sendEdit(email, "MANAGER HAS MADE SOME CHANGES", "There are some updates from manager, salary: " + info.get(1) + ", start of work: " + info.get(2) + ", end of work: " + info.get(3));
+
+                if(checkbox1 == 1){
+                    //"You have received salary for the beginning of the month"
+                    notificator.sendEdit(email, "SALARY", "You have received salary for the beginning of the month");
+                }
+                if(checkbox2 == 1){
+                    //"You have received salary for the ending of the month"
+                    notificator.sendEdit(email, "SALARY", "You have received salary for the end of the month");
+                }
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {
@@ -102,13 +112,14 @@ public class Manager {
     @POST
     public Response createRoute(@FormParam("trainNumber") int trainNumber, @FormParam("from") String from, @FormParam("to") String to,
                                 @FormParam("departureTime") String departureTime, @FormParam("arrivalTime") String arrivalTime,
+                                @FormParam("scheduleId") int scheduleId,
                                 @CookieParam("role") String role) {
         if (role.equalsIgnoreCase("manager")) {
             statements = new Statements();
             statements.connect();
             //TODO: finish, all times are dateTimes
             try {
-                statements.createRoute(trainNumber, from, to, departureTime, arrivalTime);
+                statements.createRoute(from, arrivalTime, departureTime, trainNumber, scheduleId);
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {
