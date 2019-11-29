@@ -80,12 +80,12 @@
         var name = $('#name').val();
         var price = 6001;
 
-        //TODO: check employee on server side and delete a line below
-        var agentID = 1;
         var usrID = $('#email').val();
         var deptID = queries[2];
         var destID = queries[3];
         var depTime = queries[0];
+        var schID = queries[4];
+        var schID2 = queries[5];
 
         console.log(idnumber+" "+lastname+" "+name+" "+price+" "+deptID)
 
@@ -96,15 +96,16 @@
                    price: 6001,
                    docId: idnumber,
                    usrId: usrID,
-                   agentId: agentID,
-                   deptId: deptID,
-
-                   destId: destID,
+                   schId: schID,
+                   schId2: schID2,
+                    deptId: deptID,
+                    destId: destID,
                    date: depTime
                },
 
-               function (r) {
-                   console.log("Working?")
+               function () {
+                   alert("Ticket is booked");
+                   window.location.href='index.html';
                });
     }
 

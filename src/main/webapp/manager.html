@@ -49,6 +49,7 @@
         <th class="column6">Closed</th>
         <th class="column7">Maintenance of the route</th>
         <th></th>
+        <th></th>
     </tr>
     </thead>
 
@@ -66,10 +67,10 @@
 
             <input type="text" id="from" name="from" placeholder="From">
             <input type="datetime-local"  id="depTime" data-date-inline-picker="true" name="departure from" placeholder="Departure date and time">
-            Arrival Time
+            Departure Time
             <br>
             <input type="datetime-local" id="arrTime" data-date-inline-picker="true" name="arrival to" placeholder="Arrival date and time">
-            Departure Time
+            Arrival Time
             <br>
             <input type="text" id="trainID" name="trainID" placeholder="Train number">
         </form>
@@ -110,14 +111,15 @@
             var routeIs = index.routeIsClosed;
             var maintenanceR = index.maintenanceR;
             var scheduleId = index.scheduleId;
-            $("#tableSchedule").append("<tr><td class=\"column1\">"
+            $("#manager_table_body").append("<tr><td class=\"column1\">"
                                        + trainId + "</td><td class=\"column2\">"
                                        + depTime + "</td><td class=\"column3\">"
                                        + arrivalTime + "</td><td class=\"column4\">"
                                        + depStationName + "</td><td class=\"column5\">"
                                        + availability + "</td><td class=\"column6\">"
                                        + routeIs + "</td><td class=\"column7\">"
-                                       + maintenanceR + "</td><td class=\"column8\">" + "<button type='button' class='button' onclick='deleteItemFunction(" + scheduleId + ")'>Delete Route</button>" + "</td></tr><br>");
+                                       + maintenanceR + "</td><td><button type='button' class='button' onclick='deleteItemFunction(" + scheduleId + ")'>Delete</button></td>"
+                                       + "<td><button type='button' class='button' onclick='closeFunction(" + scheduleId + ")'>Close/Open</button></td></tr>");
         });
     }
 
@@ -167,14 +169,37 @@
                 if(r.status>=400) {
                     alert("Check the values entered, please");
                 } else{
+                    reset();
                     getSchedule();
                 }
             });
         } else {
             alert('Enter values to all fields, please');
         }
+    }
 
+    function closeFunction(id) {
+        $.ajax({
+            url: "api/manager/closeRoute",
+            data: {
+                scheduleId: id
+            },
+            method: 'PUT',
+            contentType: 'application/x-www-form-urlencoded'
+               }).done(function (r){
+            if(r.status>=400) {
+                alert("Check the values entered, please");
+            } else {
+                getSchedule();
+            }
+        });
+    }
 
+    function reset() {
+        $('#from').val('');
+        $('#depTime').val('');
+        $('#arrTime').val('');
+        $('#trainID').val('');
     }
 
     function createStationFunction() {

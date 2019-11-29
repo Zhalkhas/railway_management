@@ -91,6 +91,8 @@
     let argTrainID;
     let argFrom;
     let argTo;
+    let schId;
+    let schId2;
 
     function signInFunction() {
         console.log($('#email').val());
@@ -138,7 +140,6 @@
 
               function (r) {
                   updateList(r);
-
               });
     }
 
@@ -155,6 +156,8 @@
             var depTime = index.departureTime;
             var arrivalTime = index.arrivalTime;
             var trainID = index.trainId;
+            schId = index.scheduleId;
+            schId2 = index.scheduleId2;
             console.log(from, to, depTime, arrivalTime, trainID);
 
             argTrainID = trainID;
@@ -182,7 +185,7 @@
 		if(!document.cookie.includes("username")) {
 			alert("Please sign in before booking!");
 		} else {
-			var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo;
+			var queryString = "?" + argDepTime + "&" + argTrainID+"&" + argFrom+"&" + argTo +"&" + schId+"&"+schId2;
 			window.location.href='ticketinfo.html' + queryString;
 		}
 	}

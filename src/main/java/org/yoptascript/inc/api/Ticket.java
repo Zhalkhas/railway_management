@@ -68,14 +68,17 @@ public class Ticket {
     @POST
     public Response insertTicket(@FormParam("ownerN") String ownerN,
                                  @FormParam("ownerS") String ownerS, @FormParam("price") double price,
-                                 @FormParam("docId") int docId, @FormParam("usrId") String usrId,
-                                 @FormParam("agentId") int agentId, @FormParam("deptId") String deptId, @FormParam("destId") String destId,
-                                 @FormParam("date") String date) {
+                                 @FormParam("docId") int docId,
+                                 @FormParam("schId") int deptId, @FormParam("schId2") int destId,
+                                 @FormParam("deptId") String from, @FormParam("destId") String to,
+                                 @FormParam("date") String date, @CookieParam("username") String email) {
         statements = new Statements();
         statements.connect();
         try {
             statements.insertTicket(ownerN, ownerS, price, docId,
-                    usrId, agentId, deptId, destId, date);
+                    email, deptId, destId, date);
+            EmailNotificator notificator = new EmailNotificator();
+            notificator.sendEdit(email, "YOUR TICKET", "You booked a ticket from: " + from + ", to: " + to + ", departure time: " + date + ", for: " + ownerN + " " + ownerS);
         } catch (SQLException e) {
             return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
         } finally {

@@ -3,6 +3,8 @@ package org.yoptascript.inc.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,10 +16,6 @@ import org.yoptascript.inc.sql.Statements;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.SQLException;
-import  org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import javax.ws.rs.*;
 import java.util.List;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
@@ -123,7 +121,7 @@ public class Manager {
             statements.connect();
             //TODO: finish, all times are dateTimes
             try {
-                statements.createRoute(from, arrivalTime, departureTime, trainNumber, scheduleId);
+                statements.createRoute(from, arrivalTime, departureTime, trainNumber);
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {
@@ -165,6 +163,31 @@ public class Manager {
             statements.connect();
             try {
                 statements.deleteRoute(id);
+            } catch (SQLException e) {
+                return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
+            } finally {
+                statements.disconnect();
+            }
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+    }
+
+    @Secured
+    @Path("/closeRoute")
+    @PUT
+    public Response closeRoute(@CookieParam("role") String role, @CookieParam("username") String email, @FormParam("scheduleId") int id) {
+        if (role.equalsIgnoreCase("manager")) {
+            statements = new Statements();
+            statements.connect();
+            try {
+                List<String> emails = statements.closeRoute(id, email);
+                EmailNotificator notificator = new EmailNotificator();
+                int ID = Integer.parseInt(emails.get(0));
+              for (int i = 1; i < emails.size(); i++) {
+                notificator.sendEdit(emails.get(i), "ROUTE WAS CLOSED/OPENED", "The route#"+ ID +" was closed/opened, inform your passengers");
+              }
             } catch (SQLException e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("err", e).build();
             } finally {

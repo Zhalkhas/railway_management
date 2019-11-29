@@ -54,7 +54,7 @@ public class Statements {
             throw new SQLException("not enough info");
         }
         JsonArray json = new JsonArray();
-        PreparedStatement statement = conn.prepareStatement("select distinct ST.name, ST2.name, SCH.departureTime, SCH2.arrivalTime, SCH.trainId, SCH.availability, SCH.routeIsClosed \n"
+        PreparedStatement statement = conn.prepareStatement("select distinct ST.name, ST2.name, SCH.departureTime, SCH2.arrivalTime, SCH.trainId, SCH.availability, SCH.routeIsClosed, SCH.scheduleId, SCH2.scheduleId \n"
                 + "from STATION ST, STATION ST2, Schedule SCH, Schedule SCH2\n"
                 + "where ST.name = ? and ST2.name = ? and  "
             + "    SCH2.stationId = ST2.stationId and date(SCH.departureTime) = ? and SCH.stationId = ST.stationId and SCH.trainId = SCH2.trainId and SCH.departureTime < SCH2.arrivalTime and (date(SCH.departureTime) = date(SCH2.arrivalTime) or date(DATE_ADD(SCH2.departureTime, INTERVAL 1 DAY))=date(SCH2.arrivalTime+1));");
@@ -72,9 +72,11 @@ public class Statements {
             jsob.addProperty("departureTime", rs.getString(3));
             jsob.addProperty("arrivalTime", rs.getString(4));
             jsob.addProperty("trainId", rs.getInt(5));
-            if (rs.getInt(6) <= 0 || rs.getInt(7) == 1) {
-                isAvailable = false;
-            }
+            jsob.addProperty("scheduleId", rs.getInt(8));
+            jsob.addProperty("scheduleId2", rs.getInt(9));
+//            if (rs.getInt(6) <= 0 || rs.getInt(7) == 1) {
+//                isAvailable = false;
+//            }
             json.add(jsob);
         }
         rs.close();
@@ -168,25 +170,22 @@ public class Statements {
     }
 
     public void insertTicket(String ownerN, String ownerS, double price, int docId,
-                             String usrId, int agentId, String deptId, String destId, String date) throws SQLException {
+                             String usrId, int schId, int schId2, String date) throws SQLException {
         if (ownerN.equals("") || ownerS.equals("") || price < 0 || docId < 0 || usrId.equals("") ||
-                agentId < 0 || destId.equals("") || deptId.equals("") || date.equals("")) {
+                schId < 0 || schId2 < 0 || date.equals("")) {
             throw new SQLException("not enough info");
         }
         PreparedStatement statement = conn.prepareStatement("insert into TICKET (TicketOwnerName, TicketOwnerSurname, price, documentID, USER_userId, EMPLOYEE_employeeId, Schedule_scheduleId, ScheduleIdArrival) values (?, ?, ?, ?, "
-                + "(select userId from USER where email = ?), ?, "
-                + "(select scheduleId from SCHEDULE SCH, STATION ST where name = ? and date(departureTime) = date(?) and SCH.stationId = ST.stationId), "
-                + "(select scheduleId from SCHEDULE SCH, STATION ST where name = ? and (date(arrivalTime) = date(?) or date(arrival)=DATE_ADD(date(?), INTERVAL, 1 DAY)) and SCH.stationId = ST.stationId));");
+                + "(select userId from USER where email = ?), (select employeeId from EMPLOYEE, SCHEDULE, USER where scheduleId = ? and stationId = STATION_stationId and employeeId = userId and status = 'agent'), ?, ?);");
         statement.setString(1, ownerN);
         statement.setString(2, ownerS);
         statement.setDouble(3, price);
         statement.setInt(4, docId);
         statement.setString(5, usrId);
-        statement.setInt(6, agentId);
-        statement.setString(7, deptId);
-        statement.setString(8, date);
-        statement.setString(9, destId);
-        statement.setString(10, date);
+        statement.setInt(6, schId);
+        statement.setInt(7, schId);
+        statement.setInt(8, schId2);
+        //statement.setString(11, date);
         statement.execute();
     }
 
@@ -451,57 +450,41 @@ public class Statements {
         return res;
     }
 
-  public String createRoute(String station, String arrT, String depT, int trainId, int scheduleId) throws SQLException{
-    //get capacity of the train
-    PreparedStatement statement0 = conn.prepareStatement("select capacity from Train where trainId=?;");
-    statement0.setInt(1,trainId);
-    ResultSet rs = statement0.executeQuery();
-    rs.next();
-    int cap=rs.getInt(1);
-    rs.close();
-    //find id nb of station
-    PreparedStatement findStId = conn.prepareStatement("select stationId from STATION where name=?");
-    findStId.setString(1,station);
-    ResultSet stationIdRes = findStId.executeQuery();
-    stationIdRes.next();
-    int stId=stationIdRes.getInt(1);
-    stationIdRes.close();
-    // check if st1 already in schedule without
-    PreparedStatement st1InSchedule=conn.prepareStatement("select  s.scheduleId from Schedule s, STATION st where date(arrivalTime)=? and\n" +
-        "s.stationId=st.stationId and st.name=? and s.trainId=?;");
-    st1InSchedule.setString(1, depT.substring(0,10));
-    st1InSchedule.setString(2,station);
-    st1InSchedule.setInt(3, trainId);
-    ResultSet st1InSc = st1InSchedule.executeQuery();
-    int  sId=515;
-    //if st1 not in schedule add it to schedule
-    if(!st1InSc.next()){
-      PreparedStatement statement2 = conn.prepareStatement("select max(scheduleId) from Schedule;");
-      ResultSet rd = statement2.executeQuery();
-      rd.next();
-      rd.close();
-      System.out.println("id of new sc for st1 "+ scheduleId);
-      PreparedStatement statement=conn.prepareStatement("insert into Schedule (departureTime, " +
-          "trainId,scheduleId,stationId,availability,routeIsClosed,maintenanceR, arrivalTime ) values (?,?,?,?,?,?,?,?);");
-      statement.setString(1,depT);
-      statement.setInt(2,trainId);
-      statement.setInt(3,sId);
-      statement.setInt(5, cap);
-      statement.setInt(6, 0);
-      statement.setString(7, "good");
-      statement.setInt(4, stId) ;
-      statement.setString(8, arrT);
-
-
-      statement.executeUpdate();
-      return ("Success");
+    public String createRoute(String station, String arrT, String depT, int trainId) throws SQLException {
+        //get capacity of the train
+        PreparedStatement statement0 = conn.prepareStatement("select capacity from Train where trainId=?;");
+        statement0.setInt(1, trainId);
+        ResultSet rs = statement0.executeQuery();
+        rs.next();
+        int cap = rs.getInt(1);
+        rs.close();
+        //find id nb of station
+        PreparedStatement findStId = conn.prepareStatement("select stationId from STATION where name=?");
+        findStId.setString(1, station);
+        ResultSet stationIdRes = findStId.executeQuery();
+        stationIdRes.next();
+        int stId = stationIdRes.getInt(1);
+        stationIdRes.close();
+        //add it to schedule
+        PreparedStatement statement2 = conn.prepareStatement("select max(scheduleId) from Schedule;");
+        ResultSet rd = statement2.executeQuery();
+        rd.next();
+        int scheduleId = rd.getInt(1);
+        rd.close();
+        System.out.println("id of new sc for st1 " + scheduleId);
+        PreparedStatement statement = conn.prepareStatement("insert into Schedule (departureTime, " +
+            "trainId,scheduleId,stationId,availability,routeIsClosed,maintenanceR, arrivalTime ) values (?,?,?,?,?,?,?,?);");
+        statement.setString(1, depT);
+        statement.setInt(2, trainId);
+        statement.setInt(3, stId);
+        statement.setInt(5, cap);
+        statement.setInt(6, 0);
+        statement.setString(7, "good");
+        statement.setInt(4, stId);
+        statement.setString(8, arrT);
+        statement.executeUpdate();
+        return ("Success");
     }
-    //adds dep Time to the schedule that alreaady exists
-    else{ return "already exists";
-    }
-
-
-  }
 
 //    public void createRoute(String[] stations, String[] arrT, String[] depT, int trainId) throws SQLException {
 //        int len=stations.length;
@@ -534,10 +517,41 @@ public class Statements {
 //    }
 
     public void deleteRoute(int id) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("delete from SCHEDULE where scheduleId = ?");
+        PreparedStatement statement = conn.prepareStatement("delete from TICKET where scheduleIdArrival = ? or schedule_scheduleId=?");
         statement.setInt(1, id);
+        statement.setInt(2, id);
         statement.execute();
+        PreparedStatement statement1 = conn.prepareStatement("delete from SCHEDULE where scheduleId = ?");
+        statement1.setInt(1, id);
+        statement1.execute();
     }
+
+    public List<String> closeRoute(int id, String email) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select routeIsClosed from Schedule where scheduleId = ?");
+        statement.setInt(1, id);
+        ResultSet rs = statement.executeQuery();
+        rs.next();
+        int result=rs.getInt(1);
+        int changeTo = 0;
+        if(result == 0){
+            changeTo=1;
+        }
+        PreparedStatement statement1 = conn.prepareStatement("update SCHEDULE set routeIsClosed = ? where scheduleId = ?;");
+        statement1.setInt(1, changeTo);
+        statement1.setInt(2, id);
+        statement1.execute();
+        PreparedStatement statement2 = conn.prepareStatement("select U.email from USER U, USER U1, EMPLOYEE E, EMPLOYEE E1 where U.userId = E.employeeId and "
+            + "U.status = 'agent' and E1.STATION_stationId = E.STATION_stationId and U1.userId = E1.employeeId and U1.email = ?;");
+        statement2.setString(1, email);
+        List<String> emails = new ArrayList<>();
+        emails.add(Integer.toString(id));
+        ResultSet rs2 = statement2.executeQuery();
+        while (rs2.next()) {
+            emails.add(rs2.getString(1));
+        }
+        return emails;
+    }
+
     public boolean createStation(String name, String username) throws SQLException {
         PreparedStatement statement1 = conn.prepareStatement("select stationId from STATION where name = ?;");
         statement1.setString(1, name);
